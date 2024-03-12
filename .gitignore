@@ -1,0 +1,13 @@
+db.sqlite3
+0*.py
+.DS_Store
+venv
+my_env
+.idea
+migrations
+images
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
+**/migrations/*
+**/__pycache__/**
