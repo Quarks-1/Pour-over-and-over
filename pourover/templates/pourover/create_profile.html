@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pour-over-and-over</title>
+    {% load static %}
+    <link href="{% static 'pourover/create_page.css' %}" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <div>   
+        <form method="post" action="{% url 'create' %}">
+            <table>
+                {{form}}
+            </table>
+            {% csrf_token %}
+            <button type="submit">Create</button>
+        </form>
+    </div>
+</body>
+
+</html>
