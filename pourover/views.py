@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from pourover.models import BrewProfile, BrewProfileForm
 from django.utils import timezone
 
@@ -25,4 +25,4 @@ def create_profile(request):
     brew_profile = form.save(commit=False)  
     brew_profile.creation_date = timezone.now()
     brew_profile.save()
-    return render(request, 'pourover/home_page.html', {})
+    return redirect('home_page')
