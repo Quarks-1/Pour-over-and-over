@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from pourover.models import BrewProfile
-from pourover.models import BrewProfileForm
+from pourover.models import BrewProfile, BrewProfileForm
 from django.utils import timezone
 
 

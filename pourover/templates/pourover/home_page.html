@@ -10,6 +10,7 @@
 <body>
     <div>   
         <div>This is the home page!</div>
+        <button onclick="window.location.href = '{% url 'create' %}'" id='id_create_profile_button'>Create profile</button>
         <h3>Current brew profiles:</h3>
         {% for profile in profiles %}
             <div id="" class="">
