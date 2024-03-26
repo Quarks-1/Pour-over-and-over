@@ -25,6 +25,10 @@ class BrewProfile(models.Model):
     brew_method = models.CharField(max_length=10, choices=brew_method)
     brew_device = models.CharField(max_length=100, default='None')
     steps = models.CharField(max_length=2000) # JSON string of steps
+    # Array of instructions. Example: 
+    # (pour type, water weight, flow rate, agitation level (low, medium, high))
+    # example: [(center pour, 60g, 12g/s, high), (center pour, 100g, 6g/s, low)]
+    
                         #### Rating Parameters ###
     rating = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(10), MinValueValidator(0)])
     

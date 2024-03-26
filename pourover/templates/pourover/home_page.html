@@ -4,7 +4,7 @@
 <head>
     <title>Pour-over-and-over</title>
     {% load static %}
-    <link href="{% static 'pourover/home_page.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static '../../static/css/home_page.css' %}" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -13,7 +13,7 @@
         <button onclick="window.location.href = '{% url 'create' %}'" id='id_create_profile_button'>Create profile</button>
         <h3>Current brew profiles:</h3>
         {% for profile in profiles %}
-            <div id="" class="">
+            <div class="brew_profile">
                 <a href="{% url 'brew_page' profile.id %}" id="id_brew_profile_{{profile.id}}">
                 Click here to brew me!
                 </a>
