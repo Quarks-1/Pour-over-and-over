@@ -3,7 +3,7 @@ import time
 
 from gpiod.line import Direction, Value
 
-LINE = 13
+LINE = 33
 
 with gpiod.request_lines(
     "/dev/gpiochip0",
