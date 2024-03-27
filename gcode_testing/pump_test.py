@@ -1,21 +1,15 @@
-import RPi.GPIO as GPIO
+import gpiod
 import time
-# Set up GPIO
-GPIO.setmode(GPIO.BOARD)  # Use physical pin numbering
-GPIO.setup(2, GPIO.OUT)   # Set GPIO2 (physical pin 3) as output
-
+pump_pin = 2
+chip = gpiod.Chip('gpiochip4')
+pump_line = chip.get_line(pump_pin)
+pump_line.request(consumer="LED", type=gpiod.LINE_REQ_DIR_OUT)
 try:
-    # Turn on GPIO pin
-    GPIO.output(2, GPIO.HIGH)
-    print("GPIO pin 2 is ON")
-    
-    # Wait for 5 seconds
-    time.sleep(5)
-    
-    # Turn off GPIO pin
-    GPIO.output(2, GPIO.LOW)
-    print("GPIO pin 2 is OFF")
-
+   while True:
+       pump_line.set_value(1)
+       time.sleep(10)
+       pump_line.set_value(0)
+       time.sleep(1)
+       break
 finally:
-    # Clean up GPIO
-    GPIO.cleanup()
+   pump_line.release()
