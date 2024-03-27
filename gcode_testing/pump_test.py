@@ -1,21 +1,13 @@
-import gpiod
-import time
+from gpiozero import DigitalOutputDevice
+from time import sleep
 
-from gpiod.line import Direction, Value
+output_pin = 25  # GPIO output 25
 
-LINE = 33
+output_device = DigitalOutputDevice(output_pin)
 
-with gpiod.request_lines(
-    "/dev/gpiochip0",
-    consumer="blink-example",
-    config={
-        LINE: gpiod.LineSettings(
-            direction=Direction.OUTPUT, output_value=Value.ACTIVE
-        )
-    },
-) as request:
-    while True:
-        request.set_value(LINE, Value.ACTIVE)
-        time.sleep(10)
-        request.set_value(LINE, Value.INACTIVE)
-        time.sleep(1)
+while True:
+        # If input is high, blink output every second
+        output_device.on()
+        sleep(10)  # 500ms on
+        output_device.off()
+        sleep(1)  # 500ms off
