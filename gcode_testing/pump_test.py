@@ -1,15 +1,21 @@
 import gpiod
 import time
-pump_pin = 2
-chip = gpiod.Chip('gpiochip4')
-pump_line = chip.get_line(pump_pin)
-pump_line.request(consumer="LED", type=gpiod.LINE_REQ_DIR_OUT)
-try:
-   while True:
-       pump_line.set_value(1)
-       time.sleep(10)
-       pump_line.set_value(0)
-       time.sleep(1)
-       break
-finally:
-   pump_line.release()
+
+from gpiod.line import Direction, Value
+
+LINE = 3
+
+with gpiod.request_lines(
+    "/dev/gpiochip0",
+    consumer="blink-example",
+    config={
+        LINE: gpiod.LineSettings(
+            direction=Direction.OUTPUT, output_value=Value.ACTIVE
+        )
+    },
+) as request:
+    while True:
+        request.set_value(LINE, Value.ACTIVE)
+        time.sleep(10)
+        request.set_value(LINE, Value.INACTIVE)
+        time.sleep(1)
