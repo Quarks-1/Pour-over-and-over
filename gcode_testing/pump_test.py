@@ -1,13 +1,14 @@
-from gpiozero import DigitalOutputDevice
-from time import sleep
+import gpiod
+import time
 
-output_pin = 25  # GPIO output 25
+PIN_NO = 3
+chip = gpiod.Chip('gpiochip4')
+led_line = chip.get_line(PIN_NO)
+led_line.request(consumer="myLed", type=gpiod.LINE_REQ_DIR_OUT)
 
-output_device = DigitalOutputDevice(output_pin)
 
 while True:
-        # If input is high, blink output every second
-        output_device.on()
-        sleep(10)  # 500ms on
-        output_device.off()
-        sleep(1)  # 500ms off
+    led_line.set_value(1)
+    time.sleep(1)
+    led_line.set_value(0)
+    time.sleep(1)
