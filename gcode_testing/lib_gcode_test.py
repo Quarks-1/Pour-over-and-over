@@ -11,6 +11,8 @@ command_dict = {
 }
 while True:
     input_command = input("Enter a GCODE command: ")
+    if input_command in command_dict:
+        input_command = command_dict[input_command]
     ser.write(str.encode(input_command + "\r\n"))
     time.sleep(1)
     cc=str(ser.readline())
