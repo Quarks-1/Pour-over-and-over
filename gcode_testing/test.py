@@ -1,6 +1,11 @@
 import serial
+import time
 
 ser = serial.Serial("/dev/ttyUSB0", 115200)
-ser.write("G28\n")
-ser.write("M114\n")
-ser.read_all()
+time.sleep(2)
+ser.write("G28\r\n")
+time.sleep(1)
+ser.write("M114\r\n")
+time.sleep(1)
+print(ser.read_all().decode())
+ser.close()
