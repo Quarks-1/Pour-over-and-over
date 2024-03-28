@@ -19,7 +19,7 @@ class BrewProfile(models.Model):
     grind_size = models.PositiveBigIntegerField(default=0)
     grind_weight = models.PositiveBigIntegerField(default=0)
     # Water Parameters
-    water_weight = models.PositiveBigIntegerField(default=0)
+    total_water_weight = models.PositiveBigIntegerField(default=0)
     water_temp = models.PositiveBigIntegerField(default=0)
     # Method
     brew_method = models.CharField(max_length=10, choices=brew_method)
@@ -36,5 +36,5 @@ class BrewProfileForm(ModelForm):
     class Meta:
         model = BrewProfile
         fields = ['name', 'description', 'grind_size', 'grind_weight', 
-                  'water_weight', 'water_temp', 'brew_method', 'brew_device', 
+                  'total_water_weight', 'water_temp', 'brew_method', 'brew_device', 
                   'steps', 'rating']

@@ -27,15 +27,15 @@
                 </tr>
                 <tr>
                     <td>{{ form.grind_weight.label_tag }}</td>
-                    <td>{{ form.grind_weight }}</td>
+                    <td>{{ form.grind_weight }} (grams)</td>
                 </tr>
                 <tr>
-                    <td>{{ form.water_weight.label_tag }}</td>
-                    <td>{{ form.water_weight }}</td>
+                    <td>{{ form.total_water_weight.label_tag }} </td>
+                    <td>{{ form.total_water_weight }} (grams)</td>
                 </tr>
                 <tr>
-                    <td>{{ form.water_temp.label_tag }}</td>
-                    <td>{{ form.water_temp }}</td>
+                    <td>{{ form.water_temp.label_tag }} </td>
+                    <td>{{ form.water_temp }} (°F)</td>
                 </tr>
                 <tr>
                     <td>{{ form.brew_method.label_tag }}</td>
@@ -58,7 +58,8 @@
         </form>        
     </div>
     <div>
-        <span>Use form below to add brew steps</span>
+        <span>Use the form below to add brew steps</span>
+        <span>Water weight will be autofilled from sum</span>
         <form id="stepForm">
             <table>
                 <tr>
@@ -91,7 +92,7 @@
                     </td>
                 </tr>
             </table>
-            <button id='addStep' type="button" onclick="addToSteps()">Add</button>
+            <button id='id_addStep' type="button" onclick="addStep()">Add</button>
         </form>        
     </div>
     <div>
@@ -103,11 +104,15 @@
         <form id="removeStepForm">
             <table>
                 <tr>
-                    <td><label for="removeStep">Step number:</label></td>
-                    <td><input type="number" id="removeStep_input" name="removeStep"></td>
+                    <td><label for="removeStep_num">Step number:</label></td>
+                    <td><input type="number" id="removeStep_input" name="removeStep_num"></td>
                 </tr>
             </table>
-            <button id='removeStep' type="button" onclick="removeStep()">Remove</button>
+            <button id='id_removeStep' type="button" onclick="removeStep()">Remove</button>
+    </div>
+    <div>
+        <span>Click below once finished adding steps</span>
+        <button id='id_submitSteps' type="button" onclick="submitSteps()">Submit</button>
     </div>
 </body>
 <!-- [(center pour, 60g, 12g/s, high) -->

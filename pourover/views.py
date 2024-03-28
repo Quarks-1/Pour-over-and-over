@@ -18,6 +18,7 @@ def create_profile(request):
     if request.method == 'GET':
         context = {'form': BrewProfileForm()}
         return render(request, 'pourover/create_profile.html', context)
+    print(request.POST)
     form = BrewProfileForm(request.POST)
     if not form.is_valid():
         context = {'form': form}
