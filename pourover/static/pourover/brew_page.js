@@ -1,78 +1,63 @@
-// 1D36DE6AFA40447680E9CAA3C214C671
-function connect() {
+"use strict"
 
-}
-
-var domReady = function(callback) {
-    document.readyState === "interactive" || document.readyState === "complete" ? callback() : document.addEventListener("DOMContentLoaded", callback);		
-};
-
-domReady(function() {
-    getJobInfo();
-    getPrinterInfo();
-});
-
-function getJobInfo(){
-    var xmlhttp = new XMLHttpRequest();
+/*
+ * Use a global variable for the socket.  Poor programming style, I know,
+ * but I think the simpler implementations of the deleteItem() and addItem()
+ * functions will be more approachable for students with less JS experience.
+ */
+let socket = null
 
 
-    xmlhttp.onload = function() {
+function connectToServer() {
+    // Use wss: protocol if site using https:, otherwise use ws: protocol
+    let wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:"
 
-        var reads = JSON.parse(this.responseText);
-        document.getElementById("lblfileName").innerText = reads.job.file.name;
-        };
-    //xmlhttp.open("GET", "http://{{URI}}:{{Port}}/api/job", true);
-    //xmlhttp.setRequestHeader("X-Api-Key", "{{Api-Key}}");
-    xmlhttp.open("GET", "localhost:5000/api/job", true);
-    xmlhttp.setRequestHeader("X-Api-Key", "1D36DE6AFA40447680E9CAA3C214C671");
-                                          
-    xmlhttp.send();
-}
+    // Create a new WebSocket.
+    let url = `${wsProtocol}//${window.location.host}/ws_todolist/data`
+    socket = new WebSocket(url)
 
-// https://docs.octoprint.org/en/master/api/printer.html#retrieve-the-current-printer-state
-function getPrinterInfo(){
-    var xmlhttp = new XMLHttpRequest();
-
-
-    xmlhttp.onload = function() {
-
-        var reads = JSON.parse(this.responseText);
-        console.log(reads);
-        document.getElementById("lblbedTemp").innerText = reads.temperature.bed.actual;
-        };
-    //xmlhttp.open("GET", "http://{{URI}}:{{Port}}/api/printer", true); 
-    //xmlhttp.setRequestHeader("X-Api-Key", "{{Api-Key}}");
-    xmlhttp.open("GET", "http://localhost:5000/api/printer", true);
-    xmlhttp.setRequestHeader("X-Api-Key", "1D36DE6AFA40447680E9CAA3C214C671");
-                                          
-    xmlhttp.send();
-}
-
-$(function() {
-    function GCode_Restarter_ViewModel(parameters) {
-        var self = this;
-
-        self.controlViewModel = parameters[0];
-        self.getAdditionalControls = function() {
-            return [{
-                'name': 'Reporting', 'children':[
-                    {'command': 'M114',
-                    'default': '""',
-                    'name': 'Get Position',
-                    'regex': 'X:([-+]?[0-9.]+) Y:([-+]?[0-9.]+) Z:([-+]?[0-9.]+) E:([-+]?[0-9.]+)',
-                    'template': '"Position: X={0}, Y={1}, Z={2}, E={3}"',
-                    'type': 'feedback_command'}
-                ]
-            }];
-        };
+    // Handle any errors that occur.
+    socket.onerror = function(error) {
+        displayMessage("WebSocket Error: " + error)
     }
 
-    OCTOPRINT_VIEWMODELS.push({
-        construct: GCode_Restarter_ViewModel,
-        dependencies: [ "controlViewModel" ]
-    });
-});
+    // Show a connected message when the WebSocket is opened.
+    socket.onopen = function(event) {
+        displayMessage("WebSocket Connected")
+    }
 
-__plugin_settings_overlay__ = dict(controls=[dict(children=[dict(command="M114",name="Get Position",
-        regex="X:([-+]?[0-9.]+) Y:([-+]?[0-9.]+) Z:([-+]?[0-9.]+) E:([-+]?[0-9.]+)",
-        template="Position: X={0}, Y={1}, Z={2}, E={3}")],name="Reporting_Overlay")])
+    // Show a disconnected message when the WebSocket is closed.
+    socket.onclose = function(event) {
+        displayMessage("WebSocket Disconnected")
+    }
+
+    // Handle messages received from the server.
+    socket.onmessage = function(event) {
+        let response = JSON.parse(event.data)
+        if (Array.isArray(response)) {
+            updateList(response)
+        } else {
+            displayResponse(response)
+        }
+    }
+}
+
+function displayError(message) {
+    let errorElement = document.getElementById("error")
+    alert(message);
+}
+
+function displayMessage(message) {
+    let errorElement = document.getElementById("message")
+    alert(message)
+}
+
+function displayResponse(response) {
+    if ("error" in response) {
+        displayError(response.error)
+    } else if ("message" in response) {
+        displayMessage(response.message)
+    } else {
+        displayMessage("Unknown response")
+    }
+}
