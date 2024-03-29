@@ -7,12 +7,11 @@ from django.utils import timezone
 
 
 def home_page(request):
-    # if request.method == 'GET':
     return render(request, 'pourover/home_page.html', {'profiles': BrewProfile.objects.all()})
 
 def brew_page(request, id):
     profile = get_object_or_404(BrewProfile, id=id)
-    return render(request, 'pourover/brew_page.html', {'profile': profile})
+    return render(request, 'pourover/brew_page.html', {'profile': profile, 'id': id})
 
 def create_profile(request):
     if request.method == 'GET':

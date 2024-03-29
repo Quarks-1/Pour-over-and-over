@@ -4,14 +4,43 @@
 <head>
     <title>Pour-over-and-over</title>
     {% load static %}
-    <link href="{% static '../../static/css/brew_page.css' %}" rel="stylesheet" type="text/css">
-    <script src="{% static 'pourover/brew_page.js' %}" type="text/javascript"></script>
+    <link href="{% static 'css/brew_page.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'js/brew_page.js' %}" type="text/javascript"></script>
 </head>
 
 <body>
+    <span id="id_profile_id"> {{ id }} </span>
     <div>   
-        
+        <div class="brew_profile">
+            <span id=''>Profile name: {{profile.name}}</span>
+            <span id='' class=''>Description: {{profile.description}}</span>
+            <span id='' class=''>Rating: {{profile.rating}} / 10</span>
+            <span id='' class=''>Coffee weight: {{profile.grind_weight}}</span>
+            <span id='' class=''>Water weight: {{profile.water_weight}}</span>
+            <span id='' class=''>Water temperature: {{profile.water_temp}}</span>
+            <span id='' class=''>Brew device: {{profile.brew_device}}</span>
+            <span id='' class=''>Brew Method: {{profile.brew_method}}</span>
+        </div>
     </div>
+    <table>
+        <tr>
+            <td>
+                <button id='id_start_brew_button' onclick='startBrew()'>Start brew</button>
+            </td>
+            <td>
+                <button id='id_pause_brew_button' onclick='pauseBrew()'>Pause brew</button>
+            </td>
+            <td>
+                <button id='id_stop_brew_button' onclick='stopBrew()'>Stop brew</button>
+            </td>
+            <td>
+                <button id='id_restart_brew_button' onclick='restartBrew()'>Reset brew</button>
+            </td>
+        </tr>
+    </table>
+    <script>
+        window.onload = connectToServer()
+    </script>
 </body>
 
 </html>

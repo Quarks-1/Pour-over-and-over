@@ -32,6 +32,9 @@ class BrewProfile(models.Model):
                         #### Rating Parameters ###
     rating = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(10), MinValueValidator(0)])
     
+    def __str__(self):
+        return f'Name: {self.name}, Description: {self.description}, Rating: {self.rating}'
+    
 class BrewProfileForm(ModelForm):
     class Meta:
         model = BrewProfile
