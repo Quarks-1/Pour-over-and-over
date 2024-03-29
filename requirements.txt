@@ -1,6 +1,5 @@
 Django==5.0.3
 pipreqs
 pyserial
-gpiod
 daphne
 channels
