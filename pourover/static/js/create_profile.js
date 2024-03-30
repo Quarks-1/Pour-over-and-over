@@ -22,6 +22,9 @@ function submitSteps() {
     // Calculate total water weight
     let total_water = 0;
     for (let i = 0; i < steps.length; i++) {
+        if (prettySteps[i][0] == 'pre_wet') {
+            continue;
+        }
         total_water += parseInt(prettySteps[i][1]);
     }
     document.getElementById('id_total_water_weight').value = total_water;
