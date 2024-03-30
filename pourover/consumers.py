@@ -145,8 +145,8 @@ class printer:
         self.ser = serial.Serial("/dev/ttyUSB0", 115200)
         # home printer
         self.ser.write(str.encode("G28 X Y\r\n"))
-        time.sleep(2)
-        self.ser.write(str.encode("G0 X127 Y90 F3600\r\n")) # move to center
+        # time.sleep(2)
+        self.ser.write(str.encode("G0 X127 Y90 Z0 F3600\r\n")) # move to center
     
     def write(self, command):
         self.ser.write(str.encode(command + "\r\n"))
