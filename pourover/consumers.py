@@ -32,17 +32,18 @@ class MyConsumer(WebsocketConsumer):
             self.printer = printer()
         except serial.SerialException:
             printError('WARNING: PRINTER NOT CONNECTED')
-            self.broadcast_error('Printer not connected. Please connect printer and reload page.')
+            self.broadcast_message('Printer not connected. Please connect printer and reload page.')
             return
     
         try:
             self.arduino = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=.1) 
         except serial.SerialException:
             printError('WARNING: ARDUINO NOT CONNECTED')
-            self.broadcast_error('Arduino not connected. Please connect Arduino and reload page.')
+            self.broadcast_message('Arduino not connected. Please connect Arduino and reload page.')
             return
         
         self.startTime = datetime.now()
+        self.broadcast_message('Successfully connected to printer and Arduino.')
         self.broadcast_data()
 
     def disconnect(self, close_code):
@@ -126,7 +127,7 @@ class MyConsumer(WebsocketConsumer):
             }
         )
     
-    def broadcast_error(self, error_message):
+    def broadcast_message(self, error_message):
         async_to_sync(self.channel_layer.group_send)(
             self.group_name,
             {

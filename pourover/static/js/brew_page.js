@@ -39,7 +39,6 @@ function connectToServer() {
         } else {
             console.log(response)
             if (response.includes("not connected")) { 
-                console.log('disabling buttons')  
                 disableButtons()
             }
             displayMessage(response)
