@@ -11,6 +11,8 @@ while True:
     #     data = arduino.readline()
     # Decode byte string to a normal string
     decoded_str = data.decode('utf-8')
+    if decoded_str == '':
+        continue
 
     # Strip whitespace and newlines
     clean_str = decoded_str.strip()
