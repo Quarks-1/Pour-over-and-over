@@ -141,8 +141,8 @@ class printer:
         self.ser.write(str.encode(command + "\r\n"))
 
     def currPos(self) -> list[int, int, int]:
+        self.ser.reset_input_buffer()
         self.ser.write(str.encode("M114\r\n"))
-        time.sleep(2)
         self.ser.readline()
         x, y, z = 0, 0, 0
         for val in self.ser.readline().split(' '):
