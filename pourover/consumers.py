@@ -70,6 +70,15 @@ class MyConsumer(WebsocketConsumer):
             x, y, z = self.printer.currPos()
             self.received_start(data)
             return
+
+        if action == "stopBrew":
+            self.received_stop(data)
+            return
+        
+        if action == "restartBrew":
+            self.received_restart(data)
+            return
+
 ############# Is there a need for pausing??? ################
         if action == 'pauseBrew':
             self.received_pause(data)
@@ -80,13 +89,6 @@ class MyConsumer(WebsocketConsumer):
             return
 
 #############################################################
-        
-        if action == "stopBrew":
-            self.received_stop(data)
-            return
-        if action == "restartBrew":
-            self.received_restart(data)
-            return
         
         printError(f'Invalid action property: "{action}"')
 
