@@ -18,6 +18,7 @@ function submitSteps() {
     console.log(pre_wet);
     if (pre_wet == true) {
         steps.unshift(('pre_wet/0/0/0'));
+        prettySteps.unshift(['pre_wet', 0, 0, 0]);
     }
     // Calculate total water weight
     let total_water = 0;
