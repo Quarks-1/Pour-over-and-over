@@ -19,7 +19,7 @@ while True:
     numbers = clean_str.split('/')
 
     # Convert strings to floats and perform division
-    result = float(numbers[0]) / float(numbers[1])
+    result = (float(numbers[0]), float(numbers[1]))
 
     # Print the result
     print(result)
