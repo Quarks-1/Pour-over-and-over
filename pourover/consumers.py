@@ -158,11 +158,11 @@ class printer:
         for val in self.ser.readline().decode('utf-8').split(' '):
             print(val)
             if 'X' in val:
-                x = int(val.strip('X:'))
+                x = int(val.strip('X:').split('.')[0])
             elif 'Y' in val:
-                y = int(val.strip('Y:'))
+                y = int(val.strip('Y:').split('.')[0])
             elif 'Z' in val:
-                z = int(val.strip('Z:'))
+                z = int(val.strip('Z:').split('.')[0])
             elif 'E' in val:
                 break
         return [x, y, z]
