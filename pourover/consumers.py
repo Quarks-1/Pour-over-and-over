@@ -134,6 +134,7 @@ class MyConsumer(WebsocketConsumer):
 class printer:
     def __init__(self):
         self.ser = serial.Serial("/dev/ttyUSB0", 115200)
+        self.ser.write(str.encode("G0 Z100 F3600\r\n")) # offset to not hit top
         self.ser.write(str.encode("G28 X Y Z\r\n")) # home printer
         self.ser.write(str.encode("G0 X127 Y90 Z220 F3600\r\n")) # move to center
     
