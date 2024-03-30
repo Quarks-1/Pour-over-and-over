@@ -43,7 +43,7 @@ class MyConsumer(WebsocketConsumer):
             return
         
         self.startTime = datetime.now()
-        self.broadcast_message('Successfully connected to printer and Arduino.')
+        self.broadcast_message('Successfully connected to Printer and Arduino.')
         self.broadcast_data()
 
     def disconnect(self, close_code):
@@ -86,6 +86,7 @@ class MyConsumer(WebsocketConsumer):
 
         if action == 'startBrew':
             x, y, z = self.printer.currPos()
+            print(bcolors.OKBLUE + f'Current position: {x}, {y}, {z}' + bcolors.ENDC)
             self.received_start(data)
             return
 
