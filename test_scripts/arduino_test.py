@@ -3,7 +3,7 @@ import serial
 import time 
 arduino = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=.1) 
 def write_read(x):
-    # arduino.reset_input_buffer()
+    arduino.reset_input_buffer()
     arduino.write(bytes(x, 'utf-8'))
     time.sleep(0.05)
     data = arduino.readline() 
