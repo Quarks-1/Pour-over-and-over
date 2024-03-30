@@ -14,11 +14,11 @@ function addStep() {
 function submitSteps() {
     document.getElementById('id_steps').value = JSON.stringify(steps);
     // Add pre wet
-    let pre_wet = document.getElementById('id_pre_wet').value;
+    let pre_wet = document.getElementById('id_pre_wet').checked;
     console.log(pre_wet);
-    // if (pre_wet == '') {
-    //     pre_wet = 0;
-    // }
+    if (pre_wet == true) {
+        steps.unshift(('pre_wet/0/0/0'));
+    }
     // Calculate total water weight
     let total_water = 0;
     for (let i = 0; i < steps.length; i++) {
