@@ -38,7 +38,7 @@ function connectToServer() {
             updateParams(response)
         } else {
             console.log(response)
-            if ("Printer" in response || "Arduino" in response){ 
+            if (response.includes("not connected")) { 
                 console.log('disabling buttons')  
                 disableButtons()
             }
