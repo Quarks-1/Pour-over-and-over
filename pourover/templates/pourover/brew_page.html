@@ -10,6 +10,8 @@
 
 <body>
     <span id="id_profile_id" hidden> {{ id }} </span>
+    <button onclick="window.location.href = '{% url 'home_page' %}'" id='id_change_profile_button'>Change Profile</button>
+    <div id='id_brew_status'>Connecting to printer...</div>
     <div>   
         <div class="brew_profile">
             <span id=''>Profile name: {{profile.name}}</span>

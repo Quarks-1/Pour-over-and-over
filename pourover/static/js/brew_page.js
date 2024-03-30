@@ -31,29 +31,24 @@ function connectToServer() {
 
     // Handle messages received from the server.
     socket.onmessage = function(event) {
+        console.log('message!')
         let response = JSON.parse(event.data)
+        console.log(response)
         if (Array.isArray(response)) {
             updateParams(response)
         } else {
-            displayResponse(response)
+            displayMessage(response)
         }
     }
 }
 
-function displayError(message) {
-    let errorElement = document.getElementById("error")
-    alert(message);
-}
-
 function displayMessage(message) {
-    let errorElement = document.getElementById("message")
-    alert(message)
+    let errorElement = document.getElementById("id_brew_status")
+    errorElement.innerHTML = message
 }
 
 function displayResponse(response) {
-    if ("error" in response) {
-        displayError(response.error)
-    } else if ("message" in response) {
+    if ("message" in response) {
         displayMessage(response.message)
     } else {
         displayMessage("Unknown response")

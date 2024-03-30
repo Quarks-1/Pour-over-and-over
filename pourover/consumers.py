@@ -3,27 +3,13 @@ from asgiref.sync import async_to_sync
 from pourover.models import BrewProfile
 import json, serial, time
 
-# (pour type, water weight, flow rate, agitation level (low, medium, high))
-def parseSteps(steps):
-    parsed = []
-    for step in steps.strip('][').split(','):
-        parsed.append(step.strip('"').split('/'))
-    print(parsed)
-    return parsed
-    
-
-def printError(error_message):
-    print(bcolors.FAIL + '#'*len(error_message))
-    print(bcolors.FAIL + error_message)
-    print('#'*len(error_message) + bcolors.ENDC)
-
-
 class MyConsumer(WebsocketConsumer):
     group_name = 'pourover_group'
     channel_name = 'pourover_channel'
     
     profile = None
     printer = None
+    x, y, z = 0, 0, 0
     steps = []
 
     def connect(self):
@@ -38,6 +24,7 @@ class MyConsumer(WebsocketConsumer):
             self.printer = printer()
         except serial.SerialException:
             printError('WARNING: PRINTER NOT CONNECTED')
+            self.broadcast_error('Printer not connected. Please connect printer and reload page.')
             return
         self.broadcast_data()
 
@@ -45,7 +32,11 @@ class MyConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_discard)(
             self.group_name, self.channel_name
         )
-        self.printer.close()
+        if self.printer is not None:
+            self.printer.close()
+        else:
+            printError('WARNING: PRINTER NOT CONNECTED')
+            return
 
     def receive(self, **kwargs):
         if 'text_data' not in kwargs:
@@ -76,6 +67,7 @@ class MyConsumer(WebsocketConsumer):
             return
 
         if action == 'startBrew':
+            x, y, z = self.printer.currPos()
             self.received_start(data)
             return
 ############# Is there a need for pausing??? ################
@@ -100,6 +92,7 @@ class MyConsumer(WebsocketConsumer):
 
 ################## To be filled in #######################
     def received_start(self, data):
+        
         self.broadcast_data()
     
     def received_pause(self, data):
@@ -123,6 +116,15 @@ class MyConsumer(WebsocketConsumer):
                 'message': ""
             }
         )
+    
+    def broadcast_error(self, error_message):
+        async_to_sync(self.channel_layer.group_send)(
+            self.group_name,
+            {
+                'type': 'broadcast_event',
+                'message': json.dumps(error_message)
+            }
+        )
     def broadcast_event(self, event):
         self.send(text_data=event['message'])
 
@@ -136,15 +138,43 @@ class printer:
     def write(self, command):
         self.ser.write(str.encode(command + "\r\n"))
 
-    def currPos(self):
+    def currPos(self) -> list[int, int, int]:
         self.ser.write(str.encode("M114\r\n"))
         time.sleep(2)
-        return str(self.ser.readline())
+        self.ser.readline()
+        x, y, z = 0, 0, 0
+        for val in self.ser.readline().split(' '):
+            if 'X' in val:
+                x = int(val.strip('X:'))
+            elif 'Y' in val:
+                y = int(val.strip('Y:'))
+            elif 'Z' in val:
+                z = int(val.strip('Z:'))
+            elif 'E' in val:
+                break
+        return [x, y, z]
         
     def close(self):
         self.ser.close()
-        print("Exiting...")
-        
+        print(bcolors.OKGREEN + "Exiting..." + bcolors.ENDC)
+
+# (pour type, water weight, flow rate, agitation level (low, medium, high))
+def parseSteps(steps):
+    parsed = []
+    for step in steps.strip('][').split(','):
+        temp = step.strip('"').split('/')
+        temp[1] = int(temp[1])
+        temp[2] = int(temp[2])
+        parsed.append(temp)
+    print(parsed)
+    return parsed
+    
+
+def printError(error_message):
+    print(bcolors.FAIL + '#'*len(error_message))
+    print(bcolors.FAIL + error_message)
+    print('#'*len(error_message) + bcolors.ENDC)
+
         
 class bcolors:
     HEADER = '\033[95m'
