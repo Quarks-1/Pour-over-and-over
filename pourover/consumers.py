@@ -3,7 +3,7 @@ from asgiref.sync import async_to_sync
 from pourover.models import BrewProfile
 import json, serial, time
 from datetime import datetime, timedelta
-
+# (pour type, water weight, flow rate, agitation level (low, medium, high))
 class MyConsumer(WebsocketConsumer):
     group_name = 'pourover_group'
     channel_name = 'pourover_channel'
@@ -142,6 +142,7 @@ class MyConsumer(WebsocketConsumer):
 
 class printer:
     def __init__(self):
+        self.center = [127, 115, 0]
         self.ser = serial.Serial("/dev/ttyUSB0", 115200)
         # home printer
         self.ser.write(str.encode("G28 X Y\r\n"))

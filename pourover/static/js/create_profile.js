@@ -13,6 +13,12 @@ function addStep() {
 // Passes JS data into Django form input fields
 function submitSteps() {
     document.getElementById('id_steps').value = JSON.stringify(steps);
+    // Add pre wet
+    let pre_wet = document.getElementById('id_pre_wet').value;
+    console.log(pre_wet);
+    // if (pre_wet == '') {
+    //     pre_wet = 0;
+    // }
     // Calculate total water weight
     let total_water = 0;
     for (let i = 0; i < steps.length; i++) {

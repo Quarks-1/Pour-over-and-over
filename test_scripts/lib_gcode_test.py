@@ -7,8 +7,8 @@ time.sleep(2)
 # ser.write(str.encode("G28\r\n"))
 command_dict = {
     'home': 'G28 X Y',
-    'abs_center' : 'G0 X127 Y90 Z220 F3600',
-    'center' : 'G0 X127 Y90 F3600',
+    'abs_center' : 'G0 X127 Y115 Z220 F3600',
+    'center' : 'G0 X127 Y115 F3600',
     'pos': 'M114',
 }
 recording = []
