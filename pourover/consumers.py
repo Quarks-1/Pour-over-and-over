@@ -3,6 +3,20 @@ from asgiref.sync import async_to_sync
 from pourover.models import BrewProfile
 import json, serial, time
 
+# (pour type, water weight, flow rate, agitation level (low, medium, high))
+def parseSteps(steps):
+    parsed = []
+    for step in steps.strip('][').split(','):
+        parsed.append(step.strip('"').split('/'))
+    print(parsed)
+    return parsed
+    
+
+def printError(error_message):
+    print(bcolors.FAIL + '#'*len(error_message))
+    print(bcolors.FAIL + error_message)
+    print('#'*len(error_message) + bcolors.ENDC)
+
 
 class MyConsumer(WebsocketConsumer):
     group_name = 'pourover_group'
@@ -10,6 +24,7 @@ class MyConsumer(WebsocketConsumer):
     
     profile = None
     printer = None
+    steps = []
 
     def connect(self):
         async_to_sync(self.channel_layer.group_add)(
@@ -18,7 +33,12 @@ class MyConsumer(WebsocketConsumer):
 
         self.accept()
 
-        self.printer = printer()
+        # Connect to printer
+        try:
+            self.printer = printer()
+        except serial.SerialException:
+            printError('WARNING: PRINTER NOT CONNECTED')
+            return
         self.broadcast_data()
 
     def disconnect(self, close_code):
@@ -29,28 +49,29 @@ class MyConsumer(WebsocketConsumer):
 
     def receive(self, **kwargs):
         if 'text_data' not in kwargs:
-            self.send_error('you must send text_data')
+            printError('You must send text_data')
             return
 
         try:
             data = json.loads(kwargs['text_data'])
         except json.JSONDecoder:
-            self.send_error('invalid JSON sent to server')
+            printError('invalid JSON sent to server')
             return
         print(data)
         if 'command' not in data:
-            self.send_error('command property not sent in JSON')
+            printError('command property not sent in JSON')
             return
 
         action = data['command']
         
         if action == 'profileSelect':
             if 'profile' not in data:
-                self.send_error('profile property not sent in JSON')
+                printError('profile property not sent in JSON')
                 return
             
             self.profile = BrewProfile.objects.get(id=data['profile'])
             print(f'Profile selected: {self.profile}')
+            steps = parseSteps(self.profile.steps)
             self.broadcast_data()
             return
 
@@ -75,7 +96,7 @@ class MyConsumer(WebsocketConsumer):
             self.received_restart(data)
             return
         
-        self.send_error(f'Invalid action property: "{action}"')
+        printError(f'Invalid action property: "{action}"')
 
 ################## To be filled in #######################
     def received_start(self, data):
@@ -93,9 +114,6 @@ class MyConsumer(WebsocketConsumer):
     def received_restart(self, data):
         self.broadcast_data()
 ################################################
-    def send_error(self, error_message):
-        print(f'Error: {error_message}')
-        self.send(text_data=json.dumps({'error': error_message}))
 
     def broadcast_data(self):
         async_to_sync(self.channel_layer.group_send)(
@@ -127,3 +145,14 @@ class printer:
         self.ser.close()
         print("Exiting...")
         
+        
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
