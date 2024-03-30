@@ -2,6 +2,7 @@ from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 from pourover.models import BrewProfile
 import json, serial, time
+from datetime import datetime, timedelta
 
 class MyConsumer(WebsocketConsumer):
     group_name = 'pourover_group'
@@ -11,6 +12,11 @@ class MyConsumer(WebsocketConsumer):
     printer = None
     x, y, z = 0, 0, 0
     steps = []
+    stepsTimes = []
+    startTime = None
+    
+    def getTime(self):
+        return (datetime.now() - self.startTime).total_seconds()
 
     def connect(self):
         async_to_sync(self.channel_layer.group_add)(
@@ -26,6 +32,8 @@ class MyConsumer(WebsocketConsumer):
             printError('WARNING: PRINTER NOT CONNECTED')
             self.broadcast_error('Printer not connected. Please connect printer and reload page.')
             return
+        
+        self.startTime = datetime.now()
         self.broadcast_data()
 
     def disconnect(self, close_code):
@@ -79,16 +87,6 @@ class MyConsumer(WebsocketConsumer):
             self.received_restart(data)
             return
 
-############# Is there a need for pausing??? ################
-        if action == 'pauseBrew':
-            self.received_pause(data)
-            return
-
-        if action == 'resumeBrew':
-            self.received_resume(data)
-            return
-
-#############################################################
         
         printError(f'Invalid action property: "{action}"')
 
