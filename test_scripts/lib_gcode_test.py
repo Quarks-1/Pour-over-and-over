@@ -1,7 +1,7 @@
 import serial
 import time
 
-ser = serial.Serial("/dev/ttyUSB0", 115200)
+ser = serial.Serial("/dev/ttyUSB0", 115200, timeout=1)
 time.sleep(2)
 # ser.write(str.encode("G28\r\n"))
 command_dict = {
@@ -36,9 +36,10 @@ while True:
     
     ser.write(str.encode(input_command + "\r\n"))
     time.sleep(2)
+    ser.flushInput()
     cc=str(ser.readline())
-    while cc == "b'echo:busy: processing\n'" or cc == b'ok\n':
-        cc=str(ser.readline())
+    # while cc == "b'echo:busy: processing\n'" or cc == b'ok\n':
+    #     cc=str(ser.readline())
     print(cc)
     
 
