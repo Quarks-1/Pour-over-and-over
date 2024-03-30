@@ -154,7 +154,6 @@ class printer:
     def currPos(self) -> list[int, int, int]:
         self.ser.reset_input_buffer()
         self.ser.write(str.encode("M114\r\n"))
-        self.ser.readline()
         x, y, z = 0, 0, 0
         for val in self.ser.readline().decode('utf-8').split(' '):
             if 'X' in val:
