@@ -156,7 +156,7 @@ class printer:
         self.ser.write(str.encode("M114\r\n"))
         self.ser.readline()
         x, y, z = 0, 0, 0
-        for val in self.ser.readline().split(' '):
+        for val in self.ser.readline().decode('utf-8').split(' '):
             if 'X' in val:
                 x = int(val.strip('X:'))
             elif 'Y' in val:
