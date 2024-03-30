@@ -7,4 +7,6 @@ while True:
     # arduino.reset_input_buffer()
     time.sleep(0.05)
     data = arduino.readline() 
+    while data == b'':
+        data = arduino.readline()
     print(data) # printing the value 
