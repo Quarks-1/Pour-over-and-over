@@ -9,4 +9,4 @@ while True:
     data = arduino.readline() 
     # while data == b'':
     #     data = arduino.readline()
-    print(data) # printing the value 
+    print(data.decode('utf-8')) # printing the value 
