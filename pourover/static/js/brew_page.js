@@ -37,7 +37,11 @@ function connectToServer() {
         if (Array.isArray(response)) {
             updateParams(response)
         } else {
+            if ("printer" in response || "arduino" in response){   
+                disableButtons()
+            }
             displayMessage(response)
+                
         }
     }
 }
@@ -45,14 +49,6 @@ function connectToServer() {
 function displayMessage(message) {
     let errorElement = document.getElementById("id_brew_status")
     errorElement.innerHTML = message
-}
-
-function displayResponse(response) {
-    if ("message" in response) {
-        displayMessage(response.message)
-    } else {
-        displayMessage("Unknown response")
-    }
 }
 
 function updateParams(data) {
@@ -74,17 +70,7 @@ function startBrew() {
     stopBrewButton.disabled = false
     let brewButton = document.getElementById("id_start_brew_button")
     brewButton.disabled = true
-    let pauseBrewButton = document.getElementById("id_pause_brew_button")
-    pauseBrewButton.disabled = false
     socket.send(JSON.stringify({"command": "startBrew"}))
-}
-
-function pauseBrew() {
-    let pauseBrewButton = document.getElementById("id_pause_brew_button")
-    pauseBrewButton.disabled = true
-    let brewButton = document.getElementById("id_start_brew_button")
-    brewButton.disabled = false
-    socket.send(JSON.stringify({"command": "pauseBrew"}))
 }
 
 function stopBrew() {
@@ -92,8 +78,6 @@ function stopBrew() {
     stopBrewButton.disabled = true
     let brewButton = document.getElementById("id_start_brew_button")
     brewButton.disabled = false
-    let pauseBrewButton = document.getElementById("id_pause_brew_button")
-    pauseBrewButton.disabled = true
     socket.send(JSON.stringify({"command": "stopBrew"}))
 }
 
@@ -102,7 +86,12 @@ function restartBrew() {
     stopBrewButton.disabled = false
     let brewButton = document.getElementById("id_start_brew_button")
     brewButton.disabled = true
-    let pauseBrewButton = document.getElementById("id_pause_brew_button")
-    pauseBrewButton.disabled = false
     socket.send(JSON.stringify({"command": "restartBrew"}))
+}
+
+function disableButtons() {
+    let stopBrewButton = document.getElementById("id_stop_brew_button")
+    stopBrewButton.disabled = true
+    let brewButton = document.getElementById("id_start_brew_button")
+    brewButton.disabled = true
 }
