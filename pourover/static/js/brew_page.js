@@ -37,6 +37,7 @@ function connectToServer() {
         if (Array.isArray(response)) {
             updateParams(response)
         } else {
+            console.log(response)
             if ("printer" in response || "arduino" in response){   
                 disableButtons()
             }
@@ -94,4 +95,6 @@ function disableButtons() {
     stopBrewButton.disabled = true
     let brewButton = document.getElementById("id_start_brew_button")
     brewButton.disabled = true
+    let restartBrewButton = document.getElementById("id_restart_brew_button")
+    restartBrewButton.disabled = true
 }
