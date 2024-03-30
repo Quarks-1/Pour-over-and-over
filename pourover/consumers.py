@@ -9,6 +9,7 @@ class MyConsumer(WebsocketConsumer):
     channel_name = 'pourover_channel'
     
     profile = None
+    printer = None
 
     def connect(self):
         async_to_sync(self.channel_layer.group_add)(
@@ -17,12 +18,14 @@ class MyConsumer(WebsocketConsumer):
 
         self.accept()
 
+        self.printer = printer()
         self.broadcast_data()
 
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
             self.group_name, self.channel_name
         )
+        self.printer.close()
 
     def receive(self, **kwargs):
         if 'text_data' not in kwargs:
@@ -45,6 +48,7 @@ class MyConsumer(WebsocketConsumer):
             if 'profile' not in data:
                 self.send_error('profile property not sent in JSON')
                 return
+            
             self.profile = BrewProfile.objects.get(id=data['profile'])
             print(f'Profile selected: {self.profile}')
             self.broadcast_data()
@@ -53,7 +57,7 @@ class MyConsumer(WebsocketConsumer):
         if action == 'startBrew':
             self.received_start(data)
             return
-
+############# Is there a need for pausing??? ################
         if action == 'pauseBrew':
             self.received_pause(data)
             return
@@ -61,18 +65,19 @@ class MyConsumer(WebsocketConsumer):
         if action == 'resumeBrew':
             self.received_resume(data)
             return
+
+#############################################################
         
         if action == "stopBrew":
             self.received_stop(data)
             return
         if action == "restartBrew":
-            self.received_start(data)
+            self.received_restart(data)
             return
         
         self.send_error(f'Invalid action property: "{action}"')
 
-    # To be filled in 
-################################################
+################## To be filled in #######################
     def received_start(self, data):
         self.broadcast_data()
     
@@ -102,3 +107,23 @@ class MyConsumer(WebsocketConsumer):
         )
     def broadcast_event(self, event):
         self.send(text_data=event['message'])
+
+
+class printer:
+    def __init__(self):
+        self.ser = serial.Serial("/dev/ttyUSB0", 115200)
+        self.ser.write(str.encode("G28 X Y Z\r\n")) # home printer
+        self.ser.write(str.encode("G0 X127 Y90 Z220 F3600\r\n")) # move to center
+    
+    def write(self, command):
+        self.ser.write(str.encode(command + "\r\n"))
+
+    def currPos(self):
+        self.ser.write(str.encode("M114\r\n"))
+        time.sleep(2)
+        return str(self.ser.readline())
+        
+    def close(self):
+        self.ser.close()
+        print("Exiting...")
+        
