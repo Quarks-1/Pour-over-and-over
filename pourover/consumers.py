@@ -10,6 +10,8 @@ class MyConsumer(WebsocketConsumer):
     
     profile = None
     printer = None
+    arduino = None
+    
     x, y, z = 0, 0, 0
     steps = []
     stepsTimes = []
@@ -31,6 +33,13 @@ class MyConsumer(WebsocketConsumer):
         except serial.SerialException:
             printError('WARNING: PRINTER NOT CONNECTED')
             self.broadcast_error('Printer not connected. Please connect printer and reload page.')
+            return
+    
+        try:
+            self.arduino = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=.1) 
+        except serial.SerialException:
+            printError('WARNING: ARDUINO NOT CONNECTED')
+            self.broadcast_error('Arduino not connected. Please connect Arduino and reload page.')
             return
         
         self.startTime = datetime.now()
