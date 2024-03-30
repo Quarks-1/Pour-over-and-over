@@ -36,7 +36,7 @@ while True:
     
     ser.write(str.encode(input_command + "\r\n"))
     time.sleep(2)
-    ser.flushInput()
+    ser.reset_input_buffer()
     cc=str(ser.readline())
     # while cc == "b'echo:busy: processing\n'" or cc == b'ok\n':
     #     cc=str(ser.readline())
