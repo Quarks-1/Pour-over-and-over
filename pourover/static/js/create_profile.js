@@ -12,6 +12,7 @@ function addStep() {
 
 // Passes JS data into Django form input fields
 function submitSteps() {
+    document.getElementById('id_steps').value = JSON.stringify('');
     document.getElementById('id_steps').value = JSON.stringify(steps);
     // Add pre wet
     let pre_wet = document.getElementById('id_pre_wet').checked;
