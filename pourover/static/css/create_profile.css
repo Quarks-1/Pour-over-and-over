@@ -1,0 +1,175 @@
+body {
+    background-color: #eeb37f; /* This is actually more of a brown color. */
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+.profile_form {
+    padding: 5px;
+    font-size: 25px;
+    border-width: 5px;
+    border-color: #7d410a;
+    background-color: #6b6b6b;
+    color: #ffffff;
+    border-style: solid;
+    border-radius: 50px;
+    box-shadow: 3px 4px 5px rgba(66,66,66,.50);
+    text-shadow: 0px 0px 5px rgba(66,66,66,.75);
+}
+
+.remove_form {
+    width: 100%;
+    margin: -10px;
+    text-align: center;
+    align-items: center;
+}
+.remove_step_label {
+    font-size: 30px;
+    color: #000000;
+    text-align: center;
+}
+
+.profile_form:focus {
+    outline:none;
+}
+
+label {
+    font-size: 20px;
+    color: #000000;
+    text-align: left;
+}
+.step-title {
+    font-size: 40px;
+    color: #000000;
+    text-align: center;
+    align-items: center;
+}
+.label_arrow {
+    position: relative;
+    display: inline-block;
+    padding: 15px 20px; /* Adjust padding as needed */
+    background: #7d410a; /* Updated background color of the label */
+    color: #fff; /* Text color */
+    border-radius: 8px; /* Rounded corners of the label */
+    overflow: hidden; /* Ensures the arrow doesn't overflow the label */
+}
+
+.container {
+    display: flex; /* Use flexbox for layout */
+}
+.box {
+    width: 50%; /* Each box takes up half the width of the container */
+    border: 3px dashed black; /* Just for visualization */
+    border-radius: 5%;
+    padding: 15px; /* Add some padding for spacing */
+    margin: 10px; /* Add some margin for spacing */
+}
+
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+}
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+}
+  
+  .slider.round:before {
+    border-radius: 50%;
+}
+
+  .submit_div {
+    text-align: center;
+    padding: 10px;
+}
+.steps_box {
+    font-size: 20px;
+}
+
+.create-form {
+    width: 100%; /* Make the form span the full width of its container */
+}
+.create-button {
+    margin: 40px 0px 0px 0px; /* Add some margin for spacing */
+}
+button {
+    -webkit-border-radius: 28;
+    -moz-border-radius: 28;
+    border-radius: 28px;
+    color: #ffffff;
+    font-size: 20px;
+    background: #7d410a;
+    padding: 10px 10px 10px 10px;
+    text-decoration: none;
+    width: 100%;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+
+}
+button:hover {
+    background: #a6642b;
+    text-decoration: none;
+}
+
+.submit_span {
+    text-align: center;
+    font-size: 30px;
+}
+
+.rinse_div {
+    text-align: center;
+    font-size: 30px;
+}
+
+.rinse-span {
+    font-size: 30px;
+    padding-top: 10px;
+}

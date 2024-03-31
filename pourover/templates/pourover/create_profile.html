@@ -9,115 +9,127 @@
 </head>
 
 <body>
-    <div>   
-        <form method="post" action="{% url 'create' %}">
-            {% csrf_token %}
-            <table>
-                <tr>
-                    <td>{{ form.name.label_tag }}</td>
-                    <td>{{ form.name }}</td>
-                </tr>
-                <tr>
-                    <td>{{ form.description.label_tag }}</td>
-                    <td>{{ form.description }}</td>
-                </tr>
-                <tr>
-                    <td>{{ form.grind_size.label_tag }}</td>
-                    <td>{{ form.grind_size }}</td>
-                </tr>
-                <tr>
-                    <td>{{ form.grind_weight.label_tag }}</td>
-                    <td>{{ form.grind_weight }} (grams)</td>
-                </tr>
-                <tr>
-                    <td>{{ form.total_water_weight.label_tag }} </td>
-                    <td>{{ form.total_water_weight }} (grams)</td>
-                </tr>
-                <tr>
-                    <td>{{ form.water_temp.label_tag }} </td>
-                    <td>{{ form.water_temp }} (°F)</td>
-                </tr>
-                <tr>
-                    <td>{{ form.brew_method.label_tag }}</td>
-                    <td>{{ form.brew_method }}</td>
-                </tr>
-                <tr>
-                    <td>{{ form.brew_device.label_tag }}</td>
-                    <td>{{ form.brew_device }}</td>
-                </tr>
-                <tr>
-                    <td>{{ form.steps.label_tag }}</td>
-                    <td>{{ form.steps }}</td>
-                </tr>
-                <tr>
-                    <td>{{ form.rating.label_tag }}</td>
-                    <td>{{ form.rating }}</td>
-                </tr>
-            </table>
-            <button type="submit">Create</button>
-        </form>        
+    <div class='container'>
+        <div class='box'>   
+            <form method="post" action="{% url 'create' %}" class='create-form'>
+                {% csrf_token %}
+                <table>
+                    <tr>
+                        <td>{{ form.name.label_tag }}</td>
+                        <td>{{ form.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.description.label_tag }}</td>
+                        <td>{{ form.description }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.grind_size.label_tag }}</td>
+                        <td>{{ form.grind_size }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.grind_weight.label_tag }}</td>
+                        <td>{{ form.grind_weight }} (grams)</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.total_water_weight.label_tag }} </td>
+                        <td>{{ form.total_water_weight }} (grams)</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.water_temp.label_tag }} </td>
+                        <td>{{ form.water_temp }} (°F)</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.brew_method.label_tag }}</td>
+                        <td>{{ form.brew_method }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.brew_device.label_tag }}</td>
+                        <td>{{ form.brew_device }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.steps.label_tag }}</td>
+                        <td>{{ form.steps }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.rating.label_tag }}</td>
+                        <td>{{ form.rating }}</td>
+                    </tr>
+                </table>
+                <button type="submit" class='create-button'>Create</button>
+            </form>        
+        </div>
+        <div class='box'>
+            <div class='step-title'>
+                <span >Step creator</span>
+            </div>
+            <form id="stepForm">
+                <table>
+                    <tr>
+                        <td><label for="pourType" class='label_arrow'>Pour Type:</label></td>
+                        <td>
+                            <select name="stepVals" id="pourType" class='profile_form'>
+                                <option value="Center">Center</option>
+                                <option value="Inner circle">Inner Circle</option>
+                                <option value="Outer circle">Outer Circle</option>
+                                <option value="Edge">Edge</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="waterWeight" class='label_arrow'>Water weight (g):</label></td>
+                        <td><input type="text" id="waterWeight" name="stepVals" class='profile_form'></td>
+                    </tr>
+                    <tr>
+                        <td><label for="flowRate" class='label_arrow'>Flow Rate (g/s):</label></td>
+                        <td><input type="text" id="flowRate" name="stepVals" class='profile_form'></td>
+                    </tr>
+                    <tr>
+                        <td><label for="agitationLevel" class='label_arrow'>Agitation Level:</label></td>
+                        <td>
+                            <select name="stepVals" id="agitationLevel" class='profile_form'>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <button id='id_addStep' type="button" onclick="addStep()">Add</button>
+            </form>
+            <div class='container steps_box'> 
+                <div class='box'>
+                    <span class='remove_step_label'>Current steps:</span>
+                    <table class="steps_table">
+                        <div id="currSteps"></div>
+                    </table>
+                </div>
+                <div class='box remove_steps'>
+                    <span class='remove_step_label'>Remove steps</span>
+                    <form id="removeStepForm">
+                        <table>
+                            <tr>
+                                <td><label for="removeStep_num">Step number:</label></td>
+                                <td><input type="number" id="removeStep_input" name="removeStep_num" class='profile_form remove_form'></td>
+                            </tr>
+                        </table>
+                        <button id='id_removeStep' type="button" onclick="removeStep()">Remove</button>
+                </div>
+            </div>
+            <div class='rinse_div'>
+                <label class='switch'>
+                    <input type="checkbox" id="id_pre_wet" name="pre_wet" value="pre_wet">
+                    <span class="slider round"></span>
+                </label>
+                <span class='rinse-span'>Rinse filter?</span>
+            </div>
+            <div class='submit_div'>
+                <span class='submit_span'>Click submit once finished adding steps</span><br>
+                <button id='id_submitSteps' type="button" onclick="submitSteps()">Submit</button>
+            </div>        
+        </div>
+        
     </div>
-    <div>
-        <span>Use the form below to add brew steps</span>
-        <span>Water weight will be autofilled from sum</span>
-        <form id="stepForm">
-            <table>
-                <tr>
-                    <td><label for="pourType">Pour Type:</label></td>
-                    <td>
-                        <select name="stepVals" id="pourType">
-                            <option value="Center">Center</option>
-                            <option value="Inner circle">Inner Circle</option>
-                            <option value="Outer circle">Outer Circle</option>
-                            <option value="Edge">Edge</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label for="waterWeight">Water weight (g):</label></td>
-                    <td><input type="text" id="waterWeight" name="stepVals"></td>
-                </tr>
-                <tr>
-                    <td><label for="flowRate">Flow Rate (g/s):</label></td>
-                    <td><input type="text" id="flowRate" name="stepVals"></td>
-                </tr>
-                <tr>
-                    <td><label for="agitationLevel">Agitation Level:</label></td>
-                    <td>
-                        <select name="stepVals" id="agitationLevel">
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
-            <button id='id_addStep' type="button" onclick="addStep()">Add</button>
-        </form>        
-    </div>
-    <div>
-        <input type="checkbox" id="id_pre_wet" name="pre_wet" value="pre_wet">
-        <label for="pre_wet"> Rinse filter?</label><br>
-    </div>
-    <div>
-        <span>Current steps:</span>
-        <div id="currSteps"></div><br>
-    </div>
-    <div>
-        <span>Remove steps:</span>
-        <form id="removeStepForm">
-            <table>
-                <tr>
-                    <td><label for="removeStep_num">Step number:</label></td>
-                    <td><input type="number" id="removeStep_input" name="removeStep_num"></td>
-                </tr>
-            </table>
-            <button id='id_removeStep' type="button" onclick="removeStep()">Remove</button>
-    </div>
-    <div>
-        <span>Click below once finished adding steps</span>
-        <button id='id_submitSteps' type="button" onclick="submitSteps()">Submit</button>
-    </div>
+    
 </body>
 <!-- [(center pour, 60g, 12g/s, high) -->
 </html>

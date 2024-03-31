@@ -12,14 +12,14 @@ function addStep() {
 
 // Passes JS data into Django form input fields
 function submitSteps() {
-    document.getElementById('id_steps').value = JSON.stringify(steps);
     // Add pre wet
     let pre_wet = document.getElementById('id_pre_wet').checked;
-    console.log(pre_wet);
     if (pre_wet == true) {
         steps.unshift(('pre_wet/0/0/0'));
         prettySteps.unshift(['pre_wet', 0, 0, 0]);
     }
+    // Add steps to form
+    document.getElementById('id_steps').value = JSON.stringify(steps);
     // Calculate total water weight
     let total_water = 0;
     for (let i = 0; i < steps.length; i++) {
@@ -32,13 +32,18 @@ function submitSteps() {
 };
 
 function renderSteps() {
-    document.getElementById('currSteps').innerHTML = '';
+    const currStepsElement = document.getElementById('currSteps');
+    // Clear existing steps
+    currStepsElement.innerHTML = '';
+    
     for (let i = 0; i < steps.length; i++) {
-        document.getElementById('currSteps').innerHTML += (i+1) + ': (' + prettySteps[i] + ')' + "<br>";
+        // Create a div for each step and append it
+        const stepDiv = document.createElement('div');
+        stepDiv.innerHTML = (i + 1) + ': (' + prettySteps[i] + ')';
+        currStepsElement.appendChild(stepDiv);
     }
-    document.getElementById('currSteps').innerHTML = document.getElementById('currSteps').innerHTML.slice(0, -1);
-
 }
+
 
 function removeStep() {
     step_number = document.getElementById('removeStep_input').value;
@@ -50,8 +55,3 @@ function removeStep() {
     prettySteps.pop(step_number-1);
     renderSteps();
 };
-
-
-// document.getElementById('removeStep_input').addEventListener('keydown', function(k){
-//     if(k.keyCode == 13) return false;
-// });

@@ -20,9 +20,20 @@ def create_profile(request):
     print(request.POST)
     form = BrewProfileForm(request.POST)
     if not form.is_valid():
+        errors = form.errors.as_data()
+        invalid_fields = []
+        for field, error in errors.items():
+            invalid_fields.append((field, error[0].message))
+        print("Invalid fields:")
+        for field, message in invalid_fields:
+            print(f"{field}: {message}")
+          
+            
         context = {'form': form}
         return render(request, 'pourover/create_profile.html', context)
+
     brew_profile = form.save(commit=False)  
     brew_profile.creation_date = timezone.now()
+    print(brew_profile)
     brew_profile.save()
     return redirect('home_page')
