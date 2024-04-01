@@ -21,6 +21,7 @@ from pourover import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home_page, name='home_page'),
+    path('home/<str:sort_order>/<str:order>', views.home_page_sorted, name='home_page_sorted'),
     path('brew_page/<int:id>', views.brew_page, name='brew_page'),
     path('create_profile', views.create_profile, name='create'),
 

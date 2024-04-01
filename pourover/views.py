@@ -9,6 +9,12 @@ from django.utils import timezone
 def home_page(request):
     return render(request, 'pourover/home_page.html', {'profiles': BrewProfile.objects.all()})
 
+def home_page_sorted(request, sort_order, order):
+    if order == 'asc':
+        return render(request, 'pourover/home_page.html', {'profiles': BrewProfile.objects.order_by(sort_order)})
+    else:
+        return render(request, 'pourover/home_page.html', {'profiles': BrewProfile.objects.order_by(f'-{sort_order}')})    
+
 def brew_page(request, id):
     profile = get_object_or_404(BrewProfile, id=id)
     return render(request, 'pourover/brew_page.html', {'profile': profile, 'id': id})

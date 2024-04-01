@@ -5,29 +5,86 @@
     <title>Pour-over-and-over</title>
     {% load static %}
     <link href="{% static 'css/home_page.css' %}" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="{% static 'js/home_page.js' %}"></script>
 </head>
 
 <body>
-    <div>   
-        <div>This is the home page!</div>
-        <button onclick="window.location.href = '{% url 'create' %}'" id='id_create_profile_button'>Create profile</button>
-        <h3>Current brew profiles:</h3>
-        {% for profile in profiles %}
-            <div class="brew_profile">
-                <a href="{% url 'brew_page' profile.id %}" id="id_brew_profile_{{profile.id}}">
-                Click here to brew me!
-                </a>
-                <span id=''>Profile name: {{profile.name}}</span>
-                <span id='' class=''>Description: {{profile.description}}</span>
-                <span id='' class=''>Rating: {{profile.rating}} / 10</span>
-                <span id='' class=''>Coffee weight: {{profile.grind_weight}}</span>
-                <span id='' class=''>Water weight: {{profile.water_weight}}</span>
-                <span id='' class=''>Water temperature: {{profile.water_temp}}</span>
-                <span id='' class=''>Brew device: {{profile.brew_device}}</span>
-                <span id='' class=''>Brew Method: {{profile.brew_method}}</span>
-            </div>
-        {% endfor %}
+    <div class='welcome'>
+        <h1>Welcome to Pour-over-and-over!</h1>
     </div>
+    <div>
+        <button onclick="playMusic()" class='create_profile_button' id='id_play_music'>Play music</button>   
+        <button onclick="window.location.href = '{% url 'create' %}'" class ='create_profile_button' id='id_create_profile_button'>Create new profile</button>
+        <h1 class='title'>Current brew profiles</h1>
+        
+        <table>
+            <tr>
+                <th>Profile name</th>
+                <th>Description</th>
+                <th>Rating</th>
+                <th>Coffee weight</th>
+                <th>Water weight</th>
+                <th>Water temperature</th>
+                <th>Brew device</th>
+                <th>Brew Method</th>
+                <th rowspan='2'>Actions</th>
+            </tr>
+            <tr>
+                <th>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='name' order='asc' %}'" class='id_order_button'>▲</button>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='name' order='desc' %}'" class='id_order_button'>▼</button>
+                </th>
+                <th>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='description' order='asc' %}'" class='id_order_button'>▲</button>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='description' order='desc' %}'" class='id_order_button'>▼</button>
+                </th>
+                <th>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='rating' order='asc' %}'" class='id_order_button'>▲</button>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='rating' order='desc' %}'" class='id_order_button'>▼</button>
+                </th>
+                <th>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='grind_weight' order='asc' %}'" class='id_order_button'>▲</button>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='grind_weight' order='desc' %}'" class='id_order_button'>▼</button>
+                </th>
+                <th>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='total_water_weight' order='asc' %}'" class='id_order_button'>▲</button>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='total_water_weight' order='desc' %}'" class='id_order_button'>▼</button>
+                </th>
+                <th>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='water_temp' order='asc' %}'" class='id_order_button'>▲</button>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='water_temp' order='desc' %}'" class='id_order_button'>▼</button>
+                </th>
+                <th>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='brew_device' order='asc' %}'" class='id_order_button'>▲</button>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='brew_device' order='desc' %}'" class='id_order_button'>▼</button>
+                </th>
+                <th>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='brew_method' order='asc' %}'" class='id_order_button'>▲</button>
+                    <button onclick="window.location.href = '{% url 'home_page_sorted' sort_order='brew_method' order='desc' %}'" class='id_order_button'>▼</button>
+                </th>
+            </tr>
+            {% for profile in profiles %}
+                <tr>
+                    <td>{{profile.name}}</td>
+                    <td>{{profile.description}}</td>
+                    <td>{{profile.rating}} / 10</td>
+                    <td>{{profile.grind_weight}}</td>
+                    <td>{{profile.total_water_weight}}</td>
+                    <td>{{profile.water_temp}}</td>
+                    <td>{{profile.brew_device}}</td>
+                    <td>{{profile.brew_method}}</td>
+                    <td>
+                        <button onclick="window.location.href = '{% url 'brew_page' profile.id %}'" class='create_profile_button' id="id_brew_profile_{{profile.id}}">
+                            Click here to brew me!
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <audio id="myAudio" style="display:none;">
+        <source src="{% static 'mp3/coffee_shop.mp3' %}" type="audio/mpeg">
+    </audio>
 </body>
 
 </html>
