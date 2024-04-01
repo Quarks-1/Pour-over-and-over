@@ -3,6 +3,8 @@ from asgiref.sync import async_to_sync
 from pourover.models import BrewProfile
 import json, serial, time
 from datetime import datetime, timedelta
+import threading
+
 # (pour type, water weight, flow rate, agitation level (low, medium, high))
 class MyConsumer(WebsocketConsumer):
     group_name = 'pourover_group'
@@ -16,6 +18,7 @@ class MyConsumer(WebsocketConsumer):
     steps = []
     stepsTimes = []
     startTime = None
+    dataThread = None
     
     def getTime(self):
         return (datetime.now() - self.startTime).total_seconds()
@@ -41,6 +44,9 @@ class MyConsumer(WebsocketConsumer):
             printError('WARNING: ARDUINO NOT CONNECTED')
             self.broadcast_message('Arduino not connected. Please connect Arduino and reload page.')
             return
+        
+        self.dataThread = threading.Thread(target=self.get_arduino_feed)
+        self.dataThread.start()
         
         self.startTime = datetime.now()
         self.broadcast_message('Successfully connected to Printer and Arduino.')
@@ -119,12 +125,12 @@ class MyConsumer(WebsocketConsumer):
         self.broadcast_data()
 ################################################
 
-    def broadcast_data(self):
+    def broadcast_data(self, data):
         async_to_sync(self.channel_layer.group_send)(
             self.group_name,
             {
                 'type': 'broadcast_event',
-                'message': ""
+                'message': json.dumps(data)
             }
         )
     
@@ -171,6 +177,32 @@ class printer:
     def close(self):
         self.ser.close()
         print(bcolors.OKGREEN + "Exiting..." + bcolors.ENDC)
+
+    def get_arduino_feed(self):
+        while True:
+            self.arduino.reset_input_buffer()
+            time.sleep(0.05)
+            data = self.arduino.readline() 
+            decoded_str = data.decode('utf-8')
+            if decoded_str == '':
+                continue
+            # Strip whitespace and newlines
+            clean_str = decoded_str.strip()
+
+            # Split the string based on '/'
+            numbers = clean_str.split('/')
+
+            # Convert strings to floats and perform division
+            result = (float(numbers[0]), float(numbers[1]))
+            print(result)
+            # Print the result
+            data_dict = {
+                'weight': result[0],
+                'temp': result[1],
+            }
+            self.broadcast_data(data_dict)
+    
+
 
 # (pour type, water weight, flow rate, agitation level (low, medium, high))
 def parseSteps(steps):
