@@ -45,12 +45,11 @@ class MyConsumer(WebsocketConsumer):
             self.broadcast_message('Arduino not connected. Please connect Arduino and reload page.')
             return
         
-        self.dataThread = threading.Thread(target=MyConsumer.get_arduino_feed())
+        self.dataThread = threading.Thread(target=self.get_arduino_feed())
         self.dataThread.start()
         
         self.startTime = datetime.now()
         self.broadcast_message('Successfully connected to Printer and Arduino.')
-        self.broadcast_data()
 
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
@@ -87,7 +86,6 @@ class MyConsumer(WebsocketConsumer):
             self.profile = BrewProfile.objects.get(id=data['profile'])
             print(f'Profile selected: {self.profile}')
             steps = parseSteps(self.profile.steps)
-            self.broadcast_data()
             return
 
         if action == 'startBrew':
@@ -109,19 +107,23 @@ class MyConsumer(WebsocketConsumer):
 
 ################## To be filled in #######################
     def received_start(self, data):
-        
+        return
         self.broadcast_data()
     
     def received_pause(self, data):
+        return
         self.broadcast_data()
     
     def received_resume(self, data):
+        return
         self.broadcast_data()
         
     def received_stop(self, data):
+        return
         self.broadcast_data()
         
     def received_restart(self, data):
+        return
         self.broadcast_data()
 ################################################
 
