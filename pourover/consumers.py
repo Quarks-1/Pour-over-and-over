@@ -144,6 +144,30 @@ class MyConsumer(WebsocketConsumer):
         )
     def broadcast_event(self, event):
         self.send(text_data=event['message'])
+    
+    def get_arduino_feed(self):
+        while True:
+            self.arduino.reset_input_buffer()
+            time.sleep(0.05)
+            data = self.arduino.readline() 
+            decoded_str = data.decode('utf-8')
+            if decoded_str == '':
+                continue
+            # Strip whitespace and newlines
+            clean_str = decoded_str.strip()
+
+            # Split the string based on '/'
+            numbers = clean_str.split('/')
+
+            # Convert strings to floats and perform division
+            result = (float(numbers[0]), float(numbers[1]))
+            print(result)
+            # Print the result
+            data_dict = {
+                'weight': result[0],
+                'temp': result[1],
+            }
+            self.broadcast_data(data_dict)
 
 
 class printer:
@@ -178,29 +202,7 @@ class printer:
         self.ser.close()
         print(bcolors.OKGREEN + "Exiting..." + bcolors.ENDC)
 
-    def get_arduino_feed(self):
-        while True:
-            self.arduino.reset_input_buffer()
-            time.sleep(0.05)
-            data = self.arduino.readline() 
-            decoded_str = data.decode('utf-8')
-            if decoded_str == '':
-                continue
-            # Strip whitespace and newlines
-            clean_str = decoded_str.strip()
-
-            # Split the string based on '/'
-            numbers = clean_str.split('/')
-
-            # Convert strings to floats and perform division
-            result = (float(numbers[0]), float(numbers[1]))
-            print(result)
-            # Print the result
-            data_dict = {
-                'weight': result[0],
-                'temp': result[1],
-            }
-            self.broadcast_data(data_dict)
+    
     
 
 
