@@ -45,7 +45,7 @@ class MyConsumer(WebsocketConsumer):
             self.broadcast_message('Arduino not connected. Please connect Arduino and reload page.')
             return
         
-        self.dataThread = threading.Thread(target=self.get_arduino_feed)
+        self.dataThread = threading.Thread(target=MyConsumer.get_arduino_feed())
         self.dataThread.start()
         
         self.startTime = datetime.now()
