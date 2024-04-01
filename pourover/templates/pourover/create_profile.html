@@ -9,6 +9,7 @@
 </head>
 
 <body>
+    <button onclick="window.location.href = '{% url 'home_page' %}'" class ='create_profile_button' id='id_create_profile_button'>Home</button>
     <div class='container'>
         <div class='box'>   
             <form method="post" action="{% url 'create' %}" class='create-form'>
