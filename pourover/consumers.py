@@ -3,7 +3,6 @@ from asgiref.sync import async_to_sync
 from pourover.models import BrewProfile
 import json, serial, time
 from datetime import datetime, timedelta
-import threading
 
 # (pour type, water weight, flow rate, agitation level (low, medium, high))
 class MyConsumer(WebsocketConsumer):
@@ -18,7 +17,6 @@ class MyConsumer(WebsocketConsumer):
     steps = []
     stepsTimes = []
     startTime = None
-    dataThread = None
     
     def getTime(self):
         return (datetime.now() - self.startTime).total_seconds()
@@ -44,9 +42,6 @@ class MyConsumer(WebsocketConsumer):
             printError('WARNING: ARDUINO NOT CONNECTED')
             self.broadcast_message('Arduino not connected. Please connect Arduino and reload page.')
             return
-        
-        self.dataThread = threading.Thread(target=self.get_arduino_feed())
-        self.dataThread.start()
         
         self.startTime = datetime.now()
         self.broadcast_message('Successfully connected to Printer and Arduino.')
@@ -85,7 +80,8 @@ class MyConsumer(WebsocketConsumer):
             
             self.profile = BrewProfile.objects.get(id=data['profile'])
             print(f'Profile selected: {self.profile}')
-            steps = parseSteps(self.profile.steps)
+            self.steps = parseSteps(self.profile.steps)
+            self.stepsTimes = parseTimes(self.steps)
             return
 
         if action == 'startBrew':
@@ -107,14 +103,6 @@ class MyConsumer(WebsocketConsumer):
 
 ################## To be filled in #######################
     def received_start(self, data):
-        return
-        self.broadcast_data()
-    
-    def received_pause(self, data):
-        return
-        self.broadcast_data()
-    
-    def received_resume(self, data):
         return
         self.broadcast_data()
         
@@ -148,28 +136,27 @@ class MyConsumer(WebsocketConsumer):
         self.send(text_data=event['message'])
     
     def get_arduino_feed(self):
-        while True:
-            self.arduino.reset_input_buffer()
-            time.sleep(0.05)
+        self.arduino.reset_input_buffer()
+        time.sleep(0.05)
+        data = self.arduino.readline() 
+        decoded_str = data.decode('utf-8')
+        while decoded_str == '':
             data = self.arduino.readline() 
             decoded_str = data.decode('utf-8')
-            if decoded_str == '':
-                continue
-            # Strip whitespace and newlines
-            clean_str = decoded_str.strip()
+        # Strip whitespace and newlines
+        clean_str = decoded_str.strip()
 
-            # Split the string based on '/'
-            numbers = clean_str.split('/')
+        # Split the string based on '/'
+        numbers = clean_str.split('/')
 
-            # Convert strings to floats and perform division
-            result = (float(numbers[0]), float(numbers[1]))
-            print(result)
-            # Print the result
-            data_dict = {
-                'weight': result[0],
-                'temp': result[1],
-            }
-            self.broadcast_data(data_dict)
+        # Convert strings to floats and perform division
+        result = (float(numbers[0]), float(numbers[1]))
+        print(result)
+        data_dict = {
+            'weight': result[0],
+            'temp': result[1],
+        }
+        self.broadcast_data(data_dict)
 
 
 class printer:
@@ -181,8 +168,19 @@ class printer:
         # time.sleep(2)
         self.ser.write(str.encode("G0 X127 Y90 Z0 F3600\r\n")) # move to center
     
+    def goto(self, x, y, z):
+        self.ser.write(str.encode(f"G0 X{x} Y{y} Z{z} F3600\r\n"))
+    
     def write(self, command):
         self.ser.write(str.encode(command + "\r\n"))
+    
+    def arcFromCurr(self, i, j):
+        [x, y, z] = self.currPos()
+        # Offset from center
+        self.ser.write(str.encode(f"G0 X{x-i} Y{y-j} F3600\r\n"))
+        # Draw circle
+        self.ser.write(str.encode(f"G2 X{x} Y{y} I{i} J{j} F3600\r\n"))
+        
 
     def currPos(self) -> list[int, int, int]:
         self.ser.reset_input_buffer()
@@ -219,6 +217,22 @@ def parseSteps(steps):
     print(parsed)
     return parsed
     
+def parseTimes(steps):
+    conversions_dict = {
+        'center': 1,
+        'inner circle': 1.5,
+        'outer circle': 2,
+        'edge': 2.5,
+    }
+    
+    times = []
+    time = 0
+    for step in steps:
+        time += conversions_dict[step[0]] * step[1] / step[2]
+        times.append(time)
+    print(times)
+    return times
+
 
 def printError(error_message):
     print(bcolors.FAIL + '#'*len(error_message))
