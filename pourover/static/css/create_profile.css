@@ -105,11 +105,11 @@ label {
 }
   
   input:checked + .slider {
-    background-color: #2196F3;
+    background-color: #7d410a;
 }
   
   input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
+    box-shadow: 0 0 1px #7d410a;
 }
   
   input:checked + .slider:before {
@@ -152,6 +152,8 @@ button {
     text-decoration: none;
     width: 100%;
     font-family: "Comic Sans MS", "Comic Sans", cursive;
+    margin-top: 10px;
+    margin-bottom: 4px;
 
 }
 button:hover {
