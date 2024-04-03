@@ -48,8 +48,8 @@ function connectToServer() {
             let weight = document.getElementById("id_brew_weight")
             let temp = document.getElementById("id_brew_temp")
             let time = document.getElementById("id_brew_time")
-            weight.innerHTML = data['data']['weight']
-            temp.innerHTML = data['data']['temp']
+            weight.innerHTML = response['data']['weight']
+            temp.innerHTML = response['data']['temp']
             time.innerHTML = getCurrentTimeDifference()
         }
 
