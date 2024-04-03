@@ -39,6 +39,7 @@ function connectToServer() {
             updateParams(response)
         } 
         else if (response.includes("start data feed")) {
+            console.log('starting the data feed!!!!')
             setInterval(() => {
                 socket.send(JSON.stringify({"command": "updateData"}));
             }, 300);
