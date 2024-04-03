@@ -35,6 +35,7 @@ function connectToServer() {
         console.log('message!')
         let response = JSON.parse(event.data)
         console.log(response)
+        console.log('response type: ' + typeof(response))
         if (Array.isArray(response)) {
             updateParams(response)
         } 
