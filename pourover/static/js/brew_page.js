@@ -39,12 +39,12 @@ function connectToServer() {
         if (Array.isArray(response)) {
             updateParams(response)
         } 
-        else if (response.hasOwnProperty('start data feed')) {
+        else if ('start data feed' in response) {
             setInterval(() => {
                 socket.send(JSON.stringify({"command": "updateData"}));
             }, 300);
         }
-        else if (response.hasOwnProperty('data')) {
+        else if ('data' in response) {
             let weight = document.getElementById("id_brew_weight")
             let temp = document.getElementById("id_brew_temp")
             let time = document.getElementById("id_brew_time")
