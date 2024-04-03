@@ -222,10 +222,10 @@ def parseSteps(steps):
     
 def parseTimes(steps):
     conversions_dict = {
-        'center': 1,
-        'inner circle': 1.5,
-        'outer circle': 2,
-        'edge': 2.5,
+        'Center': 1,
+        'Inner circle': 1.5,
+        'Outer circle': 2,
+        'Edge': 2.5,
     }
     
     times = []
