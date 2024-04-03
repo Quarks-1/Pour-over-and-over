@@ -101,6 +101,10 @@ class MyConsumer(WebsocketConsumer):
         if action == 'updateData':
             self.get_arduino_feed()
             return
+        
+        if action == 'tareScale':
+            self.arduino.write(b'tare\n')
+            return
 
         printError(f'Invalid action property: "{action}"')
 

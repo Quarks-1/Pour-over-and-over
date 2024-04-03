@@ -49,7 +49,7 @@ function connectToServer() {
             let temp = document.getElementById("id_brew_temp")
             let time = document.getElementById("id_brew_time")
             weight.innerHTML = response['data']['weight']
-            temp.innerHTML = response['data']['temp']
+            temp.innerHTML = response   ['data']['temp']
             time.innerHTML = getCurrentTimeDifference()
         }
 
@@ -134,4 +134,8 @@ function getCurrentTimeDifference() {
     seconds = seconds < 10 ? '0' + seconds : seconds;
 
     return minutes + ':' + seconds;
+}
+
+function tareScale() {
+    socket.send(JSON.stringify({"command": "tareScale"}))
 }
