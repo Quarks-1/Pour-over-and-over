@@ -137,5 +137,6 @@ function getCurrentTimeDifference() {
 }
 
 function tareScale() {
+    console.log('taring')
     socket.send(JSON.stringify({"command": "tareScale"}))
 }
