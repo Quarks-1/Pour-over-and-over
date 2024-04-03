@@ -39,7 +39,7 @@ function connectToServer() {
         if (Array.isArray(response)) {
             updateParams(response)
         } 
-        else if (typeof(response) == String && "start data feed" in response) {
+        else if (response.includes("start data feed")) {
             setInterval(() => {
                 socket.send(JSON.stringify({"command": "updateData"}));
             }, 300);
