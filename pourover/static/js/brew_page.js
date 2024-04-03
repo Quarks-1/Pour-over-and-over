@@ -42,7 +42,7 @@ function connectToServer() {
         else if (response['type'] == 'message' && response['message'] == 'start data feed') {
             setInterval(() => {
                 socket.send(JSON.stringify({"command": "updateData"}));
-            }, 300);
+            }, 1000);
         }
         else if (response['type'] == 'data') {
             let weight = document.getElementById("id_brew_weight")
