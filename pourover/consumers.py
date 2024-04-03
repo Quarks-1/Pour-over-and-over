@@ -123,7 +123,7 @@ class MyConsumer(WebsocketConsumer):
             self.group_name,
             {
                 'type': 'broadcast_event',
-                'data': json.dumps({'type': 'data', 'data': data})
+                'message': json.dumps({'type': 'data', 'data': data})
             }
         )
     
