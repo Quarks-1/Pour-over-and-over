@@ -15,7 +15,7 @@ class MyConsumer(WebsocketConsumer):
     
     x, y, z = 0, 0, 0
     steps = []
-    stepsTimes = []
+    gcodeSteps = []
     startTime = None
     
     def getTime(self):
@@ -67,7 +67,6 @@ class MyConsumer(WebsocketConsumer):
         except json.JSONDecoder:
             printError('invalid JSON sent to server')
             return
-        print(data)
         if 'command' not in data:
             printError('command property not sent in JSON')
             return
@@ -82,7 +81,7 @@ class MyConsumer(WebsocketConsumer):
             self.profile = BrewProfile.objects.get(id=data['profile'])
             print(f'Profile selected: {self.profile}')
             self.steps = parseSteps(self.profile.steps)
-            self.stepsTimes = parseTimes(self.steps)
+            self.gcodeSteps = parseTimes(self.steps)
             return
 
         if action == 'startBrew':
@@ -159,7 +158,6 @@ class MyConsumer(WebsocketConsumer):
 
         # Convert strings to floats and perform division
         result = (float(numbers[0]), float(numbers[1]))
-        print(result)
         data_dict = {
             'weight': result[0],
             'temp': result[1],
@@ -195,7 +193,6 @@ class printer:
         self.ser.write(str.encode("M114\r\n"))
         x, y, z = 0, 0, 0
         for val in self.ser.readline().decode('utf-8').split(' '):
-            print(val)
             if 'X' in val:
                 x = int(val.strip('X:').split('.')[0])
             elif 'Y' in val:
@@ -213,7 +210,7 @@ class printer:
     
     
 
-
+# Parses model string into list of steps
 # (pour type, water weight, flow rate, agitation level (low, medium, high))
 def parseSteps(steps):
     parsed = []
@@ -222,9 +219,10 @@ def parseSteps(steps):
         temp[1] = int(temp[1])
         temp[2] = int(temp[2])
         parsed.append(temp)
-    print(parsed)
     return parsed
     
+# Parses steps into ([gCode], Time) pairs
+# Time is when the gcode should be executed
 def parseTimes(steps):
     conversions_dict = {
         'Center': 1,
@@ -232,14 +230,23 @@ def parseTimes(steps):
         'Outer circle': 2,
         'Edge': 2.5,
     }
+    gCode = {
+        'pre_wet': 'G2 X127 Y115 Z220 I25 J25 F3600',
+        'Center': 'G2 X127 Y115 F3600',
+        'Inner circle': 'G2 X127 Y115 I10 J10 F3600',
+        'Outer circle': 'G2 X127 Y115 I25 J25 F3600',
+        'Edge': 'G2 X127 Y115 I35 J35 F3600',
+    }
     
     times = []
-    time = 0
+    totalTime = 0
+    # TODO: add pump actuation
     for step in steps:
         # TODO: Add pre-wet time
         if 'pre_wet' in step:
             continue
-        time += conversions_dict[step[0]] * step[1] / step[2]
+        stepTime = conversions_dict[step[0]] * step[1] / step[2]
+        totalTime += stepTime
         times.append(time)
     print(times)
     return times

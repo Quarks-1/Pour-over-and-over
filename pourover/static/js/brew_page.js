@@ -32,15 +32,13 @@ function connectToServer() {
 
     // Handle messages received from the server.
     socket.onmessage = function(event) {
-        console.log('message!')
         let response = JSON.parse(event.data)
-        console.log(response)
-        console.log('response type: ' + typeof(response))
         if (Array.isArray(response)) {
             updateParams(response)
         } 
         else if (response['type'] == 'message' && response['message'] == 'start data feed') {
             setInterval(() => {
+                socket.send(JSON.stringify({"command": "checkTime"}))
                 socket.send(JSON.stringify({"command": "updateData"}));
             }, 1000);
         }
