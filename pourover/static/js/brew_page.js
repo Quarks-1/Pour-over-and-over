@@ -1,6 +1,7 @@
 "use strict"
 
 let socket = null
+let startTime = Date.now()
 
 
 function connectToServer() {
@@ -36,8 +37,22 @@ function connectToServer() {
         console.log(response)
         if (Array.isArray(response)) {
             updateParams(response)
-        } else {
-            console.log(response)
+        } 
+        else if (response.includes("start data feed")) {
+            setInterval(() => {
+                socket.send(JSON.stringify({"command": "updateData"}));
+            }, 300);
+        }
+        else if (response.includes("weight") || response.includes("temp")) {
+            let weight = document.getElementById("id_brew_weight")
+            let temp = document.getElementById("id_brew_temp")
+            let time = document.getElementById("id_brew_time")
+            weight.innerHTML = data['weight']
+            temp.innerHTML = data['temp']
+            time.innerHTML = getCurrentTimeDifference()
+        }
+
+        else {
             if (response.includes("not connected")) { 
                 disableButtons()
             }
@@ -71,6 +86,7 @@ function startBrew() {
     stopBrewButton.disabled = false
     let brewButton = document.getElementById("id_start_brew_button")
     brewButton.disabled = true
+    startTime = Date.now() // Reset the start time
     socket.send(JSON.stringify({"command": "startBrew"}))
 }
 
@@ -87,6 +103,7 @@ function restartBrew() {
     stopBrewButton.disabled = false
     let brewButton = document.getElementById("id_start_brew_button")
     brewButton.disabled = true
+    startTime = Date.now() // Reset the start time
     socket.send(JSON.stringify({"command": "restartBrew"}))
 }
 
@@ -97,4 +114,23 @@ function disableButtons() {
     brewButton.disabled = true
     let restartBrewButton = document.getElementById("id_restart_brew_button")
     restartBrewButton.disabled = true
+}
+
+function updateData() {
+    
+}
+
+function getCurrentTimeDifference() {
+    let now = new Date(); // Current time
+    let difference = now - startTime; // Difference in milliseconds
+
+    // Convert milliseconds into minutes and seconds
+    let minutes = Math.floor(difference / 60000); // 60,000 milliseconds in a minute
+    let seconds = Math.floor((difference % 60000) / 1000); // Remaining milliseconds converted to seconds
+
+    // Formatting minutes and seconds to ensure two digits
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    seconds = seconds < 10 ? '0' + seconds : seconds;
+
+    return minutes + ':' + seconds;
 }

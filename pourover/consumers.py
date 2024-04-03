@@ -45,6 +45,7 @@ class MyConsumer(WebsocketConsumer):
         
         self.startTime = datetime.now()
         self.broadcast_message('Successfully connected to Printer and Arduino.')
+        self.broadcast_message('start data feed')
 
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
@@ -97,8 +98,10 @@ class MyConsumer(WebsocketConsumer):
         if action == "restartBrew":
             self.received_restart(data)
             return
+        if action == 'updateData':
+            self.get_arduino_feed()
+            return
 
-        
         printError(f'Invalid action property: "{action}"')
 
 ################## To be filled in #######################
@@ -228,6 +231,9 @@ def parseTimes(steps):
     times = []
     time = 0
     for step in steps:
+        # TODO: Add pre-wet time
+        if 'pre_wet' in step:
+            continue
         time += conversions_dict[step[0]] * step[1] / step[2]
         times.append(time)
     print(times)
