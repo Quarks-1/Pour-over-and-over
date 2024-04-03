@@ -44,7 +44,7 @@ function connectToServer() {
                 socket.send(JSON.stringify({"command": "updateData"}));
             }, 300);
         }
-        else if ('data' in response) {
+        else if (response.hasOwnProperty('data')) {
             let weight = document.getElementById("id_brew_weight")
             let temp = document.getElementById("id_brew_temp")
             let time = document.getElementById("id_brew_time")
