@@ -122,23 +122,21 @@ class MyConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_send)(
             self.group_name,
             {
-                'type': 'broadcast_data_event',
-                'data': json.dumps(data)
+                'type': 'broadcast_event',
+                'data': json.dumps({'type': 'data', 'data': data})
             }
         )
     
-    def broadcast_message(self, error_message):
+    def broadcast_message(self, message):
         async_to_sync(self.channel_layer.group_send)(
             self.group_name,
             {
                 'type': 'broadcast_event',
-                'message': json.dumps(error_message)
+                'message': json.dumps({'type': 'message', 'message': message})
             }
         )
     def broadcast_event(self, event):
         self.send(text_data=event['message'])
-    def broadcast_data_event(self, event):
-        self.send(text_data=event['data'])
     
     def get_arduino_feed(self):
         self.arduino.reset_input_buffer()

@@ -39,17 +39,17 @@ function connectToServer() {
         if (Array.isArray(response)) {
             updateParams(response)
         } 
-        else if ('start data feed' in response) {
+        else if (response['type'] == 'message' && response['message'] == 'start data feed') {
             setInterval(() => {
                 socket.send(JSON.stringify({"command": "updateData"}));
             }, 300);
         }
-        else if ('data' in response) {
+        else if (response['type'] == 'data') {
             let weight = document.getElementById("id_brew_weight")
             let temp = document.getElementById("id_brew_temp")
             let time = document.getElementById("id_brew_time")
-            weight.innerHTML = data['weight']
-            temp.innerHTML = data['temp']
+            weight.innerHTML = data['data']['weight']
+            temp.innerHTML = data['data']['temp']
             time.innerHTML = getCurrentTimeDifference()
         }
 
