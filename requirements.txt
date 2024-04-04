@@ -3,3 +3,4 @@ pipreqs
 pyserial
 daphne
 channels
+simple-pid
