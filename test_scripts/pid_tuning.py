@@ -20,7 +20,7 @@ def control_heating(element_state):
 while True:
     try:
         # Read temperature from serial
-        # arduino.reset_input_buffer()
+        arduino.reset_input_buffer()
         line = arduino.readline().decode('utf-8').strip()
         print(f'Line: {line}')
         control_heating('heating_on')
