@@ -13,13 +13,12 @@ pid.output_limits = (0, 1)  # Output value will be between 0 and 1 (off/on)
 
 def control_heating(element_state):
     # Send control command to Arduino
-    # Convert boolean state to string and encode it to bytes
     arduino.write(b'1' if element_state else b'0')
 
 while True:
     try:
         # Read temperature from serial
-        arduino.reset_input_buffer()
+        # arduino.reset_input_buffer()
         line = arduino.readline().decode('utf-8').strip()
         print(f'Line: {line}')
         if line:  # If line is not empty
