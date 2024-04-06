@@ -14,8 +14,7 @@ pid.output_limits = (0, 1)  # Output value will be between 0 and 1 (off/on)
 def control_heating(element_state):
     # Send control command to Arduino
     arduino.write(b'1\n' if element_state else b'0\n')
-    # arduino.write(b'tare\n')
-    # print('taring')
+    
 
 while True:
     try:
@@ -24,19 +23,16 @@ while True:
         line = arduino.readline().decode('utf-8').strip()
         # control_heating('heating_on')
         if line:  # If line is not empty
-            print(f'Line: {line}')
+            # print(f'Line: {line}')
             current_temp = float(line.split('/')[1])
             print(f"Current Temperature: {current_temp}°F")
             
             # Compute PID output
             control = pid(current_temp)
-            
             # Decide on the heating element state based on PID output
             heating_on = control >= 0.5  # Example logic to turn heating on/off
-            
             # Send command to Arduino to control the heating element
             control_heating(heating_on)
-            # print(f'PID Output: {control}, heating_on: {heating_on}')
             # Optional: Print the control decision
             print("Heating On" if heating_on else "Heating Off")
             
