@@ -21,7 +21,7 @@ while True:
     try:
         # Read temperature from serial
         arduino.reset_input_buffer()
-        line = arduino.readline().decode('utf-8').strip()
+        line = arduino.readline()
         print(f'Line: {line}')
         control_heating('heating_on')
         if line:  # If line is not empty
