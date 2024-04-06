@@ -13,7 +13,8 @@ pid.output_limits = (0, 1)  # Output value will be between 0 and 1 (off/on)
 
 def control_heating(element_state):
     # Send control command to Arduino
-    arduino.write(b'1\n' if element_state else b'0\n')
+    # arduino.write(b'1\n' if element_state else b'0\n')
+    arduino.write(b'tare\n')
 
 while True:
     try:
