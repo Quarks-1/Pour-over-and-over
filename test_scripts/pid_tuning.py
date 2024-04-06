@@ -13,8 +13,8 @@ pid.output_limits = (0, 1)  # Output value will be between 0 and 1 (off/on)
 
 def control_heating(element_state):
     # Send control command to Arduino
-    # arduino.write(b'1\n' if element_state else b'0\n')
-    arduino.write(b'tare\n')
+    arduino.write(b'1\n' if element_state else b'0\n')
+    # arduino.write(b'tare\n')
     # print('taring')
 
 while True:
@@ -23,7 +23,7 @@ while True:
         # arduino.reset_input_buffer()
         line = arduino.readline().decode('utf-8').strip()
         print(f'Line: {line}')
-        control_heating('heating_on')
+        # control_heating('heating_on')
         if line:  # If line is not empty
             current_temp = float(line.split('/')[1])
             print(f"Current Temperature: {current_temp}°F")
