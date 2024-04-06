@@ -15,6 +15,7 @@ def control_heating(element_state):
     # Send control command to Arduino
     # arduino.write(b'1\n' if element_state else b'0\n')
     arduino.write(b'tare\n')
+    print('taring')
 
 while True:
     try:
