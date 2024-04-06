@@ -15,18 +15,16 @@ def control_heating(element_state):
     # Send control command to Arduino
     # arduino.write(b'1\n' if element_state else b'0\n')
     arduino.write(b'tare\n')
-    print('taring')
+    # print('taring')
 
 while True:
     try:
         # Read temperature from serial
-        arduino.reset_input_buffer()
+        # arduino.reset_input_buffer()
         line = arduino.readline().decode('utf-8').strip()
         print(f'Line: {line}')
         control_heating('heating_on')
         if line:  # If line is not empty
-            if len(line.split('/')) != 2:
-                continue
             current_temp = float(line.split('/')[1])
             print(f"Current Temperature: {current_temp}°F")
             
