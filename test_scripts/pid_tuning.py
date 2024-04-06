@@ -14,6 +14,7 @@ pid.output_limits = (0, 1)  # Output value will be between 0 and 1 (off/on)
 def control_heating(element_state):
     # Send control command to Arduino
     # Convert boolean state to string and encode it to bytes
+    print(element_state)
     arduino.write(str(int(element_state)).encode())
 
 while True:
@@ -33,7 +34,7 @@ while True:
             
             # Send command to Arduino to control the heating element
             control_heating(heating_on)
-            print(f'PID Output: {control}, heating_on: {heating_on}')
+            # print(f'PID Output: {control}, heating_on: {heating_on}')
             # Optional: Print the control decision
             print("Heating On" if heating_on else "Heating Off")
             
