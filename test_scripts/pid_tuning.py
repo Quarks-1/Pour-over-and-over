@@ -21,6 +21,7 @@ while True:
         # Read temperature from serial
         arduino.reset_input_buffer()
         line = arduino.readline().decode('utf-8').strip()
+        print(f'Line: {line}')
         if line:  # If line is not empty
             current_temp = float(line.split('/')[1])
             print(f"Current Temperature: {current_temp}°F")
