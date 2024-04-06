@@ -3,7 +3,7 @@ import time
 from simple_pid import PID
 
 # Serial port configuration
-arduino = serial.Serial(port='/dev/ttyACM0', baudrate=115200, timeout=.1) 
+arduino = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=.1) 
 time.sleep(2)  # Wait for the serial connection to initialize
 print('Connected')
 # PID controller setup
