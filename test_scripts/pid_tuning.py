@@ -23,6 +23,7 @@ while True:
         arduino.reset_input_buffer()
         line = arduino.readline().decode('utf-8').strip()
         print(f'Line: {line}')
+        control_heating(heating_on)
         if line:  # If line is not empty
             if len(line.split('/')) != 2:
                 continue
