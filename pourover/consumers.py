@@ -1,7 +1,7 @@
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 from pourover.models import BrewProfile
-import json, serial, time
+import json, serial, time, math
 from datetime import datetime, timedelta
 
 # (pour type, water weight, flow rate, agitation level (low, medium, high))
@@ -172,7 +172,8 @@ class printer:
         # home printer
         self.ser.write(str.encode("G28 X Y\r\n"))
         # time.sleep(2)
-        self.ser.write(str.encode("G0 X127 Y90 Z0 F3600\r\n")) # move to center
+        # TODO: Change Z to proper value
+        self.ser.write(str.encode("G0 X117 Y110 Z0 F3600\r\n")) # move to center
     
     def goto(self, x, y, z):
         self.ser.write(str.encode(f"G0 X{x} Y{y} Z{z} F3600\r\n"))
@@ -220,34 +221,54 @@ def parseSteps(steps):
         temp[2] = int(temp[2])
         parsed.append(temp)
     return parsed
-    
+
+
+######### Size (inches) ##########
+# X117 Y110 - center
+# I10 J10 - 1 1/8
+# I20 J20 - 2 1/8
+# I30 J30 - 3 1/4
+# I40 J40 - 4 3/8
+######### Times ##################
+# 14.56s -  I40 J40 F1500
+# 7.43s  -  I20 J20 F1500
+# 3.68   -  I20 J20 F3000
+# 7.53   -  I40 J40 F3000
+
+# 
+
 # Parses steps into ([gCode], Time) pairs
 # Time is when the gcode should be executed
 def parseTimes(steps):
-    conversions_dict = {
+    times_dict = {
         'Center': 1,
-        'Inner circle': 1.5,
-        'Outer circle': 2,
-        'Edge': 2.5,
+        'Inner circle': 3.68,
+        'Outer circle': 9, # TODO: Fix estimation thru testing
+        'Edge': 16.5, # TODO: Fix estimation thru testing
     }
     gCode = {
-        'pre_wet': 'G2 X127 Y115 Z220 I25 J25 F3600',
+        'pre_wet': 'G2 X127 Y115 Z220 I25 J25 F3600', 
         'Center': 'G2 X127 Y115 F3600',
-        'Inner circle': 'G2 X127 Y115 I10 J10 F3600',
-        'Outer circle': 'G2 X127 Y115 I25 J25 F3600',
-        'Edge': 'G2 X127 Y115 I35 J35 F3600',
+        'Inner circle': 'G2 X127 Y115 I10 J10 F1500',
+        'Outer circle': 'G2 X127 Y115 I25 J25 F1500',
+        'Edge': 'G2 X127 Y115 I35 J35 F1500',
     }
     
     times = []
     totalTime = 0
     # TODO: add pump actuation
+    # Add in sending gcode signals to printer function
     for step in steps:
-        # TODO: Add pre-wet time
         if 'pre_wet' in step:
+            step = (gCode['pre_wet'], 10)
             continue
-        stepTime = conversions_dict[step[0]] * step[1] / step[2]
-        totalTime += stepTime
-        times.append(time)
+        instructArr = []
+        pourTime = step[1] / step[2]
+        totalTime += pourTime
+        numInstruct = math.ceil(times_dict[step[0]] / pourTime)
+        step = ([gCode[step[0]]] * numInstruct, totalTime)
+        times.append(step)
+        
     print(times)
     return times
 
