@@ -268,13 +268,13 @@ def parseTimes(steps, startTime):
     for step in steps:
         if 'pre_wet' in step:
             totalTime += timedelta(seconds=10)
-            step = (gCode['pre_wet'], totalTime)
-            continue
-        instructArr = []
-        pourTime = step[1] / step[2]  # water weight / flow rate
-        totalTime += timedelta(seconds=pourTime)
-        numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
-        step = ([gCode[step[0]]] * numInstruct, totalTime)
+            step = ([gCode['pre_wet']], totalTime)
+        else:
+            instructArr = []
+            pourTime = step[1] / step[2]  # water weight / flow rate
+            totalTime += timedelta(seconds=pourTime)
+            numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
+            step = ([gCode[step[0]]] * numInstruct, totalTime)
         times.append(step)
         
     printTimes(times)
