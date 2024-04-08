@@ -160,7 +160,11 @@ class MyConsumer(WebsocketConsumer):
         if len(numbers) != 3:
             return
         # Convert strings to floats and perform division
-        result = (float(numbers[0]), float(numbers[1]))
+        try:
+            result = (float(numbers[0]), float(numbers[1]))
+        except ValueError:
+            printError('Invalid data received from Arduino')
+            return
         data_dict = {
             'weight': result[0],
             'temp': result[1],
@@ -278,8 +282,10 @@ def parseTimes(steps, startTime):
 
 
 def printTimes(times):
+    i = 0
     for time in times:
-        print(f'{time[0]}: {time[1]}')
+        print(f'Step #{i} {time[0]}: {time[1]}')
+        i += 1
 
 def printError(error_message):
     print(bcolors.FAIL + '#'*len(error_message))
