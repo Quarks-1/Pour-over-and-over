@@ -20,8 +20,6 @@ class MyConsumer(WebsocketConsumer):
     gcodeSteps = []
     startTime = None
     
-    def getTime(self):
-        return datetime.now() - self.startTime
 
     def connect(self):
         async_to_sync(self.channel_layer.group_add)(
@@ -184,10 +182,10 @@ class MyConsumer(WebsocketConsumer):
         while True:
             # Check if current time is time for next step
             if datetime.now() >= self.gcodeSteps[0][1]:
+                print(f'Working on command: {self.gcodeSteps[0][0]}')
                 # Send gcode to printer
                 for command in self.gcodeSteps[0][0]:
                     self.printer.write(command)
-                    print(f'Writing: {command}')
                 # Remove step from list
                 self.gcodeSteps.pop(0)
                 # If no more steps, break out of loop
@@ -206,10 +204,10 @@ class printer:
         self.center = [127, 115, 0]
         self.ser = serial.Serial("/dev/ttyUSB0", 115200)
         # home printer
-        self.ser.write(str.encode("G28 X Y\r\n"))
+        self.ser.write(str.encode("G28 X Y Z\r\n"))
         # time.sleep(2)
         # TODO: Change Z to proper value
-        self.ser.write(str.encode("G0 X117 Y110 Z0 F3600\r\n")) # move to center
+        self.ser.write(str.encode("G0 X117 Y110 Z220 F3600\r\n")) # move to center
     
     def goto(self, x, y, z):
         self.ser.write(str.encode(f"G0 X{x} Y{y} Z{z} F3600\r\n"))
