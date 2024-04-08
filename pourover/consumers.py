@@ -260,12 +260,12 @@ def parseTimes(steps, startTime):
     # Add in sending gcode signals to printer function
     for step in steps:
         if 'pre_wet' in step:
-            totalTime += 10
+            totalTime += timedelta(seconds=10)
             step = (gCode['pre_wet'], totalTime)
             continue
         instructArr = []
         pourTime = step[1] / step[2]  # water weight / flow rate
-        totalTime += pourTime
+        totalTime += timedelta(seconds=pourTime)
         numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
         step = ([gCode[step[0]]] * numInstruct, totalTime)
         times.append(step)
