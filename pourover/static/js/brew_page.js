@@ -43,7 +43,7 @@ function connectToServer() {
                 socket.send(JSON.stringify({"command": "updateData"}));
             }, 1000);
             }
-            else if (response['message'] == 'Successfully connected to Printer and Arduino.') {
+            else {
                 displayMessage(response['message'])
             }
         }
