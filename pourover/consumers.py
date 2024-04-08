@@ -89,7 +89,7 @@ class MyConsumer(WebsocketConsumer):
             x, y, z = self.printer.currPos()
             print(bcolors.OKBLUE + f'Current position: {x}, {y}, {z}' + bcolors.ENDC)
             self.broadcast_message('Starting brew...')
-            Thread(target=self.startBrew).start()
+            Thread(target=self.startBrew()).start()
             self.received_start(data)
             return
 
