@@ -231,8 +231,7 @@ class MyConsumer(WebsocketConsumer):
                 for command in self.gcodeSteps[0][0]:
                     # Check if command is circle
                     if 'I' in command:
-                        [i, j] = [int(command.split('I')[1].split(' ')[0]), int(command.split('J')[1].split(' ')[0])]
-                        [x, y] = [int(command.split('X')[1].split(' ')[0]), int(command.split('Y')[1].split(' ')[0])]
+                        [i, j, x, y] = [int(command.split('I')[1].split(' ')[0]), int(command.split('J')[1].split(' ')[0]), int(command.split('X')[1].split(' ')[0]), int(command.split('Y')[1].split(' ')[0])]
                         self.printer.arcFromCurr(i, j, x, y)
                     else:
                         self.printer.write(command)
@@ -246,7 +245,8 @@ class MyConsumer(WebsocketConsumer):
             if self.stop:
                 print('Stopping brew...')
                 break
-            
+        print('Brew complete')
+        self.broadcast_message('Brew complete')
         return
 
 
