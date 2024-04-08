@@ -188,7 +188,12 @@ class MyConsumer(WebsocketConsumer):
                 print(f'Working on command: {self.gcodeSteps[0][0]}')
                 # Send gcode to printer
                 for command in self.gcodeSteps[0][0]:
-                    self.printer.write(command)
+                    # Check if command is circle
+                    if 'I' in command:
+                        [i, j] = [int(command.split('I')[1].split(' ')[0]), int(command.split('J')[1].split(' ')[0])]
+                        self.printer.arcFromCurr(i, j)
+                    else:
+                        self.printer.write(command)
                 # Remove step from list
                 self.gcodeSteps.pop(0)
                 # If no more steps, break out of loop

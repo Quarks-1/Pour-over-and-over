@@ -39,7 +39,6 @@ function connectToServer() {
         else if (response['type'] == 'message') {
             if (response['message'] == 'start data feed') {
             setInterval(() => {
-                // socket.send(JSON.stringify({"command": "checkTime"}))
                 socket.send(JSON.stringify({"command": "updateData"}));
             }, 1000);
             }
@@ -52,7 +51,7 @@ function connectToServer() {
             let temp = document.getElementById("id_brew_temp")
             let time = document.getElementById("id_brew_time")
             weight.innerHTML = response['data']['weight']
-            temp.innerHTML = response   ['data']['temp']
+            temp.innerHTML = response['data']['temp']
             time.innerHTML = getCurrentTimeDifference()
         }
 
