@@ -89,7 +89,7 @@ class MyConsumer(WebsocketConsumer):
             x, y, z = self.printer.currPos()
             print(bcolors.OKBLUE + f'Current position: {x}, {y}, {z}' + bcolors.ENDC)
             self.broadcast_message('Starting brew...')
-            Thread(target=self.startBrew()).start()
+            Thread(target=self.startBrew).start()
             self.received_start(data)
             return
 
@@ -174,23 +174,23 @@ class MyConsumer(WebsocketConsumer):
         }
         self.broadcast_data(data_dict)
         
-        def startBrew(self):
-            while True:
-                # Check if current time is time for next step
-                if self.getTime() >= self.gcodeSteps[0][1]:
-                    # Send gcode to printer
-                    for command in self.gcodeSteps[0][0]:
-                        self.printer.write(command)
-                    # Remove step from list
-                    self.gcodeSteps.pop(0)
-                    # If no more steps, break out of loop
-                    if len(self.gcodeSteps) == 0:
-                        break
-                # Check if stop command received
-                if self.stop:
+    def startBrew(self):
+        while True:
+            # Check if current time is time for next step
+            if self.getTime() >= self.gcodeSteps[0][1]:
+                # Send gcode to printer
+                for command in self.gcodeSteps[0][0]:
+                    self.printer.write(command)
+                # Remove step from list
+                self.gcodeSteps.pop(0)
+                # If no more steps, break out of loop
+                if len(self.gcodeSteps) == 0:
                     break
-                
-            return
+            # Check if stop command received
+            if self.stop:
+                break
+            
+        return
 
 
 class printer:
