@@ -152,6 +152,7 @@ class MyConsumer(WebsocketConsumer):
             decoded_str = data.decode('utf-8')
         # Strip whitespace and newlines
         clean_str = decoded_str.strip()
+        print(clean_str)
 
         # Split the string based on '/'
         numbers = clean_str.split('/')
