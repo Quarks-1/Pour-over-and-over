@@ -227,6 +227,11 @@ class MyConsumer(WebsocketConsumer):
             # Check if current time is time for next step
             if datetime.now() >= self.gcodeSteps[0][1]:
                 print(f'Working on command: {self.gcodeSteps[0][0]}')
+                if 'Draw down' in self.gcodeSteps[0][0]:
+                    self.broadcast_message('Draw down')
+                    time.sleep(self.gcodeSteps[0][1] - datetime.now())
+                    self.gcodeSteps.pop(0)
+                    continue
                 # Send gcode to printer
                 for command in self.gcodeSteps[0][0]:
                     # Check if command is circle
