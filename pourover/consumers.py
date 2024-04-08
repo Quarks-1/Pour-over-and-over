@@ -20,7 +20,7 @@ class MyConsumer(WebsocketConsumer):
     startTime = None
     
     def getTime(self):
-        return (datetime.now() - self.startTime).total_seconds()
+        return datetime.now() - self.startTime
 
     def connect(self):
         async_to_sync(self.channel_layer.group_add)(
@@ -187,6 +187,7 @@ class MyConsumer(WebsocketConsumer):
                 if len(self.gcodeSteps) == 0:
                     break
             # Check if stop command received
+            # TODO: implement stop
             if self.stop:
                 break
             
