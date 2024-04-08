@@ -353,6 +353,9 @@ def parseTimes(steps, startTime):
             numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
             step = ([gCode[step[0]]] * numInstruct, totalTime)
             totalTime += timedelta(seconds=pourTime)
+        # Add draw down time
+        times.append(["Draw down", totalTime])
+        totalTime += timedelta(seconds=30)
         times.append(step)
         
     printTimes(times)
