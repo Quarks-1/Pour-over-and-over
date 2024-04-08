@@ -187,6 +187,7 @@ class MyConsumer(WebsocketConsumer):
         }
         self.broadcast_data(data_dict)
     
+    # TODO: Test heating
     def startHeater(self):
         self.broadcast_message('Heating water. Please wait...')
         while True:
@@ -242,6 +243,7 @@ class MyConsumer(WebsocketConsumer):
             # Check if stop command received
             # TODO: implement stop
             if self.stop:
+                print('Stopping brew...')
                 break
             
         return
