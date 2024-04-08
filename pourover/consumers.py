@@ -177,7 +177,7 @@ class MyConsumer(WebsocketConsumer):
     def startBrew(self):
         while True:
             # Check if current time is time for next step
-            if self.getTime() >= self.gcodeSteps[0][1]:
+            if datetime.now() >= self.gcodeSteps[0][1]:
                 # Send gcode to printer
                 for command in self.gcodeSteps[0][0]:
                     self.printer.write(command)
