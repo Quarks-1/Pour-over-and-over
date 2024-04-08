@@ -2,6 +2,7 @@ from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 from pourover.models import BrewProfile
 import json, serial, time, math
+from threading import Thread
 from datetime import datetime, timedelta
 
 # (pour type, water weight, flow rate, agitation level (low, medium, high))
@@ -87,14 +88,18 @@ class MyConsumer(WebsocketConsumer):
         if action == 'startBrew':
             x, y, z = self.printer.currPos()
             print(bcolors.OKBLUE + f'Current position: {x}, {y}, {z}' + bcolors.ENDC)
+            self.broadcast_message('Starting brew...')
+            Thread(target=self.startBrew).start()
             self.received_start(data)
             return
 
         if action == "stopBrew":
             self.received_stop(data)
+            self.broadcast_message('Brew stopped.')
             return
         
         if action == "restartBrew":
+            self.broadcast_message('Brew restarted.')
             self.received_restart(data)
             return
         if action == 'updateData':
@@ -156,20 +161,36 @@ class MyConsumer(WebsocketConsumer):
         # Split the string based on '/'
         numbers = clean_str.split('/')
         
-        # TODO: Remove after fixing arduino code
-        if len(numbers) != 3:
-            return
         # Convert strings to floats and perform division
         try:
             result = (float(numbers[0]), float(numbers[1]))
         except ValueError:
             printError('Invalid data received from Arduino')
+            print(f'Invalid data: {numbers}')
             return
         data_dict = {
             'weight': result[0],
             'temp': result[1],
         }
         self.broadcast_data(data_dict)
+        
+        def startBrew(self):
+            while True:
+                # Check if current time is time for next step
+                if self.getTime() >= self.gcodeSteps[0][1]:
+                    # Send gcode to printer
+                    for command in self.gcodeSteps[0][0]:
+                        self.printer.write(command)
+                    # Remove step from list
+                    self.gcodeSteps.pop(0)
+                    # If no more steps, break out of loop
+                    if len(self.gcodeSteps) == 0:
+                        break
+                # Check if stop command received
+                if self.stop:
+                    break
+                
+            return
 
 
 class printer:
