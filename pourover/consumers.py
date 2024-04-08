@@ -4,6 +4,7 @@ from pourover.models import BrewProfile
 import json, serial, time, math
 from threading import Thread
 from datetime import datetime, timedelta
+from simple_pid import PID
 
 # (pour type, water weight, flow rate, agitation level (low, medium, high))
 class MyConsumer(WebsocketConsumer):
@@ -19,6 +20,7 @@ class MyConsumer(WebsocketConsumer):
     steps = []
     gcodeSteps = []
     startTime = None
+    pid = None
     
 
     def connect(self):
@@ -80,6 +82,10 @@ class MyConsumer(WebsocketConsumer):
             
             self.profile = BrewProfile.objects.get(id=data['profile'])
             print(f'Profile selected: {self.profile}')
+            pid = PID(70, 30, 500, setpoint=self.profile.water_temp)  # P=1.0, I=0.1, D=0.05, desired temperature=25°C
+            pid.sample_time = 0.5  # Update every 1 second
+            pid.output_limits = (0, 1)  # Output value will be between 0 and 1 (off/on)
+
             self.steps = parseSteps(self.profile.steps)
             return
 
@@ -180,6 +186,40 @@ class MyConsumer(WebsocketConsumer):
             'temp': result[1],
         }
         self.broadcast_data(data_dict)
+    
+    def startHeater(self):
+        self.broadcast_message('Heating water. Please wait...')
+        while True:
+            try:
+                # Read temperature from serial
+                # arduino.reset_input_buffer()
+                line = self.arduino.readline().decode('utf-8').strip()
+                # control_heating('heating_on')
+                if line:  # If line is not empty
+                    # print(f'Line: {line}')
+                    current_temp = float(line.split('/')[1])
+                    print(f"Current Temperature: {current_temp}°F")
+                    
+                    # Compute PID output
+                    control = self.pid(current_temp)
+                    # Decide on the heating element state based on PID output
+                    heating_on = control >= 0.5  # Example logic to turn heating on/off
+                    # Send command to Arduino to control the heating element
+                    self.arduino.write(b'1\n' if heating_on else b'0\n')
+                    # Optional: Print the control decision
+                    print("Heating On" if heating_on else "Heating Off")
+                    # Check to see if target temp reached
+                    if current_temp >= self.profile.water_temp:
+                        self.broadcast_message('Water heated. Starting brew...')
+                        break
+            except KeyboardInterrupt:
+                print("Exiting...")
+                break
+            except ValueError:
+                # In case of faulty serial data that cannot be converted to float
+                print("Invalid data received.")
+                continue
+        
         
     def startBrew(self):
         while True:
