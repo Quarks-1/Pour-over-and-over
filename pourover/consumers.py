@@ -87,7 +87,7 @@ class MyConsumer(WebsocketConsumer):
 
         if action == 'startBrew':
             x, y, z = self.printer.currPos()
-            self.gcodeSteps = parseTimes(self.steps, self.startTime)
+            self.gcodeSteps = parseTimes(self.steps, datetime.now())
             print(bcolors.OKBLUE + f'Current position: {x}, {y}, {z}' + bcolors.ENDC)
             self.broadcast_message('Starting brew...')
             Thread(target=self.startBrew).start()
