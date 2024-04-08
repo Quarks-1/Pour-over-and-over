@@ -225,6 +225,7 @@ class MyConsumer(WebsocketConsumer):
     def startBrew(self):
         while True:
             # Check if current time is time for next step
+            print(self.gcodeSteps)
             if datetime.now() >= self.gcodeSteps[0][1]:
                 print(f'Working on command: {self.gcodeSteps[0][0]}')
                 if 'Draw down' in self.gcodeSteps[0][0]:
