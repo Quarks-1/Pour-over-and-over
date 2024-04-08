@@ -243,7 +243,7 @@ class MyConsumer(WebsocketConsumer):
                 # Remove step from list
                 self.gcodeSteps.pop(0)
                 # Sleep for command time
-                time.sleep(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()))
+                time.sleep(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()) - 1)
                 # If no more steps, break out of loop
                 if len(self.gcodeSteps) == 0:
                     break
