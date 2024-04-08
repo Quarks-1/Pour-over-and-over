@@ -81,7 +81,7 @@ class MyConsumer(WebsocketConsumer):
             self.profile = BrewProfile.objects.get(id=data['profile'])
             print(f'Profile selected: {self.profile}')
             self.steps = parseSteps(self.profile.steps)
-            self.gcodeSteps = parseTimes(self.steps)
+            self.gcodeSteps = parseTimes(self.steps, self.startTime)
             return
 
         if action == 'startBrew':
@@ -239,7 +239,7 @@ def parseSteps(steps):
 
 # Parses steps into ([gCode], Time) pairs
 # Time is when the gcode should be executed
-def parseTimes(steps):
+def parseTimes(steps, startTime):
     times_dict = {
         'Center': 1,
         'Inner circle': 3.68,
@@ -255,17 +255,18 @@ def parseTimes(steps):
     }
     
     times = []
-    totalTime = 0
+    totalTime = startTime
     # TODO: add pump actuation
     # Add in sending gcode signals to printer function
     for step in steps:
         if 'pre_wet' in step:
-            step = (gCode['pre_wet'], 10)
+            totalTime += 10
+            step = (gCode['pre_wet'], totalTime)
             continue
         instructArr = []
-        pourTime = step[1] / step[2]
+        pourTime = step[1] / step[2]  # water weight / flow rate
         totalTime += pourTime
-        numInstruct = math.ceil(times_dict[step[0]] / pourTime)
+        numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
         step = ([gCode[step[0]]] * numInstruct, totalTime)
         times.append(step)
         
