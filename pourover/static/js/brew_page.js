@@ -38,7 +38,7 @@ function connectToServer() {
         } 
         else if (response['type'] == 'message' && response['message'] == 'start data feed') {
             setInterval(() => {
-                socket.send(JSON.stringify({"command": "checkTime"}))
+                // socket.send(JSON.stringify({"command": "checkTime"}))
                 socket.send(JSON.stringify({"command": "updateData"}));
             }, 1000);
         }
