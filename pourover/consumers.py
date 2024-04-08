@@ -235,7 +235,7 @@ class MyConsumer(WebsocketConsumer):
                 print(f'Working on command: {self.gcodeSteps[0][0]}')
                 if 'Draw down' in self.gcodeSteps[0][0]:
                     self.broadcast_message('Draw down')
-                    time.sleep(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()))
+                    time.sleep(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()) - 1)
                     self.gcodeSteps.pop(0)
                     continue
                 self.broadcast_message('Working on next step...')
