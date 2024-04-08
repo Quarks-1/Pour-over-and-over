@@ -83,11 +83,11 @@ class MyConsumer(WebsocketConsumer):
             self.profile = BrewProfile.objects.get(id=data['profile'])
             print(f'Profile selected: {self.profile}')
             self.steps = parseSteps(self.profile.steps)
-            self.gcodeSteps = parseTimes(self.steps, self.startTime)
             return
 
         if action == 'startBrew':
             x, y, z = self.printer.currPos()
+            self.gcodeSteps = parseTimes(self.steps, self.startTime)
             print(bcolors.OKBLUE + f'Current position: {x}, {y}, {z}' + bcolors.ENDC)
             self.broadcast_message('Starting brew...')
             Thread(target=self.startBrew).start()
