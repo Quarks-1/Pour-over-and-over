@@ -164,7 +164,10 @@ class MyConsumer(WebsocketConsumer):
 
         # Split the string based on '/'
         numbers = clean_str.split('/')
-        
+        if len(numbers) != 2:
+            printError('Invalid data received from Arduino')
+            print(f'Invalid data: {numbers}')
+            return
         # Convert strings to floats and perform division
         try:
             result = (float(numbers[0]), float(numbers[1]))
