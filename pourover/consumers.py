@@ -273,9 +273,13 @@ def parseTimes(steps, startTime):
         step = ([gCode[step[0]]] * numInstruct, totalTime)
         times.append(step)
         
-    print(times)
+    printTimes(times)
     return times
 
+
+def printTimes(times):
+    for time in times:
+        print(f'{time[0]}: {time[1]}')
 
 def printError(error_message):
     print(bcolors.FAIL + '#'*len(error_message))
