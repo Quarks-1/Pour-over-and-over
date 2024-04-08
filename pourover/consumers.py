@@ -229,7 +229,7 @@ class MyConsumer(WebsocketConsumer):
                 print(f'Working on command: {self.gcodeSteps[0][0]}')
                 if 'Draw down' in self.gcodeSteps[0][0]:
                     self.broadcast_message('Draw down')
-                    time.sleep(self.gcodeSteps[0][1] - datetime.now())
+                    time.sleep((self.gcodeSteps[0][1] - datetime.now()).seconds())
                     self.gcodeSteps.pop(0)
                     continue
                 # Send gcode to printer
