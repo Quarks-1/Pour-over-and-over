@@ -229,7 +229,6 @@ class MyConsumer(WebsocketConsumer):
                 self.gcodeSteps[0][1]
             except IndexError:
                 print('No more steps. Brew complete.')
-                print(self.gcodeSteps)
                 self.broadcast_message('Brew complete')
                 return
             if datetime.now() >= self.gcodeSteps[0][1]:
@@ -239,6 +238,7 @@ class MyConsumer(WebsocketConsumer):
                     time.sleep(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()))
                     self.gcodeSteps.pop(0)
                     continue
+                self.broadcast_message('Working on next step...')
                 # Send gcode to printer
                 for command in self.gcodeSteps[0][0]:
                     # Check if command is circle
