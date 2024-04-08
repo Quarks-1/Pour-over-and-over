@@ -187,6 +187,7 @@ class MyConsumer(WebsocketConsumer):
                 # Send gcode to printer
                 for command in self.gcodeSteps[0][0]:
                     self.printer.write(command)
+                    print(f'Writing: {command}')
                 # Remove step from list
                 self.gcodeSteps.pop(0)
                 # If no more steps, break out of loop
