@@ -36,11 +36,16 @@ function connectToServer() {
         if (Array.isArray(response)) {
             updateParams(response)
         } 
-        else if (response['type'] == 'message' && response['message'] == 'start data feed') {
+        else if (response['type'] == 'message') {
+            if (response['message'] == 'start data feed') {
             setInterval(() => {
                 // socket.send(JSON.stringify({"command": "checkTime"}))
                 socket.send(JSON.stringify({"command": "updateData"}));
             }, 1000);
+            }
+            else if (response['message'] == 'Successfully connected to Printer and Arduino.') {
+                displayMessage(response['message'])
+            }
         }
         else if (response['type'] == 'data') {
             let weight = document.getElementById("id_brew_weight")
