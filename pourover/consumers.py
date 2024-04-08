@@ -13,6 +13,7 @@ class MyConsumer(WebsocketConsumer):
     profile = None
     printer = None
     arduino = None
+    stop = False
     
     x, y, z = 0, 0, 0
     steps = []
@@ -96,10 +97,15 @@ class MyConsumer(WebsocketConsumer):
         if action == "stopBrew":
             self.received_stop(data)
             self.broadcast_message('Brew stopped.')
+            self.stop = True
             return
         
         if action == "restartBrew":
             self.broadcast_message('Brew restarted.')
+            self.stop = False
+            # parse steps again
+            self.steps = parseSteps(self.profile.steps)
+            self.gcodeSteps = parseTimes(self.steps, self.startTime)
             self.received_restart(data)
             return
         if action == 'updateData':
