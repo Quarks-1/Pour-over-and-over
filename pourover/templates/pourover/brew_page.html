@@ -11,42 +11,59 @@
 <body>
     <span id="id_profile_id" hidden> {{ id }} </span>
     <button onclick="window.location.href = '{% url 'home_page' %}'" id='id_change_profile_button'>Change Profile</button>
-    <div id='id_brew_status'>Connecting to printer...</div>
-    <div>   
-        <div class="brew_profile">
-            <span id=''>Profile name: {{profile.name}}</span>
-            <span id='' class=''>Description: {{profile.description}}</span>
-            <span id='' class=''>Rating: {{profile.rating}} / 10</span>
-            <span id='' class=''>Coffee weight: {{profile.grind_weight}}</span>
-            <span id='' class=''>Water weight: {{profile.water_weight}}</span>
-            <span id='' class=''>Water temperature: {{profile.water_temp}}</span>
-            <span id='' class=''>Brew device: {{profile.brew_device}}</span>
-            <span id='' class=''>Brew Method: {{profile.brew_method}}</span>
+    <div class="status_div">
+        <span>Current status: </span>
+        <span id="id_brew_status">Connecting to printer...</span>
+    </div>
+    <div class='container'>
+        <div class="box">
+            <span class="box_span">Selected profile details</span>
+            <div class="brew_profile">
+                <span id=''>Profile name: {{profile.name}}</span>
+                <span id='' class=''>Description: {{profile.description}}</span>
+                <span id='' class=''>Rating: {{profile.rating}} / 10</span>
+                <span id='' class=''>Coffee weight: {{profile.grind_weight}}</span>
+                <span id='' class=''>Water weight: {{profile.water_weight}}</span>
+                <span id='' class=''>Water temperature: {{profile.water_temp}}</span>
+                <span id='' class=''>Brew device: {{profile.brew_device}}</span>
+                <span id='' class=''>Brew Method: {{profile.brew_method}}</span>
+            </div>
+            
+        </div>
+        <div class="box">
+            <span class="box_span">Brew controls</span>
+            <table>
+                <tr>
+                    <td>Current brew time: </td>
+                    <td><span id='id_brew_time'>0</span> seconds</td>
+                </tr>
+                <tr>
+                    <td>Current brew weight: </td>
+                    <td><span id='id_brew_weight'>0</span> grams</td>
+                </tr>
+                <tr>
+                    <td>Current brew temperature: </td>
+                    <td><span id='id_brew_temp'>0</span> °F</td>
+                </tr>
+            </table>
+            <table class="button_controls">
+                <tr>
+                    <td>
+                        <button id='id_start_brew_button' onclick='startBrew()'>Start brew</button>
+                    </td>
+                    <td>
+                        <button id='id_stop_brew_button' onclick='stopBrew()'>Stop brew</button>
+                    </td>
+                    <td>
+                        <button id='id_restart_brew_button' onclick='restartBrew()'>Restart brew</button>
+                    </td>
+                    <td>
+                        <button id='id_tare_scale' onclick='tareScale()'>Tare scale</button>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
-    <div>
-        <div class="brew_profile">
-            <span id=''>Current brew time: <span id='id_brew_time'>0</span> seconds</span><br>
-            <span id=''>Current brew weight: <span id='id_brew_weight'>0</span> grams</span><br>
-            <span id=''>Current brew temperature: <span id='id_brew_temp'>0</span> °F</span><br>
-        </div>
-    </div>
-    <table>
-        <tr>
-            <td>
-                <button id='id_start_brew_button' onclick='startBrew()'>Start brew</button>
-            </td>
-            <td>
-                <button id='id_stop_brew_button' onclick='stopBrew()'>Stop brew</button>
-            </td>
-            <td>
-                <button id='id_restart_brew_button' onclick='restartBrew()'>Restart brew</button>
-            </td>
-            <td>
-                <button id='id_tare_scale' onclick='tareScale()'>Tare scale</button>
-            </td>
-        </tr>
-    </table>
     <script>
         window.onload = connectToServer()
     </script>

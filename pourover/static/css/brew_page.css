@@ -1,0 +1,64 @@
+body {
+    background-color: #eeb37f; /* This is actually more of a brown color. */
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+button {
+    -webkit-border-radius: 28;
+    -moz-border-radius: 28;
+    border-radius: 28px;
+    color: #ffffff;
+    font-size: 20px;
+    background: #7d410a;
+    padding: 10px 10px 10px 10px;
+    text-decoration: none;
+    width: 100%;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    margin-top: 5px;
+    /* margin-bottom: 10px; */
+
+}
+button:hover {
+    background: #a6642b;
+    text-decoration: none;
+}
+
+
+.container {
+    display: flex; /* Use flexbox for layout */
+}
+.box {
+    width: 50%; /* Each box takes up half the width of the container */
+    border: 3px dashed black; /* Just for visualization */
+    border-radius: 5%;
+    padding: 15px; /* Add some padding for spacing */
+    margin: 10px; /* Add some margin for spacing */
+}
+
+span {
+    text-align: center;
+    align-items: center;
+}
+
+.status_div {
+    align-items: center;
+    text-align: center;
+    font-size: 35px;
+    
+}
+
+
+.box_span {
+    align-items: center;
+    text-align: center;
+    display: table;
+    margin: 0 auto;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.button_controls {
+    align-items: center;
+    display: table;
+    margin: 0 auto;
+}
