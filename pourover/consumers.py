@@ -304,7 +304,7 @@ class printer:
         print(f'Current position: {x}, {y}, i: {i}, j: {j}')
         self.ser.write(str.encode(f"G0 X{x-i} Y{y-j} F3600\r\n"))
         # Draw circle
-        self.ser.write(str.encode(f"G2 X{x} Y{y} I{i} J{j} F3600\r\n"))
+        self.ser.write(str.encode(f"G2 X{x-i} Y{y-j} I{i} J{j} F3600\r\n"))
         
 
     def currPos(self) -> list[int, int, int]:
