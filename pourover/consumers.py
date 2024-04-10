@@ -267,10 +267,11 @@ class MyConsumer(WebsocketConsumer):
         self.broadcast_message('Brew complete')
         return
 
-    def doPour(self, time):
+    def doPour(self, data):
+        # data = (water weight, time)
         # Send signal to arduino
-        self.arduino.write(b'pumpOn\n')
-        time.sleep(time)
+        self.arduino.write(f'pumpOn,{data[0] / data[1]}\n'.encode())
+        time.sleep(data[1])
         self.arduino.write(b'pumpOff\n')
         return
 
@@ -369,13 +370,13 @@ def parseTimes(steps, startTime):
     # Add in sending gcode signals to printer function
     for step in steps:
         if 'pre_wet' in step:
-            step = ([gCode['pre_wet']], totalTime)
+            step = ([gCode['pre_wet']], totalTime, (2, 10))
             totalTime += timedelta(seconds=10)
         else:
             instructArr = []
             pourTime = step[1] / step[2]  # water weight / flow rate
             numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
-            step = ([gCode[step[0]]] * numInstruct, totalTime, pourTime)
+            step = ([gCode[step[0]]] * numInstruct, totalTime, (step[1], pourTime))
             totalTime += timedelta(seconds=pourTime)
         # Add draw down time
         times.append(step)
