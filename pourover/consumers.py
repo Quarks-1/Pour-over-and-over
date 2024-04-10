@@ -21,6 +21,7 @@ class MyConsumer(WebsocketConsumer):
     gcodeSteps = []
     startTime = None
     pid = None
+    heated = False
     
 
     def connect(self):
@@ -94,6 +95,9 @@ class MyConsumer(WebsocketConsumer):
             return
 
         if action == 'startBrew':
+            if not self.heated:
+                self.broadcast_message('Heating water. Please wait...')
+                return
             x, y, z = self.printer.currPos()
             self.gcodeSteps = parseTimes(self.steps, datetime.now())
             print(bcolors.OKBLUE + f'Current position: {x}, {y}, {z}' + bcolors.ENDC)
@@ -221,6 +225,7 @@ class MyConsumer(WebsocketConsumer):
                     if current_temp >= self.profile.water_temp:
                         self.broadcast_message('Water heated. Starting brew...')
                         break
+                time.sleep(0.05)
             except KeyboardInterrupt:
                 print("Exiting...")
                 break
@@ -228,6 +233,11 @@ class MyConsumer(WebsocketConsumer):
                 # In case of faulty serial data that cannot be converted to float
                 print("Invalid data received.")
                 continue
+            except serial.SerialException:
+                printError('Arduino error')
+                continue
+        self.heated = True
+        return
         
         
     def startBrew(self):
@@ -240,32 +250,32 @@ class MyConsumer(WebsocketConsumer):
                 self.broadcast_message('Brew complete')
                 return
             if datetime.now() >= self.gcodeSteps[0][1]:
+                self.broadcast_message('Working on next step...')
                 print(f'Working on command: {self.gcodeSteps[0][0]}')
                 if 'Draw down' in self.gcodeSteps[0][0]:
                     self.broadcast_message('Draw down')
                     time.sleep(max(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()) - 1, 0))
                     self.gcodeSteps.pop(0)
                     continue
-                self.broadcast_message('Working on next step...')
-                
-                # Send gcode to printer
-                for command in self.gcodeSteps[0][0]:
-                    # Check if command is circle
-                    if 'I' in command:
-                        [i, j, x, y] = [int(command.split('I')[1].split(' ')[0]), int(command.split('J')[1].split(' ')[0]), int(command.split('X')[1].split(' ')[0]), int(command.split('Y')[1].split(' ')[0])]
-                        self.printer.arcFromCurr(i, j, x, y)
-                    else:
-                        self.printer.write(command)
-                time.sleep(0.05)
-                # Actuate pump
-                Thread(target=self.doPour, args=(self.gcodeSteps[0][2])).start()
-                # Remove step from list
-                self.gcodeSteps.pop(0)
-                # Sleep for command time
-                time.sleep(max(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()) - 1, 0))
-                # If no more steps, break out of loop
-                if len(self.gcodeSteps) == 0:
-                    break
+                else:
+                    # Send gcode to printer
+                    for command in self.gcodeSteps[0][0]:
+                        # Check if command is circle
+                        if 'I' in command:
+                            [i, j, x, y] = [int(command.split('I')[1].split(' ')[0]), int(command.split('J')[1].split(' ')[0]), int(command.split('X')[1].split(' ')[0]), int(command.split('Y')[1].split(' ')[0])]
+                            self.printer.arcFromCurr(i, j, x, y)
+                        else:
+                            self.printer.write(command)
+                    time.sleep(0.05)
+                    # Actuate pump
+                    Thread(target=self.doPour, args=(self.gcodeSteps[0][2])).start()
+                    # Remove step from list
+                    self.gcodeSteps.pop(0)
+                    # Sleep for command time
+                    time.sleep(max(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()) - 1, 0))
+                    # If no more steps, break out of loop
+                    if len(self.gcodeSteps) == 0:
+                        break
             # Check if stop command received
             # TODO: implement stop
             if self.stop:
