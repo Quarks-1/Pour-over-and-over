@@ -256,6 +256,7 @@ class MyConsumer(WebsocketConsumer):
                         self.printer.arcFromCurr(i, j, x, y)
                     else:
                         self.printer.write(command)
+                time.sleep(0.05)
                 # Actuate pump
                 Thread(target=self.doPour, args=(self.gcodeSteps[0][2])).start()
                 # Remove step from list
