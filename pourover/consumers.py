@@ -198,6 +198,7 @@ class MyConsumer(WebsocketConsumer):
             'temp': result[1],
         }
         self.broadcast_data(data_dict)
+        return result
     
     # TODO: Test heating
     def startHeater(self):
@@ -205,12 +206,11 @@ class MyConsumer(WebsocketConsumer):
         while True:
             try:
                 # Read temperature from serial
-                self.arduino.reset_input_buffer()
-                line = self.get_arduino_feed()
+                data = self.get_arduino_feed()
                 # control_heating('heating_on')
-                if line and len(line.split(',')) == 2:  # If line is not empty
+                if data:  # If line is not empty
                     # print(f'Line: {line}')
-                    current_temp = float(line.split(',')[1])
+                    current_temp = float(data[1])
                     # print(f"Current Temperature: {current_temp}°F")
                     
                     # Compute PID output
