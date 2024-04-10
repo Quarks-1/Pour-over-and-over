@@ -39,7 +39,7 @@ class MyConsumer(WebsocketConsumer):
             return
     
         try:
-            self.arduino = serial.Serial(port='/dev/ttyACM1', baudrate=9600, timeout=.1) 
+            self.arduino = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=.1) 
         except serial.SerialException:
             printError('WARNING: ARDUINO NOT CONNECTED')
             self.broadcast_message('Arduino not connected. Please connect Arduino and reload page.')
