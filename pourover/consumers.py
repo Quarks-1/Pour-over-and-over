@@ -207,7 +207,7 @@ class MyConsumer(WebsocketConsumer):
                 if line and len(line.split('/')) == 2:  # If line is not empty
                     # print(f'Line: {line}')
                     current_temp = float(line.split('/')[1])
-                    print(f"Current Temperature: {current_temp}°F")
+                    # print(f"Current Temperature: {current_temp}°F")
                     
                     # Compute PID output
                     control = self.pid(current_temp)
@@ -216,7 +216,7 @@ class MyConsumer(WebsocketConsumer):
                     # Send command to Arduino to control the heating element
                     self.arduino.write(b'1\n' if heating_on else b'0\n')
                     # Optional: Print the control decision
-                    print("Heating On" if heating_on else "Heating Off")
+                    # print("Heating On" if heating_on else "Heating Off")
                     # Check to see if target temp reached
                     if current_temp >= self.profile.water_temp:
                         self.broadcast_message('Water heated. Starting brew...')
