@@ -175,6 +175,8 @@ class MyConsumer(WebsocketConsumer):
             except serial.SerialException:
                 continue
             decoded_str = data.decode('utf-8')
+            if decoded_str.split('/') == 2:
+                break
             time.sleep(0.05)
         # Strip whitespace and newlines
         clean_str = decoded_str.strip()
