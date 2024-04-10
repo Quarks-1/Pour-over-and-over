@@ -177,7 +177,7 @@ class MyConsumer(WebsocketConsumer):
             decoded_str = data.decode('utf-8')
             if len(decoded_str.split('/')) == 2:
                 break
-            time.sleep(0.1)
+            time.sleep(0.15)
         # Strip whitespace and newlines
         clean_str = decoded_str.strip()
 
