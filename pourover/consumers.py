@@ -257,8 +257,7 @@ class MyConsumer(WebsocketConsumer):
                     else:
                         self.printer.write(command)
                 # Actuate pump
-                pourData = f'{self.gcodeSteps[0][2]}'
-                Thread(target=self.doPour, args=(pourData)).start()
+                Thread(target=self.doPour, args=(self.gcodeSteps[0][2])).start()
                 # Remove step from list
                 self.gcodeSteps.pop(0)
                 # Sleep for command time
@@ -275,12 +274,11 @@ class MyConsumer(WebsocketConsumer):
         self.broadcast_message('Brew complete')
         return
 
-    def doPour(self, data):
+    def doPour(self, water_weight, pour_time):
         # data = (water weight, time)
-        data = map(int, data.split(','))
         # Send signal to arduino
-        self.arduino.write(f'pumpOn,{data[0] / data[1]}\n'.encode())
-        time.sleep(data[1])
+        self.arduino.write(f'pumpOn,{water_weight / pour_time}\n'.encode())
+        time.sleep(pour_time)
         self.arduino.write(b'pumpOff\n')
         return
 
