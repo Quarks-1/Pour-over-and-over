@@ -79,6 +79,9 @@ class MyConsumer(WebsocketConsumer):
             if 'profile' not in data:
                 printError('profile property not sent in JSON')
                 return
+            elif self.arduino is None or self.printer is None:
+                printError('Printer or Arduino not connected')
+                return
             
             self.profile = BrewProfile.objects.get(id=data['profile'])
             print(f'Profile selected: {self.profile}')
