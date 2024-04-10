@@ -257,8 +257,8 @@ class MyConsumer(WebsocketConsumer):
                     else:
                         self.printer.write(command)
                 # Actuate pump
-                print(self.gcodeSteps[0][2])
-                Thread(target=self.doPour, args=((self.gcodeSteps[0][2]))).start()
+                pourData = self.gcodeSteps[0][2]
+                Thread(target=self.doPour, args=(pourData)).start()
                 # Remove step from list
                 self.gcodeSteps.pop(0)
                 # Sleep for command time
