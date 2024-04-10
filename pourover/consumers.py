@@ -168,8 +168,7 @@ class MyConsumer(WebsocketConsumer):
     def get_arduino_feed(self):
         self.arduino.reset_input_buffer()
         time.sleep(0.05)
-        data = self.arduino.readline() 
-        decoded_str = data.decode('utf-8')
+        decoded_str = ''
         while decoded_str == '':
             try:
                 data = self.arduino.readline() 
@@ -206,7 +205,7 @@ class MyConsumer(WebsocketConsumer):
             try:
                 # Read temperature from serial
                 self.arduino.reset_input_buffer()
-                line = self.arduino.readline().decode('utf-8').strip()
+                line = self.get_arduino_feed()
                 # control_heating('heating_on')
                 if line and len(line.split('/')) == 2:  # If line is not empty
                     # print(f'Line: {line}')
