@@ -257,11 +257,12 @@ class MyConsumer(WebsocketConsumer):
                     else:
                         self.printer.write(command)
                 # Actuate pump
+                print(self.gcodeSteps[0][2])
                 Thread(target=self.doPour, args=(self.gcodeSteps[0][2])).start()
                 # Remove step from list
                 self.gcodeSteps.pop(0)
                 # Sleep for command time
-                time.sleep(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()) - 1)
+                time.sleep(max(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()) - 1, 0))
                 # If no more steps, break out of loop
                 if len(self.gcodeSteps) == 0:
                     break
