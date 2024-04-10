@@ -201,7 +201,7 @@ class MyConsumer(WebsocketConsumer):
                 self.arduino.reset_input_buffer()
                 line = self.arduino.readline().decode('utf-8').strip()
                 # control_heating('heating_on')
-                if line:  # If line is not empty
+                if line and len(line.split('/')) == 2:  # If line is not empty
                     # print(f'Line: {line}')
                     current_temp = float(line.split('/')[1])
                     print(f"Current Temperature: {current_temp}°F")
