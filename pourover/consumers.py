@@ -183,13 +183,13 @@ class MyConsumer(WebsocketConsumer):
 
         numbers = clean_str.split('/')
         if len(numbers) != 2:
-            print(f'Invalid data: {clean_str}')
+            print(f'Invalid data: {decoded_str}')
             return
         # Convert strings to floats and perform division
         try:
             result = (float(numbers[0]), float(numbers[1]))
         except ValueError:
-            print(f'Invalid data: {clean_str}')
+            print(f'Invalid data: {decoded_str}')
             return
         data_dict = {
             'weight': result[0],
