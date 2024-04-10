@@ -85,7 +85,8 @@ class MyConsumer(WebsocketConsumer):
             pid = PID(70, 30, 500, setpoint=self.profile.water_temp)  # P=1.0, I=0.1, D=0.05, desired temperature=25°C
             pid.sample_time = 0.5  # Update every 1 second
             pid.output_limits = (0, 1)  # Output value will be between 0 and 1 (off/on)
-
+            self.pid = pid
+            Thread(target=self.startHeater).start()
             self.steps = parseSteps(self.profile.steps)
             return
 
@@ -193,7 +194,7 @@ class MyConsumer(WebsocketConsumer):
         while True:
             try:
                 # Read temperature from serial
-                # arduino.reset_input_buffer()
+                self.arduino.reset_input_buffer()
                 line = self.arduino.readline().decode('utf-8').strip()
                 # control_heating('heating_on')
                 if line:  # If line is not empty
@@ -235,10 +236,11 @@ class MyConsumer(WebsocketConsumer):
                 print(f'Working on command: {self.gcodeSteps[0][0]}')
                 if 'Draw down' in self.gcodeSteps[0][0]:
                     self.broadcast_message('Draw down')
-                    time.sleep(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()) - 1)
+                    time.sleep(max(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()) - 1, 0))
                     self.gcodeSteps.pop(0)
                     continue
                 self.broadcast_message('Working on next step...')
+                
                 # Send gcode to printer
                 for command in self.gcodeSteps[0][0]:
                     # Check if command is circle
@@ -247,6 +249,8 @@ class MyConsumer(WebsocketConsumer):
                         self.printer.arcFromCurr(i, j, x, y)
                     else:
                         self.printer.write(command)
+                # Actuate pump
+                Thread(target=self.doPour, args=(self.gcodeSteps[0][2],)).start()
                 # Remove step from list
                 self.gcodeSteps.pop(0)
                 # Sleep for command time
@@ -263,6 +267,12 @@ class MyConsumer(WebsocketConsumer):
         self.broadcast_message('Brew complete')
         return
 
+    def doPour(self, time):
+        # Send signal to arduino
+        self.arduino.write(b'pumpOn\n')
+        time.sleep(time)
+        self.arduino.write(b'pumpOff\n')
+        return
 
 class printer:
     def __init__(self):
@@ -365,7 +375,7 @@ def parseTimes(steps, startTime):
             instructArr = []
             pourTime = step[1] / step[2]  # water weight / flow rate
             numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
-            step = ([gCode[step[0]]] * numInstruct, totalTime)
+            step = ([gCode[step[0]]] * numInstruct, totalTime, pourTime)
             totalTime += timedelta(seconds=pourTime)
         # Add draw down time
         times.append(step)
