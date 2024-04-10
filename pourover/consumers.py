@@ -179,18 +179,17 @@ class MyConsumer(WebsocketConsumer):
         # Strip whitespace and newlines
         clean_str = decoded_str.strip()
 
-        # Split the string based on '/'
         numbers = clean_str.split(',')
         if len(numbers) != 2:
             printError('Invalid data received from Arduino')
-            print(f'Invalid data: {numbers}')
+            print(f'Invalid data: {clean_str}')
             return
         # Convert strings to floats and perform division
         try:
             result = (float(numbers[0]), float(numbers[1]))
         except ValueError:
             printError('Invalid data received from Arduino')
-            print(f'Invalid data: {numbers}')
+            print(f'Invalid data: {clean_str}')
             return
         data_dict = {
             'weight': result[0],
@@ -207,9 +206,9 @@ class MyConsumer(WebsocketConsumer):
                 self.arduino.reset_input_buffer()
                 line = self.get_arduino_feed()
                 # control_heating('heating_on')
-                if line and len(line.split('/')) == 2:  # If line is not empty
+                if line and len(line.split(',')) == 2:  # If line is not empty
                     # print(f'Line: {line}')
-                    current_temp = float(line.split('/')[1])
+                    current_temp = float(line.split(',')[1])
                     # print(f"Current Temperature: {current_temp}°F")
                     
                     # Compute PID output
