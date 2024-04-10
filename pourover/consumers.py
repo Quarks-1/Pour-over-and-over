@@ -167,7 +167,7 @@ class MyConsumer(WebsocketConsumer):
     
     def get_arduino_feed(self):
         self.arduino.reset_input_buffer()
-        time.sleep(0.05)
+        time.sleep(0.1)
         decoded_str = ''
         while decoded_str == '':
             try:
