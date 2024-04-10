@@ -179,7 +179,7 @@ class MyConsumer(WebsocketConsumer):
         # Strip whitespace and newlines
         clean_str = decoded_str.strip()
 
-        numbers = clean_str.split(',')
+        numbers = clean_str.split('/')
         if len(numbers) != 2:
             printError('Invalid data received from Arduino')
             print(f'Invalid data: {clean_str}')
