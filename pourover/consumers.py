@@ -96,7 +96,7 @@ class MyConsumer(WebsocketConsumer):
 
         if action == 'startBrew':
             if not self.heated:
-                self.broadcast_message('Heating water. Please wait...')
+                self.broadcast_message('Water not yet heated. Please wait...')
                 printError('Water not heated')
                 return
             x, y, z = self.printer.currPos()
@@ -222,7 +222,7 @@ class MyConsumer(WebsocketConsumer):
                     # print("Heating On" if heating_on else "Heating Off")
                     # Check to see if target temp reached
                     if current_temp >= self.profile.water_temp:
-                        self.broadcast_message('Water heated. Starting brew...')
+                        self.broadcast_message('Water heated. Click to start brew...')
                         break
                 time.sleep(0.05)
             except KeyboardInterrupt:
@@ -310,7 +310,7 @@ class printer:
     
     def arcFromCurr(self, i, j, x, y):
         # Offset from center
-        print(f'Current position: {x}, {y}, i: {i}, j: {j}')
+        # print(f'Current position: {x}, {y}, i: {i}, j: {j}')
         self.ser.write(str.encode(f"G0 X{x-i} Y{y-j} F3600\r\n"))
         # Draw circle
         self.ser.write(str.encode(f"G2 X{x-i} Y{y-j} I{i} J{j} F3600\r\n"))
