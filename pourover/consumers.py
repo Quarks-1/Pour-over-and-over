@@ -175,6 +175,8 @@ class MyConsumer(WebsocketConsumer):
         decoded_str = data.decode('utf-8')
         while decoded_str == '' or len(decoded_str.strip().split('/')) != 2:
             decoded_str = self.arduino.readline().decode('utf-8')
+            time.sleep(0.05)
+            
             continue
 
         # Strip whitespace and newlines
