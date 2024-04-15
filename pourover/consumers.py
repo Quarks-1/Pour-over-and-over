@@ -174,7 +174,12 @@ class MyConsumer(WebsocketConsumer):
         # Decode byte string to a normal string
         decoded_str = data.decode('utf-8')
         while decoded_str == '' or len(decoded_str.strip().split('/')) != 2:
-            decoded_str = self.arduino.readline().decode('utf-8')
+            try:
+                data = self.arduino.readline()
+            except serial.SerialException:
+                printError('Arduino error')
+                continue
+            decoded_str = data.decode('utf-8')
             time.sleep(0.1)
             continue
         # print(decoded_str)
