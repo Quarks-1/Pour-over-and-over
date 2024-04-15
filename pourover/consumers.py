@@ -120,9 +120,6 @@ class MyConsumer(WebsocketConsumer):
             self.gcodeSteps = parseTimes(self.steps, self.startTime)
             self.received_restart(data)
             return
-        if action == 'updateData':
-            self.get_arduino_feed()
-            return
         
         if action == 'tareScale':
             self.arduino.write(b'tare\n')
@@ -168,29 +165,21 @@ class MyConsumer(WebsocketConsumer):
     def get_arduino_feed(self):
         self.arduino.reset_input_buffer()
         time.sleep(0.05)
-        decoded_str = ''
-        while decoded_str == '':
-            try:
-                data = self.arduino.readline() 
-            except serial.SerialException:
-                continue
-            decoded_str = data.decode('utf-8')
-            if len(decoded_str.split('/')) == 2:
-                break
-            time.sleep(0.15)
+        data = self.arduino.readline() 
+
+        # Decode byte string to a normal string
+        decoded_str = data.decode('utf-8')
+        while decoded_str == '' or len(decoded_str.strip().split('/')) != 2:
+            decoded_str = self.arduino.readline().decode('utf-8')
+            continue
+
         # Strip whitespace and newlines
         clean_str = decoded_str.strip()
 
+        # Split the string based on '/'
         numbers = clean_str.split('/')
-        if len(numbers) != 2:
-            print(f'Invalid data: {decoded_str}')
-            return
-        # Convert strings to floats and perform division
-        try:
-            result = (float(numbers[0]), float(numbers[1]))
-        except ValueError:
-            print(f'Invalid data: {decoded_str}')
-            return
+
+        result = (float(numbers[0]), float(numbers[1]))
         data_dict = {
             'weight': result[0],
             'temp': result[1],
