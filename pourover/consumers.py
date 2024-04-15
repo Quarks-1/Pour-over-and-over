@@ -97,6 +97,7 @@ class MyConsumer(WebsocketConsumer):
         if action == 'startBrew':
             if not self.heated:
                 self.broadcast_message('Heating water. Please wait...')
+                printError('Water not heated')
                 return
             x, y, z = self.printer.currPos()
             self.gcodeSteps = parseTimes(self.steps, datetime.now())
