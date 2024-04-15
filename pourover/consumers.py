@@ -125,6 +125,10 @@ class MyConsumer(WebsocketConsumer):
             self.arduino.write(b'tare\n')
             print('taring')
             return
+        
+        if action == 'updateData':
+            self.get_arduino_feed()
+            return
 
         printError(f'Invalid action property: "{action}"')
 

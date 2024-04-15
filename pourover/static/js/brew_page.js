@@ -119,10 +119,6 @@ function disableButtons() {
     restartBrewButton.disabled = true
 }
 
-function updateData() {
-    
-}
-
 function getCurrentTimeDifference() {
     let now = new Date(); // Current time
     let difference = now - startTime; // Difference in milliseconds
