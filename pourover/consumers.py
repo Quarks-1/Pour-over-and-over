@@ -173,7 +173,7 @@ class MyConsumer(WebsocketConsumer):
 
         # Decode byte string to a normal string
         decoded_str = data.decode('utf-8')
-        while decoded_str == '' or len(decoded_str.strip().split('/')) != 2:
+        while decoded_str == '' or len(decoded_str.strip().split('/')) != 2 or decoded_str.strip().split('/')[0] == '' or decoded_str.strip().split('/')[1] == '':
             try:
                 data = self.arduino.readline()
             except serial.SerialException:
