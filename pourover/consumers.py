@@ -177,7 +177,7 @@ class MyConsumer(WebsocketConsumer):
             decoded_str = self.arduino.readline().decode('utf-8')
             time.sleep(0.05)
             continue
-        print(decoded_str)
+        # print(decoded_str)
 
         # Strip whitespace and newlines
         clean_str = decoded_str.strip()
