@@ -1,12 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from pourover.models import BrewProfile, BrewProfileForm
 from django.utils import timezone
+import serial
 
 
 # Create your views here.
 
 
 def home_page(request):
+    # Home printer
+    try:
+        printer = serial.Serial("/dev/ttyUSB0", 115200)
+        printer.write(str.encode("G28 X Y Z\r\n"))
+    except serial.SerialException:
+        print('WARNING: PRINTER NOT CONNECTED')
     return render(request, 'pourover/home_page.html', {'profiles': BrewProfile.objects.all()})
 
 def home_page_sorted(request, sort_order, order):

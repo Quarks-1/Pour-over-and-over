@@ -107,6 +107,16 @@
                     </table>
                 </div>
                 <div class='box remove_steps'>
+                    <span class='remove_step_label'>Add delay</span>
+                    <form id='addDelay'>
+                        <table>
+                            <tr>
+                                <td><label for="delayTime">Delay time :</label></td>
+                                <td><input type="number" id="delayTime" name="delayTime" class='profile_form remove_form'></td>
+                            </tr>
+                        </table>
+                        <button id='id_addDelay' type="button" onclick="addDelay()">Add delay</button>
+                    </form>
                     <span class='remove_step_label'>Remove steps</span>
                     <form id="removeStepForm">
                         <table>
@@ -116,6 +126,7 @@
                             </tr>
                         </table>
                         <button id='id_removeStep' type="button" onclick="removeStep()">Remove</button>
+                    </form>
                 </div>
             </div>
             <div class='rinse_div'>

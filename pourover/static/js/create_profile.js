@@ -10,6 +10,13 @@ function addStep() {
     renderSteps();
 };
 
+function addDelay() {
+    let delay = document.getElementById('delayTime').value;
+    steps.push(`delay/${delay}/0/0`);
+    prettySteps.push(['delay', delay, 0, 0]);
+    renderSteps();
+}
+
 // Passes JS data into Django form input fields
 function submitSteps() {
     // Add pre wet

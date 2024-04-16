@@ -2,7 +2,7 @@ from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 from pourover.models import BrewProfile
 import json, serial, time, math
-from threading import Thread
+from threading import Thread, Timer
 from datetime import datetime, timedelta
 from simple_pid import PID
 
@@ -19,6 +19,7 @@ class MyConsumer(WebsocketConsumer):
     x, y, z = 0, 0, 0
     steps = []
     gcodeSteps = []
+    queue = []
     startTime = None
     pid = None
     heated = False
@@ -80,18 +81,19 @@ class MyConsumer(WebsocketConsumer):
             if 'profile' not in data:
                 printError('profile property not sent in JSON')
                 return
-            elif self.arduino is None or self.printer is None:
-                printError('Printer or Arduino not connected')
-                return
-            
             self.profile = BrewProfile.objects.get(id=data['profile'])
             print(f'Profile selected: {self.profile}')
+            self.steps = parseSteps(self.profile.steps)
+            if self.arduino is None or self.printer is None:
+                printError('Printer or Arduino not connected')
+                return
+            # Start PID heating
             pid = PID(70, 30, 500, setpoint=self.profile.water_temp)  # P=1.0, I=0.1, D=0.05, desired temperature=25°C
             pid.sample_time = 0.5  # Update every 1 second
             pid.output_limits = (0, 1)  # Output value will be between 0 and 1 (off/on)
             self.pid = pid
             Thread(target=self.startHeater).start()
-            self.steps = parseSteps(self.profile.steps)
+            
             return
 
         if action == 'startBrew':
@@ -99,18 +101,17 @@ class MyConsumer(WebsocketConsumer):
                 self.broadcast_message('Water not yet heated. Please wait...')
                 printError('Water not heated')
                 return
-            x, y, z = self.printer.currPos()
-            self.gcodeSteps = parseTimes(self.steps, datetime.now())
-            print(bcolors.OKBLUE + f'Current position: {x}, {y}, {z}' + bcolors.ENDC)
+            self.schedulePours(self.steps, datetime.now())
             self.broadcast_message('Starting brew...')
-            Thread(target=self.startBrew).start()
             self.received_start(data)
             return
 
         if action == "stopBrew":
             self.received_stop(data)
             self.broadcast_message('Brew stopped.')
-            self.stop = True
+            for timer in self.queue:
+                timer.cancel()
+            self.queue = []
             return
         
         if action == "restartBrew":
@@ -118,7 +119,10 @@ class MyConsumer(WebsocketConsumer):
             self.stop = False
             # parse steps again
             self.steps = parseSteps(self.profile.steps)
-            self.gcodeSteps = parseTimes(self.steps, self.startTime)
+            for timer in self.queue:
+                timer.cancel()
+            self.queue = []
+            self.schedulePours(self.steps, datetime.now())
             self.received_restart(data)
             return
         
@@ -206,21 +210,12 @@ class MyConsumer(WebsocketConsumer):
             try:
                 # Read temperature from serial
                 data = self.get_arduino_feed()
-                # control_heating('heating_on')
-                if data:  # If line is not empty
-                    # print(f'Line: {line}')
+                if data:
                     current_temp = float(data[1])
                     # print(f"Current Temperature: {current_temp}°F")
-                    
-                    # Compute PID output
                     control = self.pid(current_temp)
-                    # Decide on the heating element state based on PID output
-                    heating_on = control >= 0.5  # Example logic to turn heating on/off
-                    # Send command to Arduino to control the heating element
+                    heating_on = control >= 0.5  
                     self.arduino.write(b'1\n' if heating_on else b'0\n')
-                    # Optional: Print the control decision
-                    # print("Heating On" if heating_on else "Heating Off")
-                    # Check to see if target temp reached
                     if current_temp >= self.profile.water_temp:
                         self.broadcast_message('Water heated. Click to start brew...')
                         break
@@ -238,52 +233,51 @@ class MyConsumer(WebsocketConsumer):
         self.heated = True
         return
         
-        
-    def startBrew(self):
-        while True:
-            # Check if current time is time for next step
-            try:
-                self.gcodeSteps[0][1]
-            except IndexError:
-                print('No more steps. Brew complete.')
-                self.broadcast_message('Brew complete')
-                return
-            if datetime.now() >= self.gcodeSteps[0][1]:
-                self.broadcast_message('Working on next step...')
-                print(f'Working on command: {self.gcodeSteps[0][0]}')
-                if 'Draw down' in self.gcodeSteps[0][0]:
-                    self.broadcast_message('Draw down')
-                    time.sleep(max(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()) - 1, 0))
-                    self.gcodeSteps.pop(0)
-                    continue
-                else:
-                    # Send gcode to printer
-                    for command in self.gcodeSteps[0][0]:
-                        # Check if command is circle
-                        if 'I' in command:
-                            [i, j, x, y] = [int(command.split('I')[1].split(' ')[0]), int(command.split('J')[1].split(' ')[0]), int(command.split('X')[1].split(' ')[0]), int(command.split('Y')[1].split(' ')[0])]
-                            self.printer.arcFromCurr(i, j, x, y)
-                        else:
-                            self.printer.write(command)
-                    time.sleep(0.05)
-                    # Actuate pump
-                    Thread(target=self.doPour, args=(self.gcodeSteps[0][2])).start()
-                    # Remove step from list
-                    self.gcodeSteps.pop(0)
-                    # Sleep for command time
-                    time.sleep(max(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()) - 1, 0))
-                    # If no more steps, break out of loop
-                    if len(self.gcodeSteps) == 0:
-                        break
-            # Check if stop command received
-            # TODO: implement stop
-            if self.stop:
-                print('Stopping brew...')
-                break
-        print('Brew complete')
-        self.broadcast_message('Brew complete')
-        return
 
+    def schedulePours(self, steps, startTime):
+        times_dict = {
+            'Center': 1,
+            'Inner circle': 3.68,
+            'Outer circle': 9, # TODO: Fix estimation thru testing
+            'Edge': 16.5, # TODO: Fix estimation thru testing
+        }
+        gCode = {
+            'pre_wet': 'G2 X127 Y115 Z220 I25 J25 F3600', 
+            'Center': 'G2 X127 Y115 F3600',
+            'Inner circle': 'G2 X127 Y115 I10 J10 F1500',
+            'Outer circle': 'G2 X127 Y115 I25 J25 F1500',
+            'Edge': 'G2 X127 Y115 I35 J35 F1500',
+        }
+        totalTime = startTime
+        for step in steps:
+            if 'pre_wet' in step:
+                step = ([gCode['pre_wet']], [10, 2])
+                totalTime += timedelta(seconds=10)
+            elif 'delay' in step:
+                totalTime += timedelta(seconds=step[1])
+            else:
+                pourTime = step[1] / step[2]  # water weight / flow rate
+                numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
+                step = ([gCode[step[0]]] * numInstruct, [step[1], pourTime])
+                totalTime += timedelta(seconds=pourTime)
+            print(step)
+            timer = Timer((totalTime - startTime).total_seconds(), self.doStep, args=(step))
+            self.queue.append(timer)
+            timer.start()        
+    def doStep(self, gcode, water):
+        print(gcode, water)
+        # Send gcode to printer
+        for command in gcode:
+            # Check if command is circle
+            if 'I' in command:
+                [i, j, x, y] = [int(command.split('I')[1].split(' ')[0]), int(command.split('J')[1].split(' ')[0]), int(command.split('X')[1].split(' ')[0]), int(command.split('Y')[1].split(' ')[0])]
+                self.printer.arcFromCurr(i, j, x, y)
+            else:
+                self.printer.write(command)
+            time.sleep(0.05)
+        # Actuate pump
+        Thread(target=self.doPour, args=(water)).start()
+    
     def doPour(self, water_weight, pour_time):
         # data = (water weight, time)
         # Send signal to arduino
@@ -291,6 +285,53 @@ class MyConsumer(WebsocketConsumer):
         time.sleep(pour_time)
         self.arduino.write(b'pumpOff\n')
         return
+    
+    
+    # Deprecated brewing function
+    # def startBrew(self):
+    #     while True:
+    #         # Check if current time is time for next step
+    #         try:
+    #             self.gcodeSteps[0][1]
+    #         except IndexError:
+    #             print('No more steps. Brew complete.')
+    #             self.broadcast_message('Brew complete')
+    #             return
+    #         if datetime.now() >= self.gcodeSteps[0][1]:
+    #             self.broadcast_message('Working on next step...')
+    #             print(f'Working on command: {self.gcodeSteps[0][0]}')
+    #             if 'Draw down' in self.gcodeSteps[0][0]:
+    #                 self.broadcast_message('Draw down')
+    #                 time.sleep(max(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()) - 1, 0))
+    #                 self.gcodeSteps.pop(0)
+    #                 continue
+    #             else:
+    #                 # Send gcode to printer
+    #                 for command in self.gcodeSteps[0][0]:
+    #                     # Check if command is circle
+    #                     if 'I' in command:
+    #                         [i, j, x, y] = [int(command.split('I')[1].split(' ')[0]), int(command.split('J')[1].split(' ')[0]), int(command.split('X')[1].split(' ')[0]), int(command.split('Y')[1].split(' ')[0])]
+    #                         self.printer.arcFromCurr(i, j, x, y)
+    #                     else:
+    #                         self.printer.write(command)
+    #                 time.sleep(0.05)
+    #                 # Actuate pump
+    #                 Thread(target=self.doPour, args=(self.gcodeSteps[0][2])).start()
+    #                 # Remove step from list
+    #                 self.gcodeSteps.pop(0)
+    #                 # Sleep for command time
+    #                 time.sleep(max(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()) - 1, 0))
+    #                 # If no more steps, break out of loop
+    #                 if len(self.gcodeSteps) == 0:
+    #                     break
+    #         # Check if stop command received
+    #         if self.stop:
+    #             print('Stopping brew...')
+    #             break
+    #     print('Brew complete')
+    #     self.broadcast_message('Brew complete')
+    #     return
+    
 
 class printer:
     def __init__(self):
@@ -362,47 +403,6 @@ def parseSteps(steps):
 # 3.68   -  I20 J20 F3000
 # 7.53   -  I40 J40 F3000
 
-# 
-
-# Parses steps into ([gCode], Time) pairs
-# Time is when the gcode should be executed
-def parseTimes(steps, startTime):
-    times_dict = {
-        'Center': 1,
-        'Inner circle': 3.68,
-        'Outer circle': 9, # TODO: Fix estimation thru testing
-        'Edge': 16.5, # TODO: Fix estimation thru testing
-    }
-    gCode = {
-        'pre_wet': 'G2 X127 Y115 Z220 I25 J25 F3600', 
-        'Center': 'G2 X127 Y115 F3600',
-        'Inner circle': 'G2 X127 Y115 I10 J10 F1500',
-        'Outer circle': 'G2 X127 Y115 I25 J25 F1500',
-        'Edge': 'G2 X127 Y115 I35 J35 F1500',
-    }
-    
-    times = []
-    totalTime = startTime
-    # TODO: add pump actuation
-    # Add in sending gcode signals to printer function
-    for step in steps:
-        if 'pre_wet' in step:
-            step = ([gCode['pre_wet']], totalTime, (2, 10))
-            totalTime += timedelta(seconds=10)
-        else:
-            instructArr = []
-            pourTime = step[1] / step[2]  # water weight / flow rate
-            numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
-            step = ([gCode[step[0]]] * numInstruct, totalTime, (step[1], pourTime))
-            totalTime += timedelta(seconds=pourTime)
-        # Add draw down time
-        times.append(step)
-        times.append(["Draw down", totalTime])
-        totalTime += timedelta(seconds=30)
-        
-    printTimes(times)
-    return times
-
 
 def printTimes(times):
     i = 0
@@ -426,3 +426,5 @@ class bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+    
+    
