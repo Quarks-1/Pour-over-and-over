@@ -23,6 +23,12 @@ button:hover {
     text-decoration: none;
 }
 
+button:disabled {
+    background: #a6642b;
+    text-decoration: none;
+    color: #000000;
+}
+
 
 .container {
     display: flex; /* Use flexbox for layout */
