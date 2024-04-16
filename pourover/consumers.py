@@ -135,6 +135,10 @@ class MyConsumer(WebsocketConsumer):
             self.get_arduino_feed()
             return
 
+        if action == 'bypassTemp':
+            self.heated = True
+            return
+
         printError(f'Invalid action property: "{action}"')
 
 ################## To be filled in #######################

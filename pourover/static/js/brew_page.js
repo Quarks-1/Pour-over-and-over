@@ -33,10 +33,7 @@ function connectToServer() {
     // Handle messages received from the server.
     socket.onmessage = function(event) {
         let response = JSON.parse(event.data)
-        if (Array.isArray(response)) {
-            updateParams(response)
-        } 
-        else if (response['type'] == 'message') {
+        if (response['type'] == 'message') {
             if (response['message'] == 'start data feed') {
             setInterval(() => {
                 socket.send(JSON.stringify({"command": "updateData"}));
@@ -44,8 +41,12 @@ function connectToServer() {
             }
             else {
                 displayMessage(response['message'])
+                if (response['message'].includes("not connected")) {
+                    disableButtons()
+                }
             }
         }
+
         else if (response['type'] == 'data') {
             let weight = document.getElementById("id_brew_weight")
             let temp = document.getElementById("id_brew_temp")
@@ -56,9 +57,6 @@ function connectToServer() {
         }
 
         else {
-            if (response.includes("not connected")) { 
-                disableButtons()
-            }
             displayMessage(response)
                 
         }
@@ -137,4 +135,8 @@ function getCurrentTimeDifference() {
 function tareScale() {
     console.log('taring')
     socket.send(JSON.stringify({"command": "tareScale"}))
+}
+
+function tareScale() {
+    socket.send(JSON.stringify({"command": "bypassTemp"}))
 }
