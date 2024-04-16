@@ -1,0 +1,38 @@
+[
+    {
+        "model": "pourover.BrewProfile",
+        "pk": 1,
+        "fields": {
+            "id" : 1,
+            "creation_date" : "2021-01-01T00:00:00Z",
+            "name": "4:6 method",
+            "description": "The base 4:6 method for the Hario V60",
+            "grind_size": 18,
+            "grind_weight": 18,
+            "total_water_weight": 300,
+            "water_temp": 212,
+            "brew_method": "Pour over",
+            "brew_device": "Hario V60",
+            "steps": ["pre_wet/0/0/0","Inner Circle/60/4/Low","delay/30/0/0","Outer Circle/60/4/Low","delay/30/0/0","Inner Circle/60/4/Low","delay/30/0/0","Outer Circle/60/4/Low","delay/30/0/0","Outer Circle/60/4/Low","delay/30/0/0"],
+            "rating": 10
+        }
+    },
+    {
+        "model": "pourover.BrewProfile",
+        "pk": 2,
+        "fields": {
+            "id" : 2,
+            "creation_date" : "2021-01-01T00:00:00Z",
+            "name": "Sey coffee",
+            "description": "Sey coffee's long steep method for the AeroPress",
+            "grind_size": 70,
+            "grind_weight": 18,
+            "total_water_weight": 270,
+            "water_temp": 200,
+            "brew_method": "Immersion",
+            "brew_device": "AeroPress",
+            "steps": ["Center/270/12/Low"],
+            "rating": 10
+        }
+    }
+]

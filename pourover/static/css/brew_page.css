@@ -27,6 +27,13 @@ button:disabled {
     background: #a6642b;
     text-decoration: none;
     color: #000000;
+    background: repeating-linear-gradient(
+        45deg,
+        #ff0000,
+        #000000 20px,
+        #ff0000 20px,
+        #000000 20px
+    );
 }
 
 

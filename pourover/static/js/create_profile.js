@@ -36,6 +36,10 @@ function submitSteps() {
         total_water += parseInt(prettySteps[i][1]);
     }
     document.getElementById('id_total_water_weight').value = total_water;
+    // Clear steps
+    steps = [];
+    prettySteps = [];
+    renderSteps();
 };
 
 function renderSteps() {
@@ -58,7 +62,7 @@ function removeStep() {
         alert('Invalid step number');
         return;
     }
-    steps.pop(step_number-1);
-    prettySteps.pop(step_number-1);
+    steps.splice(step_number-1, 1);
+    prettySteps.splice(step_number-1, 1);
     renderSteps();
 };
