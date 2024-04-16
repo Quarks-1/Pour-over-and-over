@@ -18,16 +18,40 @@
     <div class='container'>
         <div class="box">
             <span class="box_span">Selected profile details</span>
-            <div class="brew_profile">
-                <span id=''>Profile name: {{profile.name}}</span>
-                <span id='' class=''>Description: {{profile.description}}</span>
-                <span id='' class=''>Rating: {{profile.rating}} / 10</span>
-                <span id='' class=''>Coffee weight: {{profile.grind_weight}}</span>
-                <span id='' class=''>Water weight: {{profile.water_weight}}</span>
-                <span id='' class=''>Water temperature: {{profile.water_temp}}</span>
-                <span id='' class=''>Brew device: {{profile.brew_device}}</span>
-                <span id='' class=''>Brew Method: {{profile.brew_method}}</span>
-            </div>
+            <table class="brew_profile">
+                <tr>
+                    <td>Profile name:</td>
+                    <td>{{profile.name}}</td>
+                </tr>
+                <tr>
+                    <td>Description:</td>
+                    <td>{{profile.description}}</td>
+                </tr>
+                <tr>
+                    <td>Rating:</td>
+                    <td>{{profile.rating}} / 10</td>
+                </tr>
+                <tr>
+                    <td>Coffee weight:</td>
+                    <td>{{profile.grind_weight}} grams</td>
+                </tr>
+                <tr>
+                    <td>Water weight:</td>
+                    <td>{{profile.total_water_weight}} grams</td>
+                </tr>
+                <tr>
+                    <td>Water temperature:</td>
+                    <td>{{profile.water_temp}} °F</td>
+                </tr>
+                <tr>
+                    <td>Brew device:</td>
+                    <td>{{profile.brew_device}}</td>
+                </tr>
+                <tr>
+                    <td>Brew Method:</td>
+                    <td>{{profile.brew_method}}</td>
+                </tr>
+            </table>
             
         </div>
         <div class="box">
