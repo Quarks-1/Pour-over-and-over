@@ -171,23 +171,34 @@ class MyConsumer(WebsocketConsumer):
     def broadcast_event(self, event):
         self.send(text_data=event['message'])
     
+    previous_data = None
     def get_arduino_feed(self):
+        threshold = 10
         self.arduino.reset_input_buffer()
         time.sleep(0.05)
         data = self.arduino.readline() 
 
         # Decode byte string to a normal string
         decoded_str = data.decode('utf-8')
-        while decoded_str == '' or len(decoded_str.strip().split('/')) != 2 or len(decoded_str.strip().split('/')[0]) < 3  or len(decoded_str.strip().split('/')[1]) < 2:
+        parts = decoded_str.strip().split('/')
+        while decoded_str == '' or len(parts) != 2 or len(parts[0]) < 3 or len(parts[1]) < 2:
             try:
                 data = self.arduino.readline()
             except serial.SerialException:
                 printError('Arduino error')
                 continue
+            
             decoded_str = data.decode('utf-8')
+            parts = decoded_str.strip().split('/')
+            current_data = (parts[0], parts[1])
+            # Check if temp data is within threshold (fixes high fluctations)
+            if self.previous_data is not None:
+                if abs(int(current_data[0]) - int(self.previous_data[0])) > threshold:
+                    decoded_str = ''
+                    continue
+            else:
+                self.previous_data = decoded_str
             time.sleep(0.1)
-            continue
-        # print(decoded_str)
 
         # Strip whitespace and newlines
         clean_str = decoded_str.strip()
