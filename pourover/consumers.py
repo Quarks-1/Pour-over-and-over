@@ -102,8 +102,8 @@ class MyConsumer(WebsocketConsumer):
                 printError('Water not heated')
                 return
             print('Starting brew...')
-            self.schedulePours(self.steps, datetime.now())
             self.broadcast_message('Starting brew...')
+            self.schedulePours(self.steps, datetime.now())
             self.received_start(data)
             return
 
@@ -191,8 +191,10 @@ class MyConsumer(WebsocketConsumer):
             try:
                 data = self.arduino.readline()
             except serial.SerialException:
-                print(f'Bad data: {data}')
-                printError('Arduino error')
+                # print(f'Bad data: {data}')
+                # printError('Arduino error')
+                time.sleep(0.1)
+                continue
             decoded_str = data.decode('utf-8')
             parts = decoded_str.strip().split('/')
             try:
