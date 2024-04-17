@@ -197,7 +197,8 @@ class MyConsumer(WebsocketConsumer):
             parts = decoded_str.strip().split('/')
             try:
                 float(parts[0])
-                float(parts[1])
+                if len(parts) == 2:
+                    float(parts[1])
             except ValueError:
                 decoded_str = ''
                 continue
