@@ -396,6 +396,7 @@ class printer:
 def parseSteps(steps):
     parsed = []
     for step in steps.strip('][').split(','):
+        print(f'parsing: {step}')
         temp = step.strip('"').strip("'").split('/')
         temp[1] = int(temp[1])
         temp[2] = int(temp[2])
