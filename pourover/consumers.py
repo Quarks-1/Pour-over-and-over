@@ -424,9 +424,7 @@ def printTimes(times):
         i += 1
 
 def printError(error_message):
-    print(bcolors.FAIL + '#'*len(error_message))
-    print(bcolors.FAIL + error_message)
-    print('#'*len(error_message) + bcolors.ENDC)
+    print(bcolors.FAIL + '#'*len(error_message) + + error_message + '#'*len(error_message) + bcolors.ENDC)
 
         
 class bcolors:
