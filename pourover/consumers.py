@@ -215,6 +215,7 @@ class MyConsumer(WebsocketConsumer):
             'temp': result[1],
         }
         self.broadcast_data(data_dict)
+        print(result)
         return result
     
     # TODO: Test heating
