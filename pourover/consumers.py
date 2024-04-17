@@ -96,8 +96,8 @@ class MyConsumer(WebsocketConsumer):
             pid.output_limits = (0, 1)  # Output value will be between 0 and 1 (off/on)
             self.pid = pid
             # TODO: fix heater start
-            heaterThread = Thread(target=self.startHeater)
-            heaterThread.start()
+            self.heaterThread = Thread(target=self.startHeater)
+            self.heaterThread.start()
             return
 
         if action == 'startBrew':
@@ -143,7 +143,7 @@ class MyConsumer(WebsocketConsumer):
 
         if action == 'bypassTemp':
             self.broadcast_message('Bypassing temperature check...')
-            heaterThread.stop()
+            self.heaterThread.stop()
             self.heated = True
             return
 
