@@ -189,6 +189,7 @@ class MyConsumer(WebsocketConsumer):
             try:
                 data = self.arduino.readline()
             except serial.SerialException:
+                print(f'Bad data: {data}')
                 printError('Arduino error')
                 continue
         decoded_str = data.decode('utf-8')
