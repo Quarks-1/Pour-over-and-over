@@ -299,7 +299,7 @@ class MyConsumer(WebsocketConsumer):
                 self.printer.write(command)
             time.sleep(0.05)
         # Actuate pump
-        Thread(target=self.doPour, args=(water)).start()
+        # Thread(target=self.doPour, args=(water)).start()
     
     def doPour(self, water_weight, pour_time):
         # data = (water weight, time)
