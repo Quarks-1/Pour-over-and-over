@@ -138,6 +138,7 @@ class MyConsumer(WebsocketConsumer):
             return
 
         if action == 'bypassTemp':
+            self.broadcast_message('Bypassing temperature check...')
             self.heated = True
             return
 
