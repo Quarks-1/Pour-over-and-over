@@ -249,11 +249,9 @@ class MyConsumer(WebsocketConsumer):
             except ValueError:
                 # In case of faulty serial data that cannot be converted to float
                 print("Invalid data received.")
-                continue
             except serial.SerialException:
                 printError('Arduino error')
-                continue
-                time.sleep(0.1)
+            time.sleep(0.1)
         self.heated = True
         return
         
