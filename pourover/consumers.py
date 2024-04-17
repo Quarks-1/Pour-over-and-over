@@ -101,6 +101,7 @@ class MyConsumer(WebsocketConsumer):
                 self.broadcast_message('Water not yet heated. Please wait...')
                 printError('Water not heated')
                 return
+            print('Starting brew...')
             self.schedulePours(self.steps, datetime.now())
             self.broadcast_message('Starting brew...')
             self.received_start(data)
