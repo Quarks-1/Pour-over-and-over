@@ -396,14 +396,14 @@ class printer:
 def parseSteps(steps):
     parsed = []
     for step in steps.strip('][').split(','):
-        print(f'parsing: {step}')
+        # print(f'parsing: {step}')
         temp = step.strip("'").split('/')
         if ' ' in temp[0]:
             temp[0] = temp[0][2:]
         temp[1] = int(temp[1])
         temp[2] = int(temp[2])
         parsed.append(temp)
-        print(f'parsed: {temp}')
+        # print(f'parsed: {temp}')
     return parsed
 
 
