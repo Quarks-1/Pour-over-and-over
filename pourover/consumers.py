@@ -201,7 +201,6 @@ class MyConsumer(WebsocketConsumer):
                     float(parts[1])
             except ValueError:
                 decoded_str = ''
-                continue
             time.sleep(0.1)
         
         current_data = (parts[0], parts[1])
