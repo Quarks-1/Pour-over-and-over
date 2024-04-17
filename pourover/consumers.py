@@ -92,7 +92,8 @@ class MyConsumer(WebsocketConsumer):
             pid.sample_time = 0.5  # Update every 1 second
             pid.output_limits = (0, 1)  # Output value will be between 0 and 1 (off/on)
             self.pid = pid
-            Thread(target=self.startHeater).start()
+            # TODO: fix heater start
+            # Thread(target=self.startHeater).start()
             
             return
 

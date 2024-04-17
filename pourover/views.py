@@ -3,7 +3,7 @@ from pourover.models import BrewProfile, BrewProfileForm
 from django.utils import timezone
 import serial
 
-homed = False
+homed = True
 
 # Create your views here.
 
