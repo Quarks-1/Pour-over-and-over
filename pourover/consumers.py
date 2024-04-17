@@ -398,6 +398,8 @@ def parseSteps(steps):
     for step in steps.strip('][').split(','):
         print(f'parsing: {step}')
         temp = step.strip("'").split('/')
+        if ' ' in temp[0]:
+            temp[0] = temp[0][2:]
         temp[1] = int(temp[1])
         temp[2] = int(temp[2])
         parsed.append(temp)
