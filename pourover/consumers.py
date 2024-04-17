@@ -228,7 +228,7 @@ class MyConsumer(WebsocketConsumer):
     # TODO: Test heating
     def startHeater(self):
         self.broadcast_message('Heating water. Please wait...')
-        while True and not self.heated:
+        while not self.heated:
             try:
                 # Read temperature from serial
                 data = self.get_arduino_feed()
