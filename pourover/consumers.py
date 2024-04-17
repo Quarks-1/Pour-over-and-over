@@ -277,6 +277,7 @@ class MyConsumer(WebsocketConsumer):
                 totalTime += timedelta(seconds=10)
             elif 'delay' in step:
                 totalTime += timedelta(seconds=step[1])
+                continue
             else:
                 pourTime = step[1] / step[2]  # water weight / flow rate
                 numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
