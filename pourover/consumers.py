@@ -401,6 +401,7 @@ def parseSteps(steps):
         temp[1] = int(temp[1])
         temp[2] = int(temp[2])
         parsed.append(temp)
+        print(f'parsed: {temp}')
     return parsed
 
 
