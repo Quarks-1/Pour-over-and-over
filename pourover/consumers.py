@@ -205,6 +205,7 @@ class MyConsumer(WebsocketConsumer):
             time.sleep(0.1)
         
         current_data = (parts[0], parts[1])
+        print(f'Current data before floats {current_data}')
         # Check if temp data is within threshold (fixes high fluctations)
         if self.previous_data is not None:
             if abs(float(current_data[0]) - float(self.previous_data[0])) > threshold:
