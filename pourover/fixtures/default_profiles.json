@@ -13,7 +13,7 @@
             "water_temp": 212,
             "brew_method": "Pour over",
             "brew_device": "Hario V60",
-            "steps": ["pre_wet/0/0/0","Inner Circle/60/4/Low","delay/30/0/0","Outer Circle/60/4/Low","delay/30/0/0","Inner Circle/60/4/Low","delay/30/0/0","Outer Circle/60/4/Low","delay/30/0/0","Outer Circle/60/4/Low","delay/30/0/0"],
+            "steps": ["pre_wet/0/0/0","Inner circle/60/4/Low","delay/30/0/0","Outer circle/60/4/Low","delay/30/0/0","Inner circle/60/4/Low","delay/30/0/0","Outer circle/60/4/Low","delay/30/0/0","Outer circle/60/4/Low","delay/30/0/0"],
             "rating": 10
         }
     },
