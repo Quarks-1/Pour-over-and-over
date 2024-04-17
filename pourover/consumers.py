@@ -251,6 +251,7 @@ class MyConsumer(WebsocketConsumer):
             except serial.SerialException:
                 printError('Arduino error')
                 continue
+                time.sleep(0.1)
         self.heated = True
         return
         
