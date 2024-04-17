@@ -123,6 +123,7 @@ class MyConsumer(WebsocketConsumer):
                 timer.cancel()
             self.queue = []
             self.schedulePours(self.steps, datetime.now())
+            
             self.received_restart(data)
             return
         
@@ -271,7 +272,9 @@ class MyConsumer(WebsocketConsumer):
             print(step)
             timer = Timer((totalTime - startTime).total_seconds(), self.doStep, args=(step))
             self.queue.append(timer)
-            timer.start()        
+            timer.start()   
+        print(self.queue)    
+         
     def doStep(self, gcode, water):
         print(gcode, water)
         # Send gcode to printer
