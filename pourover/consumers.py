@@ -440,13 +440,7 @@ def list2str(L) -> str:
     return ', '.join([str(elem) for elem in L])
 
 def str2list(string) -> list:
-    res = []
-    for val in string.strip('][').split(','):
-        new = val.strip("'")
-        if ' ' in new:
-            new = new[new.index('G'):]
-        res.append(new)
-    return res
+    return [elem for elem in string.split(', ')]
 
 def printTimes(times):
     i = 0
