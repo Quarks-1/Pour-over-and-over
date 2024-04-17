@@ -57,6 +57,8 @@ class MyConsumer(WebsocketConsumer):
         )
         if self.printer is not None:
             self.printer.close()
+            for timer in self.queue:
+                timer.cancel()
         else:
             printError('WARNING: PRINTER NOT CONNECTED')
             return
@@ -93,7 +95,7 @@ class MyConsumer(WebsocketConsumer):
             pid.output_limits = (0, 1)  # Output value will be between 0 and 1 (off/on)
             self.pid = pid
             # TODO: fix heater start
-            # Thread(target=self.startHeater).start()
+            Thread(target=self.startHeater).start()
             
             return
 
