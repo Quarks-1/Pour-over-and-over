@@ -191,7 +191,7 @@ class MyConsumer(WebsocketConsumer):
             except serial.SerialException:
                 print(f'Bad data: {data}')
                 printError('Arduino error')
-                continue
+            time.sleep(0.05)
         decoded_str = data.decode('utf-8')
         parts = decoded_str.strip().split('/')
         current_data = (parts[0], parts[1])
