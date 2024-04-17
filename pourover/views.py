@@ -9,6 +9,7 @@ homed = False
 
 
 def home_page(request):
+    global homed
     # Home printer
     if not homed:
         try:
