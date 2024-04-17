@@ -188,10 +188,11 @@ class MyConsumer(WebsocketConsumer):
         while decoded_str == '' or len(parts) != 2 or len(parts[0]) < 3 or len(parts[1]) < 2:
             try:
                 data = self.arduino.readline()
+                if data == b'':
+                    continue
             except serial.SerialException:
                 printError('Arduino error')
                 continue
-            print(f'str: {decoded_str}')
             decoded_str = data.decode('utf-8')
             parts = decoded_str.strip().split('/')
             current_data = (parts[0], parts[1])
