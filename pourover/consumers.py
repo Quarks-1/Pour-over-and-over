@@ -203,13 +203,7 @@ class MyConsumer(WebsocketConsumer):
             self.previous_data = decoded_str
         time.sleep(0.1)
 
-        # Strip whitespace and newlines
-        clean_str = decoded_str.strip()
-
-        # Split the string based on '/'
-        numbers = clean_str.split('/')
-
-        result = (float(numbers[0]), float(numbers[1]))
+        result = (float(current_data[0]), float(current_data[1]))
         data_dict = {
             'weight': result[0],
             'temp': result[1],
