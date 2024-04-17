@@ -442,7 +442,8 @@ def str2list(string) -> list:
     res = []
     for val in string.strip('][').split(','):
         new = val.strip("'")
-        new = new[new.index('G'):]
+        if ' ' in new:
+            new = new[new.index('G'):]
         res.append(new)
     return res
 
