@@ -259,6 +259,7 @@ class MyConsumer(WebsocketConsumer):
         }
         totalTime = startTime
         for step in steps:
+            print(f'parsing step: {step}')
             if 'pre_wet' in step:
                 step = ([gCode['pre_wet']], [10, 2])
                 totalTime += timedelta(seconds=10)
