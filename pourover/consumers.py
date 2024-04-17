@@ -315,53 +315,6 @@ class MyConsumer(WebsocketConsumer):
         time.sleep(pour_time)
         self.arduino.write(b'pumpOff\n')
         return
-    
-    
-    # Deprecated brewing function
-    # def startBrew(self):
-    #     while True:
-    #         # Check if current time is time for next step
-    #         try:
-    #             self.gcodeSteps[0][1]
-    #         except IndexError:
-    #             print('No more steps. Brew complete.')
-    #             self.broadcast_message('Brew complete')
-    #             return
-    #         if datetime.now() >= self.gcodeSteps[0][1]:
-    #             self.broadcast_message('Working on next step...')
-    #             print(f'Working on command: {self.gcodeSteps[0][0]}')
-    #             if 'Draw down' in self.gcodeSteps[0][0]:
-    #                 self.broadcast_message('Draw down')
-    #                 time.sleep(max(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()) - 1, 0))
-    #                 self.gcodeSteps.pop(0)
-    #                 continue
-    #             else:
-    #                 # Send gcode to printer
-    #                 for command in self.gcodeSteps[0][0]:
-    #                     # Check if command is circle
-    #                     if 'I' in command:
-    #                         [i, j, x, y] = [int(command.split('I')[1].split(' ')[0]), int(command.split('J')[1].split(' ')[0]), int(command.split('X')[1].split(' ')[0]), int(command.split('Y')[1].split(' ')[0])]
-    #                         self.printer.arcFromCurr(i, j, x, y)
-    #                     else:
-    #                         self.printer.write(command)
-    #                 time.sleep(0.05)
-    #                 # Actuate pump
-    #                 Thread(target=self.doPour, args=(self.gcodeSteps[0][2])).start()
-    #                 # Remove step from list
-    #                 self.gcodeSteps.pop(0)
-    #                 # Sleep for command time
-    #                 time.sleep(max(int((self.gcodeSteps[0][1] - datetime.now()).total_seconds()) - 1, 0))
-    #                 # If no more steps, break out of loop
-    #                 if len(self.gcodeSteps) == 0:
-    #                     break
-    #         # Check if stop command received
-    #         if self.stop:
-    #             print('Stopping brew...')
-    #             break
-    #     print('Brew complete')
-    #     self.broadcast_message('Brew complete')
-    #     return
-    
 
 class printer:
     def __init__(self):
