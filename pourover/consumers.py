@@ -286,14 +286,17 @@ class MyConsumer(WebsocketConsumer):
             strstep = [list2str(step[0]), list2str(step[1])]
             timer = Timer((totalTime - startTime).total_seconds(), self.doStep, args=(strstep))
             self.queue.append(timer)
-            timer.start()   
+            timer.start()
+        timer = Timer((totalTime - startTime).total_seconds(), self.broadcast_message, args=('Finished brewing, Enjoy!'))
+        self.queue.append(timer)
+        timer.start()   
         print(self.queue)    
          
     def doStep(self, gcode, water):
-        print(gcode, water, 'b4')
         gcode = str2list(gcode)
         water = str2list(water)
-        print(gcode, water, 'after')
+        water[0] = float(water[0])
+        water[1] = float(water[1])
         # Send gcode to printer
         for command in gcode:
             # Check if command is circle
