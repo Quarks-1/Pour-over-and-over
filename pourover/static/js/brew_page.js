@@ -137,6 +137,6 @@ function tareScale() {
     socket.send(JSON.stringify({"command": "tareScale"}))
 }
 
-function tareScale() {
+function bypassTemp() {
     socket.send(JSON.stringify({"command": "bypassTemp"}))
 }
