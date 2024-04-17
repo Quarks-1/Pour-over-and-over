@@ -188,22 +188,19 @@ class MyConsumer(WebsocketConsumer):
         while decoded_str == '' or len(parts) != 2 or len(parts[0]) < 3 or len(parts[1]) < 2:
             try:
                 data = self.arduino.readline()
-                if data == b'':
-                    continue
             except serial.SerialException:
                 printError('Arduino error')
                 continue
-            decoded_str = data.decode('utf-8')
-            parts = decoded_str.strip().split('/')
-            current_data = (parts[0], parts[1])
-            # Check if temp data is within threshold (fixes high fluctations)
-            if self.previous_data is not None:
-                if abs(int(current_data[0]) - int(self.previous_data[0])) > threshold:
-                    decoded_str = ''
-                    continue
-            else:
-                self.previous_data = decoded_str
-            time.sleep(0.1)
+        decoded_str = data.decode('utf-8')
+        parts = decoded_str.strip().split('/')
+        current_data = (parts[0], parts[1])
+        # Check if temp data is within threshold (fixes high fluctations)
+        if self.previous_data is not None:
+            if abs(float(current_data[0]) - float(self.previous_data[0])) > threshold:
+                decoded_str = ''
+        else:
+            self.previous_data = decoded_str
+        time.sleep(0.1)
 
         # Strip whitespace and newlines
         clean_str = decoded_str.strip()
