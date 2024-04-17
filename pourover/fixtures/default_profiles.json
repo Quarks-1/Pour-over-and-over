@@ -10,7 +10,7 @@
             "grind_size": 18,
             "grind_weight": 18,
             "total_water_weight": 300,
-            "water_temp": 212,
+            "water_temp": 200,
             "brew_method": "Pour over",
             "brew_device": "Hario V60",
             "steps": ["pre_wet/0/0/0","Inner circle/60/4/Low","delay/30/0/0","Outer circle/60/4/Low","delay/30/0/0","Inner circle/60/4/Low","delay/30/0/0","Outer circle/60/4/Low","delay/30/0/0","Outer circle/60/4/Low","delay/30/0/0"],
