@@ -272,7 +272,6 @@ class MyConsumer(WebsocketConsumer):
         }
         totalTime = startTime
         for step in steps:
-            print(f'parsing step: {step}')
             if 'pre_wet' in step:
                 step = ([gCode['pre_wet']], [10, 2])
                 totalTime += timedelta(seconds=10)
@@ -283,14 +282,17 @@ class MyConsumer(WebsocketConsumer):
                 numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
                 step = ([gCode[step[0]]] * numInstruct, [step[1], pourTime])
                 totalTime += timedelta(seconds=pourTime)
-            print(f'the step: {step}')
-            timer = Timer((totalTime - startTime).total_seconds(), self.doStep, args=(step))
+            strstep = [list2str(step[0]), list2str(step[1])]
+            timer = Timer((totalTime - startTime).total_seconds(), self.doStep, args=(strstep))
             self.queue.append(timer)
             timer.start()   
         print(self.queue)    
          
     def doStep(self, gcode, water):
-        print(gcode, water)
+        print(gcode, water, 'b4')
+        gcode = str2list(gcode)
+        water = str2list(water)
+        print(gcode, water, 'after')
         # Send gcode to printer
         for command in gcode:
             # Check if command is circle
@@ -432,6 +434,17 @@ def parseSteps(steps):
 # 3.68   -  I20 J20 F3000
 # 7.53   -  I40 J40 F3000
 
+
+def list2str(L) -> str:
+    return ', '.join([str(elem) for elem in L])
+
+def str2list(string) -> list:
+    res = []
+    for val in string.strip('][').split(','):
+        new = val.strip("'")
+        new = new[new.index('G'):]
+        res.append(new)
+    return res
 
 def printTimes(times):
     i = 0
