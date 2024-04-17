@@ -195,6 +195,12 @@ class MyConsumer(WebsocketConsumer):
                 printError('Arduino error')
             decoded_str = data.decode('utf-8')
             parts = decoded_str.strip().split('/')
+            try:
+                float(parts[0])
+                float(parts[1])
+            except ValueError:
+                decoded_str = ''
+                continue
             time.sleep(0.1)
         
         current_data = (parts[0], parts[1])
