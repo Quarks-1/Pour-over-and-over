@@ -23,7 +23,7 @@ class MyConsumer(WebsocketConsumer):
     startTime = None
     pid = None
     heated = False
-=    
+
 
     def connect(self):
         async_to_sync(self.channel_layer.group_add)(
