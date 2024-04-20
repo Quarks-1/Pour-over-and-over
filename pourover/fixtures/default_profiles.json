@@ -12,7 +12,7 @@
             "total_water_weight": 300,
             "water_temp": 200,
             "brew_method": "Pour over",
-            "brew_device": "Hario V60",
+            "brew_device": "V60",
             "steps": ["pre_wet/0/0/0","Inner circle/60/4/Low","delay/30/0/0","Outer circle/60/4/Low","delay/30/0/0","Inner circle/60/4/Low","delay/30/0/0","Outer circle/60/4/Low","delay/30/0/0","Outer circle/60/4/Low","delay/30/0/0"],
             "rating": 10
         }
@@ -34,5 +34,60 @@
             "steps": ["Center/270/12/Low"],
             "rating": 10
         }
+    },
+    {
+        "model": "pourover.BrewProfile",
+        "pk": 3,
+        "fields": {
+            "id" : 3,
+            "creation_date" : "2021-01-01T00:00:00Z",
+            "name": "Brian Quan V60",
+            "description": "Brian Quan's high acidity V60 recipe",
+            "grind_size": 70,
+            "grind_weight": 18,
+            "total_water_weight": 270,
+            "water_temp": 212,
+            "brew_method": "Pour over",
+            "brew_device": "V60",
+            "steps": ["pre_wet/0/0/0","Inner circle/50/4/Low","delay/30/0/0","Outer circle/100/4/Low","delay/30/0/0","Outer circle/120/4/Low","delay/90/0/0"],
+            "rating": 10
+        }
+    },
+    {
+        "model": "pourover.BrewProfile",
+        "pk": 4,
+        "fields": {
+            "id" : 4,
+            "creation_date" : "2021-01-01T00:00:00Z",
+            "name": "James Hoffmann V60",
+            "description": "James Hoffmann's 1 cup V60 recipe",
+            "grind_size": 80,
+            "grind_weight": 15,
+            "total_water_weight": 250,
+            "water_temp": 212,
+            "brew_method": "Pour over",
+            "brew_device": "V60",
+            "steps": ["pre_wet/0/0/0","Inner circle/20/5/Low","Outer circle/20/5/Low","Edge/10/5/Low","delay/45/0/0","Inner circle/20/5/Low","Outer circle/20/5/Low","Edge/10/5/Low","delay/10/0/0","Inner circle/20/5/Low","Outer circle/20/5/Low","Edge/10/5/Low","delay/10/0/0","Inner circle/20/5/Low","Outer circle/20/5/Low","Edge/10/5/Low","delay/10/0/0","Inner circle/20/5/Low","Outer circle/20/5/Low","Edge/10/5/Low","delay/10/0/0"],
+            "rating": 10
+        }
+    },
+    {
+        "model": "pourover.BrewProfile",
+        "pk": 5,
+        "fields": {
+            "id" : 5,
+            "creation_date" : "2021-01-01T00:00:00Z",
+            "name": "Lance Hedrick one pour V60",
+            "description": "Simple one pour recipe made by Lance Hedrick",
+            "grind_size": 80,
+            "grind_weight": 16,
+            "total_water_weight": 275,
+            "water_temp": 212,
+            "brew_method": "Pour over",
+            "brew_device": "V60",
+            "steps": ["pre_wet/0/0/0","Inner circle/20/5/Low","Outer circle/20/5/Low","Edge/10/4/Low","delay/60/0/0","Inner circle/75/5/Low","Outer circle/125/5/Low","Edge/25/5/Low","delay/90/0/0"],
+            "rating": 10
+        }
     }
+
 ]
