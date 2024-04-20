@@ -281,7 +281,7 @@ class MyConsumer(WebsocketConsumer):
                 pourTime = step[1] / step[2]  # water weight / flow rate
                 numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
                 step = ([gCode[step[0]]] * numInstruct, [step[1], pourTime])
-                totalTime += timedelta(seconds=pourTime)
+                totalTime += timedelta(seconds=max(pourTime, times_dict[step[0]] * numInstruct))
             strstep = [list2str(step[0]), list2str(step[1])]
             timer = Timer((totalTime - startTime).total_seconds(), self.doStep, args=(strstep))
             self.queue.append(timer)
