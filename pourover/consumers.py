@@ -282,15 +282,18 @@ class MyConsumer(WebsocketConsumer):
                 numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
                 step = ([gCode[step[0]]] * numInstruct, [step[1], pourTime])
                 stepTime = timedelta(seconds=max(pourTime, times_dict[step[0]] * numInstruct))
+
             strstep = [list2str(step[0]), list2str(step[1])]
             timer = Timer((totalTime - startTime).total_seconds(), self.doStep, args=(strstep))
             self.queue.append(timer)
             timer.start()
             totalTime += stepTime
+            
+        # Send finished message
         timer = Timer((totalTime - startTime).total_seconds(), self.broadcast_message, args=('Finished brewing, Enjoy!'))
         self.queue.append(timer)
         timer.start()   
-        print(self.queue)    
+        # print(self.queue)    
          
     def doStep(self, gcode, water):
         gcode = str2list(gcode)
@@ -307,10 +310,9 @@ class MyConsumer(WebsocketConsumer):
                 self.printer.write(command)
             time.sleep(0.05)
         # Actuate pump
-        # Thread(target=self.doPour, args=(water)).start()
+        Thread(target=self.doPour, args=(water)).start()
     
     def doPour(self, water_weight, pour_time):
-        # data = (water weight, time)
         # Send signal to arduino
         self.arduino.write(f'pumpOn,{water_weight / pour_time}\n'.encode())
         time.sleep(pour_time)
