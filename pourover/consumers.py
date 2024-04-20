@@ -273,19 +273,20 @@ class MyConsumer(WebsocketConsumer):
         for step in steps:
             if 'pre_wet' in step:
                 step = ([gCode['pre_wet']], [10, 2])
-                totalTime += timedelta(seconds=10)
+                stepTime = timedelta(seconds=10)
             elif 'delay' in step:
-                totalTime += timedelta(seconds=step[1])
+                stepTime = timedelta(seconds=step[1])
                 continue
             else:
                 pourTime = step[1] / step[2]  # water weight / flow rate
                 numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
                 step = ([gCode[step[0]]] * numInstruct, [step[1], pourTime])
-                totalTime += timedelta(seconds=max(pourTime, times_dict[step[0]] * numInstruct))
+                stepTime = timedelta(seconds=max(pourTime, times_dict[step[0]] * numInstruct))
             strstep = [list2str(step[0]), list2str(step[1])]
             timer = Timer((totalTime - startTime).total_seconds(), self.doStep, args=(strstep))
             self.queue.append(timer)
             timer.start()
+            totalTime += stepTime
         timer = Timer((totalTime - startTime).total_seconds(), self.broadcast_message, args=('Finished brewing, Enjoy!'))
         self.queue.append(timer)
         timer.start()   
