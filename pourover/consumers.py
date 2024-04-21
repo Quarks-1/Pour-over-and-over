@@ -63,6 +63,7 @@ class MyConsumer(WebsocketConsumer):
             return
         # turn off heater
         self.arduino.write(b'heatoff\n')
+        self.arduino.write(b'pumpoff')
 
     def receive(self, **kwargs):
         if 'text_data' not in kwargs:
@@ -253,7 +254,7 @@ class MyConsumer(WebsocketConsumer):
                 print("Invalid data received.")
             except serial.SerialException:
                 printError('Arduino error')
-            time.sleep(0.1)
+            time.sleep(0.25)
         self.heated = True
         self.arduino.write(b'heatoff\n')
         return
