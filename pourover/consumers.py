@@ -98,7 +98,7 @@ class MyConsumer(WebsocketConsumer):
             self.pid = pid
             # TODO: fix heater start
             self.heater = Thread(target=self.startHeater)
-            self.heater.start()
+            # self.heater.start()
             return
 
         if action == 'startBrew':
