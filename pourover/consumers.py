@@ -6,6 +6,7 @@ from threading import Thread, Timer
 from datetime import datetime, timedelta
 from simple_pid import PID
 
+
 # (pour type, water weight, flow rate, agitation level (low, medium, high))
 class MyConsumer(WebsocketConsumer):
     group_name = 'pourover_group'
