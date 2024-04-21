@@ -284,7 +284,6 @@ class MyConsumer(WebsocketConsumer):
                 stepTime = timedelta(seconds=4)
             elif 'delay' in step:
                 stepTime = timedelta(seconds=step[1])
-                continue
             else:
                 pourTime = step[1] / step[2]  # water weight / flow rate
                 numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
@@ -310,7 +309,7 @@ class MyConsumer(WebsocketConsumer):
         water = str2list(water)
         water[0] = float(water[0])
         water[1] = float(water[1])
-        print(f'Pouring {water[0]}g at {water[1]}g/s')
+        print(f'doStep: Pouring {water[0]}g at {water[1]}g/s')
         # Actuate pump
         Thread(target=self.doPour, args=(water)).start()
         # Send gcode to printer
