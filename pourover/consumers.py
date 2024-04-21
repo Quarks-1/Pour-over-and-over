@@ -265,9 +265,9 @@ class MyConsumer(WebsocketConsumer):
         # TODO: fine tune step times
         times_dict = {
             'Center': 1,
-            'Inner circle': 2,
-            'Outer circle': 8,
-            'Edge': 11, 
+            'Inner circle': 3.81,
+            'Outer circle': 9,
+            'Edge': 13, 
         }
         gCode = {
             'pre_wet': 'G2 X127 Y115 Z220 I25 J25 F3600', 
@@ -281,8 +281,8 @@ class MyConsumer(WebsocketConsumer):
         print(steps)
         for step in steps:
             if 'pre_wet' in step:
-                finalStep = ([gCode['pre_wet']], [8, 2])
-                stepTime = timedelta(seconds=4)
+                finalStep = ([gCode['pre_wet']], [10, 2])
+                stepTime = timedelta(seconds=5)
             elif 'delay' in step:
                 stepTime = timedelta(seconds=step[1])
             else:
@@ -368,7 +368,7 @@ class printer:
         self.ser.write(command.encode())
         time.sleep(0.1)
         # Draw circle
-        command = f"G2 X{x-i} Y{y-j} I{i} J{j} F3600\r\n"
+        command = f"G2 X{x-i} Y{y-j} I{i} J{j} F1500\r\n"
         self.ser.write(command.encode())
         time.sleep(0.1)
         
