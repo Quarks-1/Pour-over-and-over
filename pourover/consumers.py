@@ -142,6 +142,7 @@ class MyConsumer(WebsocketConsumer):
 
         if action == 'bypassTemp':
             self.broadcast_message('Bypassing temperature check...')
+            self.arduino.write(b'heatoff\n')
             self.heated = True
             return
 
