@@ -32,15 +32,6 @@ class MyConsumer(WebsocketConsumer):
         )
 
         self.accept()
-
-        # Connect to printer
-        try:
-            self.printer = printer()
-        except serial.SerialException:
-            printError('WARNING: PRINTER NOT CONNECTED')
-            self.broadcast_message('Printer not connected. Please connect printer and reload page.')
-            return
-    
         try:
             self.arduino = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=.1) 
         except serial.SerialException:
@@ -49,6 +40,14 @@ class MyConsumer(WebsocketConsumer):
             return
         self.arduino.write(b'pumpoff')
         self.arduino.write(b'heatoff\n')
+        
+        # Connect to printer
+        try:
+            self.printer = printer()
+        except serial.SerialException:
+            printError('WARNING: PRINTER NOT CONNECTED')
+            self.broadcast_message('Printer not connected. Please connect printer and reload page.')
+            return
         self.startTime = datetime.now()
         self.broadcast_message('Successfully connected to Printer and Arduino.')
         self.broadcast_message('start data feed')
