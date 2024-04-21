@@ -275,7 +275,7 @@ class MyConsumer(WebsocketConsumer):
             'Edge': 'G2 X127 Y115 I35 J35 F1500',
         }
         startTime = datetime.now()
-        totalTime = datetime.now() + timedelta(seconds=5)
+        totalTime = datetime.now() + timedelta(seconds=2)
         for step in steps:
             if 'pre_wet' in step:
                 finalStep = ([gCode['pre_wet']], [10, 2])
