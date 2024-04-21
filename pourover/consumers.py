@@ -292,11 +292,11 @@ class MyConsumer(WebsocketConsumer):
                 # print(f'taking max of {pourTime} and {times_dict[step[0]] * numInstruct}')
                 stepTime = timedelta(seconds=max(pourTime, times_dict[step[0]] * numInstruct))
                 # print(f'Pouring {step[1]}g at {step[2]}g/s for {stepTime.total_seconds()} seconds')
-
-            strstep = [list2str(finalStep[0]), list2str(finalStep[1])]
-            timer = Timer((totalTime - startTime).total_seconds(), self.doStep, args=(strstep))
-            self.queue.append(timer)
-            timer.start()
+            if 'delay' not in step:
+                strstep = [list2str(finalStep[0]), list2str(finalStep[1])]
+                timer = Timer((totalTime - startTime).total_seconds(), self.doStep, args=(strstep))
+                self.queue.append(timer)
+                timer.start()
             totalTime += stepTime
         finished_message = 'Finished brewing, Enjoy!'
         # Send finished message
