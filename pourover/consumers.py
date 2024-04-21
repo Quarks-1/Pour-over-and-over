@@ -288,6 +288,7 @@ class MyConsumer(WebsocketConsumer):
                 numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
                 finalStep = ([gCode[step[0]]] * numInstruct, [step[1], step[2]])
                 stepTime = timedelta(seconds=max(pourTime, times_dict[step[0]] * numInstruct))
+                print(f'Pouring {step[1]}g at {step[2]}g/s for {stepTime.total_seconds()} seconds')
 
             strstep = [list2str(finalStep[0]), list2str(finalStep[1])]
             timer = Timer((totalTime - startTime).total_seconds(), self.doStep, args=(strstep))
