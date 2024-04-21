@@ -360,6 +360,7 @@ class printer:
         # Draw circle
         command = f"G2 X{x-i} Y{y-j} I{i} J{j} F3600\r\n"
         self.ser.write(command.encode())
+        time.sleep(0.1)
         
 
     def currPos(self) -> list[int, int, int]:
