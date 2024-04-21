@@ -312,6 +312,7 @@ class MyConsumer(WebsocketConsumer):
         print(f'doStep: Pouring {water[0]}g at {water[1]}g/s')
         # Actuate pump
         Thread(target=self.doPour, args=(water)).start()
+        time.sleep(1.66)
         # Send gcode to printer
         for command in gcode:
             # Check if command is circle
