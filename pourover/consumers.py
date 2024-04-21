@@ -323,6 +323,7 @@ class MyConsumer(WebsocketConsumer):
         message = f'pumpon/255'
         self.arduino.write(message.encode())
         time.sleep(water_weight/flowRate)
+        print(f'Pouring for {water_weight/flowRate} seconds')
         self.arduino.write(b'pumpoff')
         return
     
