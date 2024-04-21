@@ -96,6 +96,7 @@ class MyConsumer(WebsocketConsumer):
             self.pid = pid
             # TODO: fix heater start
             self.heater = Thread(target=self.startHeater)
+            self.heater.name = f'heater thread'
             # self.heater.start()
             return
 
@@ -279,6 +280,7 @@ class MyConsumer(WebsocketConsumer):
             if 'delay' not in step:
                 strstep = [list2str(finalStep[0]), list2str(finalStep[1])]
                 timer = Timer((totalTime - startTime).total_seconds(), self.doStep, args=(strstep))
+                timer.name = f'thread for: {step}'
                 self.queue.append(timer)
                 timer.start()
             totalTime += stepTime
@@ -296,7 +298,9 @@ class MyConsumer(WebsocketConsumer):
         water[1] = float(water[1])
         print(f'doStep: Pouring {water[0]}g at {water[1]}g/s')
         # Actuate pump
-        Thread(target=self.doPour, args=(water)).start()
+        pour = Thread(target=self.doPour, args=(water))
+        pour.name = f'Pouring {water[0]}g at {water[1]}g/s'
+        pour.start()
         time.sleep(1.66)
         # Send gcode to printer
         for command in gcode:
