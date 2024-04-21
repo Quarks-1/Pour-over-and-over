@@ -105,7 +105,7 @@ class MyConsumer(WebsocketConsumer):
                 return
             print('Starting brew...')
             self.broadcast_message('Starting brew...')
-            self.schedulePours(self.steps, datetime.now())
+            self.schedulePours(self.steps)
             self.received_start(data)
             return
 
@@ -125,7 +125,7 @@ class MyConsumer(WebsocketConsumer):
             for timer in self.queue:
                 timer.cancel()
             self.queue = []
-            self.schedulePours(self.steps, datetime.now())
+            self.schedulePours(self.steps)
             
             self.received_restart(data)
             return
@@ -255,7 +255,7 @@ class MyConsumer(WebsocketConsumer):
         return
         
 
-    def schedulePours(self, steps, startTime):
+    def schedulePours(self, steps):
         times_dict = {
             'Center': 1,
             'Inner circle': 3.68,
@@ -269,7 +269,7 @@ class MyConsumer(WebsocketConsumer):
             'Outer circle': 'G2 X127 Y115 I25 J25 F1500',
             'Edge': 'G2 X127 Y115 I35 J35 F1500',
         }
-        totalTime = startTime
+        totalTime = datetime.now() + timedelta(seconds=5)
         for step in steps:
             if 'pre_wet' in step:
                 step = ([gCode['pre_wet']], [10, 2])
