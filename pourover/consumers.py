@@ -57,8 +57,7 @@ class MyConsumer(WebsocketConsumer):
         )
         if self.printer is not None:
             self.printer.close()
-            for timer in self.queue:
-                timer.cancel()
+            
         else:
             printError('WARNING: PRINTER NOT CONNECTED')
             return
@@ -143,7 +142,6 @@ class MyConsumer(WebsocketConsumer):
         if action == 'bypassTemp':
             self.broadcast_message('Bypassing temperature check...')
             self.heated = True
-            self.heater.cancel()
             return
 
         printError(f'Invalid action property: "{action}"')
