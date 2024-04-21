@@ -2,6 +2,7 @@
 
 let socket = null
 let startTime = Date.now()
+let started = false
 
 
 function connectToServer() {
@@ -53,7 +54,12 @@ function connectToServer() {
             let time = document.getElementById("id_brew_time")
             weight.innerHTML = response['data']['weight']
             temp.innerHTML = response['data']['temp']
-            time.innerHTML = getCurrentTimeDifference()
+            if (started == true){
+                time.innerHTML = getCurrentTimeDifference()
+            }
+            else {
+                time.innerHTML = "00:00"
+            }
         }
 
         else {

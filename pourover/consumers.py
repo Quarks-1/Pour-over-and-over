@@ -109,11 +109,9 @@ class MyConsumer(WebsocketConsumer):
             print('Starting brew...')
             self.broadcast_message('Starting brew...')
             self.schedulePours(self.steps)
-            self.received_start(data)
             return
 
         if action == "stopBrew":
-            self.received_stop(data)
             self.broadcast_message('Brew stopped.')
             for timer in self.queue:
                 timer.cancel()
@@ -132,7 +130,6 @@ class MyConsumer(WebsocketConsumer):
             self.queue = []
             self.schedulePours(self.steps)
             
-            self.received_restart(data)
             return
         
         if action == 'tareScale':
@@ -151,20 +148,6 @@ class MyConsumer(WebsocketConsumer):
             return
 
         printError(f'Invalid action property: "{action}"')
-
-################## To be filled in #######################
-    def received_start(self, data):
-        return
-        self.broadcast_data()
-        
-    def received_stop(self, data):
-        return
-        self.broadcast_data()
-        
-    def received_restart(self, data):
-        return
-        self.broadcast_data()
-################################################
 
     def broadcast_data(self, data):
         async_to_sync(self.channel_layer.group_send)(
