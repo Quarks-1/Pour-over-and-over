@@ -47,7 +47,8 @@ class MyConsumer(WebsocketConsumer):
             printError('WARNING: ARDUINO NOT CONNECTED')
             self.broadcast_message('Arduino not connected. Please connect Arduino and reload page.')
             return
-        
+        self.arduino.write(b'pumpoff')
+        self.arduino.write(b'heatoff\n')
         self.startTime = datetime.now()
         self.broadcast_message('Successfully connected to Printer and Arduino.')
         self.broadcast_message('start data feed')
