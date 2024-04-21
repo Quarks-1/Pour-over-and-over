@@ -295,7 +295,7 @@ class MyConsumer(WebsocketConsumer):
             totalTime += stepTime
         finished_message = 'Finished brewing, Enjoy!'
         # Send finished message
-        timer = Timer((totalTime - startTime).total_seconds(), self.broadcast_message, args=(finished_message))
+        timer = Timer((totalTime - startTime).total_seconds(), self.broadcast_message, args=([finished_message]))
         self.queue.append(timer)
         timer.start()   
         # print(self.queue)    
