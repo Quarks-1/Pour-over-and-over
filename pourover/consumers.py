@@ -307,6 +307,8 @@ class MyConsumer(WebsocketConsumer):
         water = str2list(water)
         water[0] = float(water[0])
         water[1] = float(water[1])
+        # Actuate pump
+        Thread(target=self.doPour, args=(water)).start()
         # Send gcode to printer
         for command in gcode:
             # Check if command is circle
@@ -316,8 +318,7 @@ class MyConsumer(WebsocketConsumer):
             else:
                 self.printer.write(command)
             time.sleep(0.1)
-        # Actuate pump
-        Thread(target=self.doPour, args=(water)).start()
+        
     
     def doPour(self, water_weight, flowRate):
         # Send signal to arduino
