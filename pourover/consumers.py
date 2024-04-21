@@ -339,12 +339,13 @@ class printer:
         self.center = [127, 115, 0]
         self.ser = serial.Serial("/dev/ttyUSB0", 115200)
         # home printer
-        self.ser.write(str.encode("G28 X Y\r\n"))
+        self.ser.write("G28 X Y\r\n").encode()
         # TODO: Change Z to proper value
-        self.ser.write(str.encode("G0 X117 Y110 Z220 F3600\r\n")) # move to center
+        self.ser.write("G0 X117 Y110 Z220 F3600\r\n".encode()) # move to center
     
     def goto(self, x, y, z):
-        self.ser.write(str.encode(f"G0 X{x} Y{y} Z{z} F3600\r\n"))
+        command = f"G0 X{x} Y{y} Z{z} F3600\r\n"
+        self.ser.write(command.encode())
     
     def write(self, command):
         self.ser.write(str.encode(command + "\r\n"))
@@ -352,14 +353,16 @@ class printer:
     def arcFromCurr(self, i, j, x, y):
         # Offset from center
         # print(f'Current position: {x}, {y}, i: {i}, j: {j}')
-        self.ser.write(str.encode(f"G0 X{x-i} Y{y-j} F3600\r\n"))
+        command = f"G0 X{x-i} Y{y-j} F3600\r\n"
+        self.ser.write(command.encode())
         # Draw circle
-        self.ser.write(str.encode(f"G2 X{x-i} Y{y-j} I{i} J{j} F3600\r\n"))
+        command = f"G2 X{x-i} Y{y-j} I{i} J{j} F3600\r\n"
+        self.ser.write(command.encode())
         
 
     def currPos(self) -> list[int, int, int]:
         self.ser.reset_input_buffer()
-        self.ser.write(str.encode("M114\r\n"))
+        self.ser.write("M114\r\n".encode())
         x, y, z = 0, 0, 0
         for val in self.ser.readline().decode('utf-8').split(' '):
             if 'X' in val:
