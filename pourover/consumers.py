@@ -339,7 +339,7 @@ class printer:
         self.center = [127, 115, 0]
         self.ser = serial.Serial("/dev/ttyUSB0", 115200)
         # home printer
-        self.ser.write("G28 X Y\r\n").encode()
+        self.ser.write("G28 X Y\r\n".encode())
         # TODO: Change Z to proper value
         self.ser.write("G0 X117 Y110 Z220 F3600\r\n".encode()) # move to center
     
