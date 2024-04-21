@@ -242,7 +242,7 @@ class MyConsumer(WebsocketConsumer):
                 print("Invalid data received.")
             except serial.SerialException:
                 printError('Arduino error')
-            time.sleep(0.25)
+            time.sleep(0.1)
         self.heated = True
         self.arduino.write(b'heatoff\n')
         return
