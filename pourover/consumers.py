@@ -147,6 +147,7 @@ class MyConsumer(WebsocketConsumer):
 
         if action == 'startHeater':
             self.heater.start()
+            self.broadcast_message('Heating water. Please wait...')
             return
 
         printError(f'Invalid action property: "{action}"')
