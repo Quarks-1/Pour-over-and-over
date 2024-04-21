@@ -237,7 +237,7 @@ class MyConsumer(WebsocketConsumer):
                     # print(f"Current Temperature: {current_temp}°F")
                     control = self.pid(current_temp)
                     heating_on = control >= 0.5  
-                    self.arduino.write(b'1\n' if heating_on else b'0\n')
+                    self.arduino.write(b'heaton\n' if heating_on else b'heatoff\n')
                     if current_temp >= self.profile.water_temp:
                         self.broadcast_message('Water heated. Click to start brew...')
                         break
@@ -290,9 +290,9 @@ class MyConsumer(WebsocketConsumer):
             self.queue.append(timer)
             timer.start()
             totalTime += stepTime
-            
+        finished_message = 'Finished brewing, Enjoy!'
         # Send finished message
-        timer = Timer((totalTime - startTime).total_seconds(), self.broadcast_message, args=('Finished brewing, Enjoy!'))
+        timer = Timer((totalTime - startTime).total_seconds(), self.broadcast_message, args=(finished_message))
         self.queue.append(timer)
         timer.start()   
         # print(self.queue)    
