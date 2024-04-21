@@ -280,7 +280,7 @@ class MyConsumer(WebsocketConsumer):
         print(steps)
         for step in steps:
             if 'pre_wet' in step:
-                finalStep = ([gCode['pre_wet']], [10, 2])
+                finalStep = ([gCode['pre_wet']], [8, 2])
                 stepTime = timedelta(seconds=4)
             elif 'delay' in step:
                 stepTime = timedelta(seconds=step[1])
