@@ -64,7 +64,7 @@
             "grind_size": 80,
             "grind_weight": 15,
             "total_water_weight": 250,
-            "water_temp": 212,
+            "water_temp": 100,
             "brew_method": "Pour over",
             "brew_device": "V60",
             "steps": ["pre_wet/0/0/0","delay/30/0/0","Inner circle/20/5/Low","Outer circle/20/5/Low","Edge/10/5/Low","delay/45/0/0","Inner circle/20/5/Low","Outer circle/20/5/Low","Edge/10/5/Low","delay/10/0/0","Inner circle/20/5/Low","Outer circle/20/5/Low","Edge/10/5/Low","delay/10/0/0","Inner circle/20/5/Low","Outer circle/20/5/Low","Edge/10/5/Low","delay/10/0/0","Inner circle/20/5/Low","Outer circle/20/5/Low","Edge/10/5/Low","delay/10/0/0"],
