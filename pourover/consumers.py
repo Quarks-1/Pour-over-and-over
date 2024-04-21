@@ -313,14 +313,14 @@ class MyConsumer(WebsocketConsumer):
                 self.printer.arcFromCurr(i, j, x, y)
             else:
                 self.printer.write(command)
-            time.sleep(0.05)
+            time.sleep(0.1)
         # Actuate pump
         Thread(target=self.doPour, args=(water)).start()
     
     def doPour(self, water_weight, flowRate):
         # Send signal to arduino
         print(f'Pouring {water_weight}g at {flowRate}g/s, value: {self.map_value(flowRate)}')
-        message = f'pumpon/{self.map_value(flowRate)}'
+        message = f'pumpon/255'
         self.arduino.write(message.encode())
         time.sleep(water_weight/flowRate)
         self.arduino.write(b'pumpoff')
