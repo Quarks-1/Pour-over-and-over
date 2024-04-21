@@ -256,6 +256,7 @@ class MyConsumer(WebsocketConsumer):
         
 
     def schedulePours(self, steps):
+        print('Scheduling pours...')
         times_dict = {
             'Center': 1,
             'Inner circle': 3.68,
