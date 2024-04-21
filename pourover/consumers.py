@@ -57,10 +57,11 @@ class MyConsumer(WebsocketConsumer):
         )
         if self.printer is not None:
             self.printer.close()
-            
         else:
             printError('WARNING: PRINTER NOT CONNECTED')
             return
+        # turn off heater
+        self.arduino.write(b'heatoff\n')
 
     def receive(self, **kwargs):
         if 'text_data' not in kwargs:
@@ -252,6 +253,7 @@ class MyConsumer(WebsocketConsumer):
                 printError('Arduino error')
             time.sleep(0.1)
         self.heated = True
+        self.arduino.write(b'heatoff\n')
         return
         
 
@@ -317,9 +319,10 @@ class MyConsumer(WebsocketConsumer):
     def doPour(self, water_weight, flowRate):
         # Send signal to arduino
         print(f'Pouring {water_weight}g at {flowRate}g/s')
-        self.arduino.write(f'pumpon/{self.map_value(flowRate)}'.encode('utf-8'))
+        message = f'pumpon/{self.map_value(flowRate)}'
+        self.arduino.write(message.encode())
         time.sleep(water_weight/flowRate)
-        self.arduino.write(f'pumpoff'.encode('utf-8'))
+        self.arduino.write(b'pumpoff')
         return
     
     def map_value(self, x):
@@ -336,7 +339,6 @@ class printer:
         self.ser = serial.Serial("/dev/ttyUSB0", 115200)
         # home printer
         self.ser.write(str.encode("G28 X Y\r\n"))
-        # time.sleep(2)
         # TODO: Change Z to proper value
         self.ser.write(str.encode("G0 X117 Y110 Z220 F3600\r\n")) # move to center
     
