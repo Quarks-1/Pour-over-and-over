@@ -317,7 +317,7 @@ class MyConsumer(WebsocketConsumer):
                 self.printer.arcFromCurr(i, j, x, y)
             else:
                 self.printer.write(command)
-            time.sleep(0.1)
+            time.sleep(0.05)
         
     
     def doPour(self, water_weight, flowRate):
