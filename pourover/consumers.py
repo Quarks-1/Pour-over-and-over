@@ -287,6 +287,7 @@ class MyConsumer(WebsocketConsumer):
                 pourTime = step[1] / step[2]  # water weight / flow rate
                 numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
                 finalStep = ([gCode[step[0]]] * numInstruct, [step[1], step[2]])
+                print(f'taking max of {pourTime} and {times_dict[step[0]] * numInstruct}')
                 stepTime = timedelta(seconds=max(pourTime, times_dict[step[0]] * numInstruct))
                 print(f'Pouring {step[1]}g at {step[2]}g/s for {stepTime.total_seconds()} seconds')
 
