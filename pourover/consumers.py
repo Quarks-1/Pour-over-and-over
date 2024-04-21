@@ -23,7 +23,7 @@ class MyConsumer(WebsocketConsumer):
     startTime = None
     pid = None
     heated = False
-
+    heater = None
 
     def connect(self):
         async_to_sync(self.channel_layer.group_add)(
@@ -95,7 +95,8 @@ class MyConsumer(WebsocketConsumer):
             pid.output_limits = (0, 1)  # Output value will be between 0 and 1 (off/on)
             self.pid = pid
             # TODO: fix heater start
-            Thread(target=self.startHeater).start()
+            self.heater = Thread(target=self.startHeater)
+            self.heater.start()
             return
 
         if action == 'startBrew':
@@ -142,6 +143,7 @@ class MyConsumer(WebsocketConsumer):
         if action == 'bypassTemp':
             self.broadcast_message('Bypassing temperature check...')
             self.heated = True
+            self.heater.cancel()
             return
 
         printError(f'Invalid action property: "{action}"')
