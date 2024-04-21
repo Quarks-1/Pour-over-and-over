@@ -316,7 +316,7 @@ class MyConsumer(WebsocketConsumer):
         # Send signal to arduino
         self.arduino.write(f'{self.map_value(flowRate)}'.encode())
         time.sleep(water_weight/flowRate)
-        self.arduino.write(f'170'.encode())
+        self.arduino.write(f'0'.encode())
         return
     
     def map_value(self, x):
