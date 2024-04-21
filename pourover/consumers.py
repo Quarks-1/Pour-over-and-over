@@ -355,6 +355,7 @@ class printer:
         # print(f'Current position: {x}, {y}, i: {i}, j: {j}')
         command = f"G0 X{x-i} Y{y-j} F3600\r\n"
         self.ser.write(command.encode())
+        time.sleep(0.1)
         # Draw circle
         command = f"G2 X{x-i} Y{y-j} I{i} J{j} F3600\r\n"
         self.ser.write(command.encode())
