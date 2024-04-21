@@ -287,11 +287,12 @@ class MyConsumer(WebsocketConsumer):
                 stepTime = timedelta(seconds=step[1])
             else:
                 pourTime = step[1] / step[2]  # water weight / flow rate
-                numInstruct = math.ceil(pourTime / times_dict[step[0]]) + 1 # total time / time per instruction
+                numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
+                print(f'number of instructions: {numInstruct}')
                 finalStep = ([gCode[step[0]]] * numInstruct, [step[1], step[2]])
-                print(f'taking max of {pourTime} and {times_dict[step[0]]} * {numInstruct}')
+                # print(f'taking max of {pourTime} and {times_dict[step[0]]} * {numInstruct}')
                 stepTime = timedelta(seconds=max(pourTime, times_dict[step[0]] * numInstruct))
-                print(f'Pouring {step[1]}g at {step[2]}g/s for {stepTime.total_seconds()} seconds')
+                # print(f'Pouring {step[1]}g at {step[2]}g/s for {stepTime.total_seconds()} seconds')
             if 'delay' not in step:
                 strstep = [list2str(finalStep[0]), list2str(finalStep[1])]
                 timer = Timer((totalTime - startTime).total_seconds(), self.doStep, args=(strstep))
