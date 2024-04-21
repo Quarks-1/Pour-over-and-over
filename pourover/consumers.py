@@ -351,7 +351,6 @@ class printer:
         # TODO: Change Z to proper value
         self.ser.write("G0 X117 Y110 Z220 F3600\r\n".encode()) # move to center
         time.sleep(15)
-        return True
     
     def goto(self, x, y, z):
         command = f"G0 X{x} Y{y} Z{z} F3600\r\n"
