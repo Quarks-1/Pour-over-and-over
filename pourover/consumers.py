@@ -262,9 +262,10 @@ class MyConsumer(WebsocketConsumer):
 
     def schedulePours(self, steps):
         print('Scheduling pours...')
+        # TODO: fine tune step times
         times_dict = {
             'Center': 1,
-            'Inner circle': 3.68,
+            'Inner circle': 2,
             'Outer circle': 8,
             'Edge': 11, 
         }
@@ -286,7 +287,7 @@ class MyConsumer(WebsocketConsumer):
                 stepTime = timedelta(seconds=step[1])
             else:
                 pourTime = step[1] / step[2]  # water weight / flow rate
-                numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
+                numInstruct = math.ceil(pourTime / times_dict[step[0]]) + 1 # total time / time per instruction
                 finalStep = ([gCode[step[0]]] * numInstruct, [step[1], step[2]])
                 print(f'taking max of {pourTime} and {times_dict[step[0]]} * {numInstruct}')
                 stepTime = timedelta(seconds=max(pourTime, times_dict[step[0]] * numInstruct))
