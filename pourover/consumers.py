@@ -117,6 +117,8 @@ class MyConsumer(WebsocketConsumer):
             self.broadcast_message('Brew stopped.')
             for timer in self.queue:
                 timer.cancel()
+            self.arduino.write(b'pumpoff')
+            self.arduino.write(b'heatoff\n')
             self.queue = []
             return
         
@@ -265,7 +267,7 @@ class MyConsumer(WebsocketConsumer):
         # TODO: fine tune step times
         times_dict = {
             'Center': 1,
-            'Inner circle': 3.81,
+            'Inner circle': 4,
             'Outer circle': 9,
             'Edge': 13, 
         }
@@ -278,7 +280,7 @@ class MyConsumer(WebsocketConsumer):
         }
         startTime = datetime.now()
         totalTime = datetime.now() + timedelta(seconds=2)
-        print(steps)
+        # print(steps)
         for step in steps:
             if 'pre_wet' in step:
                 finalStep = ([gCode['pre_wet']], [10, 2])
@@ -288,7 +290,7 @@ class MyConsumer(WebsocketConsumer):
             else:
                 pourTime = step[1] / step[2]  # water weight / flow rate
                 numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
-                print(f'number of instructions: {numInstruct}')
+                # print(f'number of instructions: {numInstruct}')
                 finalStep = ([gCode[step[0]]] * numInstruct, [step[1], step[2]])
                 # print(f'taking max of {pourTime} and {times_dict[step[0]]} * {numInstruct}')
                 stepTime = timedelta(seconds=max(pourTime, times_dict[step[0]] * numInstruct))
