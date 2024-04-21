@@ -146,3 +146,7 @@ function tareScale() {
 function bypassTemp() {
     socket.send(JSON.stringify({"command": "bypassTemp"}))
 }
+
+function startHeater() {
+    socket.send(JSON.stringify({"command": "startHeater"}))
+}

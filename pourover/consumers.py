@@ -97,7 +97,6 @@ class MyConsumer(WebsocketConsumer):
             # TODO: fix heater start
             self.heater = Thread(target=self.startHeater)
             self.heater.name = f'heater thread'
-            # self.heater.start()
             return
 
         if action == 'startBrew':
@@ -144,6 +143,10 @@ class MyConsumer(WebsocketConsumer):
             self.broadcast_message('Bypassing temperature check...')
             self.arduino.write(b'heatoff\n')
             self.heated = True
+            return
+
+        if action == 'startHeater':
+            self.heater.start()
             return
 
         printError(f'Invalid action property: "{action}"')
