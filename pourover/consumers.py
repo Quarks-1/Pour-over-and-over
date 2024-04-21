@@ -264,8 +264,8 @@ class MyConsumer(WebsocketConsumer):
         times_dict = {
             'Center': 1,
             'Inner circle': 3.68,
-            'Outer circle': 9, # TODO: Fix estimation thru testing
-            'Edge': 16.5, # TODO: Fix estimation thru testing
+            'Outer circle': 9,
+            'Edge': 13, 
         }
         gCode = {
             'pre_wet': 'G2 X127 Y115 Z220 I25 J25 F3600', 
