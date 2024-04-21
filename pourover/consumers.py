@@ -289,9 +289,9 @@ class MyConsumer(WebsocketConsumer):
                 pourTime = step[1] / step[2]  # water weight / flow rate
                 numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
                 finalStep = ([gCode[step[0]]] * numInstruct, [step[1], step[2]])
-                print(f'taking max of {pourTime} and {times_dict[step[0]] * numInstruct}')
+                # print(f'taking max of {pourTime} and {times_dict[step[0]] * numInstruct}')
                 stepTime = timedelta(seconds=max(pourTime, times_dict[step[0]] * numInstruct))
-                print(f'Pouring {step[1]}g at {step[2]}g/s for {stepTime.total_seconds()} seconds')
+                # print(f'Pouring {step[1]}g at {step[2]}g/s for {stepTime.total_seconds()} seconds')
 
             strstep = [list2str(finalStep[0]), list2str(finalStep[1])]
             timer = Timer((totalTime - startTime).total_seconds(), self.doStep, args=(strstep))
@@ -310,6 +310,7 @@ class MyConsumer(WebsocketConsumer):
         water = str2list(water)
         water[0] = float(water[0])
         water[1] = float(water[1])
+        print(f'Pouring {water[0]}g at {water[1]}g/s')
         # Actuate pump
         Thread(target=self.doPour, args=(water)).start()
         # Send gcode to printer
