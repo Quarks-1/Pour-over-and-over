@@ -280,7 +280,7 @@ class MyConsumer(WebsocketConsumer):
             else:
                 pourTime = step[1] / step[2]  # water weight / flow rate
                 numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
-                step = ([gCode[step[0]]] * numInstruct, [step[1], pourTime])
+                step = ([gCode[step[0]]] * numInstruct, [step[1], step[2]])
                 stepTime = timedelta(seconds=max(pourTime, times_dict[step[0]] * numInstruct))
 
             strstep = [list2str(step[0]), list2str(step[1])]
@@ -312,12 +312,20 @@ class MyConsumer(WebsocketConsumer):
         # Actuate pump
         Thread(target=self.doPour, args=(water)).start()
     
-    def doPour(self, water_weight, pour_time):
+    def doPour(self, water_weight, flowRate):
         # Send signal to arduino
-        self.arduino.write(f'pumpOn,{water_weight / pour_time}\n'.encode())
-        time.sleep(pour_time)
-        self.arduino.write(b'pumpOff\n')
+        self.arduino.write(f'{self.map_value(flowRate)}'.encode())
+        time.sleep(water_weight/flowRate)
+        self.arduino.write(f'170'.encode())
         return
+    
+    def map_value(self, x):
+        # Ensure the input is within the allowable range
+        if not 0 <= x <= 8:
+            raise ValueError("Input must be within the range 0 to 8")
+        return int(10.625 * x + 170)
+
+
 
 class printer:
     def __init__(self):
