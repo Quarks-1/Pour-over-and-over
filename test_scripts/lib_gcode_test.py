@@ -10,6 +10,11 @@ command_dict = {
     'abs_center' : 'G0 X127 Y115 Z220 F3600',
     'center' : 'G0 X127 Y115 F3600',
     'pos': 'M114',
+    'pre_wet': 'G2 X127 Y115 Z220 I25 J25 F3600', 
+    'Center': 'G2 X127 Y115 F3600',
+    'Inner circle': 'G2 X127 Y115 I10 J10 F1500',
+    'Outer circle': 'G2 X127 Y115 I25 J25 F1500',
+    'Edge': 'G2 X127 Y115 I35 J35 F1500'
 }
 recording = []
 record = False
