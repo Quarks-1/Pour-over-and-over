@@ -15,11 +15,9 @@ class MyConsumer(WebsocketConsumer):
     profile = None
     printer = None
     arduino = None
-    stop = False
     
     x, y, z = 0, 0, 0
     steps = []
-    gcodeSteps = []
     queue = []
     startTime = None
     pid = None
@@ -113,6 +111,7 @@ class MyConsumer(WebsocketConsumer):
 
         if action == "stopBrew":
             self.broadcast_message('Brew stopped.')
+            print('Stopping brew...')
             for timer in self.queue:
                 timer.cancel()
             self.arduino.write(b'pumpoff')
@@ -122,7 +121,6 @@ class MyConsumer(WebsocketConsumer):
         
         if action == "restartBrew":
             self.broadcast_message('Brew restarted.')
-            self.stop = False
             # parse steps again
             self.steps = parseSteps(self.profile.steps)
             for timer in self.queue:
