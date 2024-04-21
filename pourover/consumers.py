@@ -270,6 +270,7 @@ class MyConsumer(WebsocketConsumer):
             'Outer circle': 'G2 X127 Y115 I25 J25 F1500',
             'Edge': 'G2 X127 Y115 I35 J35 F1500',
         }
+        startTime = datetime.now()
         totalTime = datetime.now() + timedelta(seconds=5)
         for step in steps:
             if 'pre_wet' in step:
