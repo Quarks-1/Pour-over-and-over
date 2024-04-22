@@ -38,7 +38,7 @@ function connectToServer() {
             if (response['message'] == 'start data feed') {
             setInterval(() => {
                 socket.send(JSON.stringify({"command": "updateData"}));
-            }, 1000);
+            }, 500);
             }
             else {
                 displayMessage(response['message'])
