@@ -9,6 +9,6 @@ while True:
     if command == 'on':
         command = 'pumpon/255'
     else:
-        command = 'pumpoff/0'
+        command = 'pumpoff'
     # send command to arduino
     arduino.write(str.encode(command))
