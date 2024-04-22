@@ -4,7 +4,10 @@ arduino = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=.1)
 
 while True:
     # take pump on or pump off input
-    command = input("Enter pump on or pump off: ")
+    try:
+        command = input("Enter pump on or pump off: ")
+    except KeyboardInterrupt:
+        break
     if command == 'on':
         command = 'pumpon/255'
     elif command == 'off':
