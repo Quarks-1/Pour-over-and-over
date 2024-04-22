@@ -16,3 +16,5 @@ while True:
         command = f'pumpon/{command}'
     # send command to arduino
     arduino.write(str.encode(command))
+    
+arduino.close()
