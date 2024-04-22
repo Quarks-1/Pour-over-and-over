@@ -23,6 +23,7 @@ class MyConsumer(WebsocketConsumer):
     pid = None
     heated = False
     heater = None
+    water_temp = 0
 
     def connect(self):
         async_to_sync(self.channel_layer.group_add)(
@@ -100,7 +101,7 @@ class MyConsumer(WebsocketConsumer):
             return
 
         if action == 'startBrew':
-            if not self.heated:
+            if not self.heated and self.profile.water_temp <= self.water_temp:
                 self.broadcast_message('Water not yet heated. Please wait...')
                 printError('Water not heated')
                 return
@@ -187,6 +188,7 @@ class MyConsumer(WebsocketConsumer):
         current_data = (parts[0], parts[1])
 
         result = (float(current_data[0]), float(current_data[1]))
+        self.water_temp = result[1]
         data_dict = {
             'weight': result[0],
             'temp': result[1],
