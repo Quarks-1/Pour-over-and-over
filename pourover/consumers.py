@@ -181,38 +181,17 @@ class MyConsumer(WebsocketConsumer):
         # Decode byte string to a normal string
         decoded_str = data.decode('utf-8')
         parts = decoded_str.strip().split('/')
-        while decoded_str == '' or len(parts) != 2 or len(parts[0]) < 3 or len(parts[1]) < 2:
-            try:
-                data = self.arduino.readline()
-            except serial.SerialException:
-                # print(f'Bad data: {data}')
-                # printError('Arduino error')
-                time.sleep(0.1)
-                continue
-            decoded_str = data.decode('utf-8')
-            parts = decoded_str.strip().split('/')
-            try:
-                float(parts[0])
-                if len(parts) == 2:
-                    float(parts[1])
-            except ValueError:
-                decoded_str = ''
-            time.sleep(0.1)
-        
+        if decoded_str == '' or len(parts) != 2 or len(parts[0]) < 3 or len(parts[1]) < 2:
+            self.broadcast_data(previous_data)
+            return        
         current_data = (parts[0], parts[1])
-        # print(f'Current data before floats {current_data}')
-        # Check if temp data is within threshold (fixes high fluctations)
-        # if self.previous_data is not None:
-        #     if abs(float(current_data[0]) - float(self.previous_data[0])) > threshold:
-        #         decoded_str = ''
-        # else:
-        #     self.previous_data = decoded_str
 
         result = (float(current_data[0]), float(current_data[1]))
         data_dict = {
             'weight': result[0],
             'temp': result[1],
         }
+        previous_data = data_dict
         self.broadcast_data(data_dict)
         return result
     
@@ -233,9 +212,6 @@ class MyConsumer(WebsocketConsumer):
                         self.broadcast_message('Water heated. Click to start brew...')
                         break
                 time.sleep(0.05)
-            except KeyboardInterrupt:
-                print("Exiting...")
-                break
             except ValueError:
                 # In case of faulty serial data that cannot be converted to float
                 print("Invalid data received.")
