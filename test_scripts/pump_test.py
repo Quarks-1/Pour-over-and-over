@@ -12,8 +12,6 @@ while True:
         command = 'pumpon/255'
     elif command == 'off':
         command = 'pumpoff'
-    elif command == '':
-        break
     else:
         command = f'pumpon/{command}'
     # send command to arduino
