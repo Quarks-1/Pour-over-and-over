@@ -10,7 +10,7 @@ while True:
     elif command == 'off':
         command = 'pumpoff'
     elif command == '':
-        continue
+        break
     else:
         command = f'pumpon/{command}'
     # send command to arduino
