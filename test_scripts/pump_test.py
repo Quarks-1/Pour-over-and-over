@@ -8,7 +8,7 @@ while True:
     command = input("Enter pump on or pump off: ")
     if command == 'on':
         command = 'pumpon/255'
-    else:
+    elif command == 'off':
         command = 'pumpoff'
     # send command to arduino
     arduino.write(str.encode(command))
