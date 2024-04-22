@@ -15,6 +15,10 @@ while True:
     else:
         command = f'pumpon/{command}'
     # send command to arduino
-    arduino.write(str.encode(command))
-    
+    try:
+        arduino.write(str.encode(command))
+        print('wrote well!')
+    except serial.SerialException:
+        print('WARNING: ARDUINO NOT CONNECTED')
+        break
 arduino.close()
