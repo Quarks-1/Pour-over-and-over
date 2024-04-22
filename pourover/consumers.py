@@ -297,7 +297,7 @@ class MyConsumer(WebsocketConsumer):
     def doPour(self, water_weight, flowRate):
         # Send signal to arduino
         print(f'Pouring {water_weight}g at {flowRate}g/s, value: {self.map_value(flowRate)}')
-        message = f'pumpon/{self.map_value(flowRate)}\n'
+        message = f'pumpon/255\n'
         self.arduino.write(message.encode())
         time.sleep(water_weight/flowRate)
         # print(f'Pouring for {water_weight/flowRate} seconds')
