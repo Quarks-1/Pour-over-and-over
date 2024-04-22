@@ -1,10 +1,14 @@
-from gpiozero import LED
-from time import sleep
-
-led = LED(16)
+# Importing Libraries 
+import serial 
+import time 
+arduino = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=.1) 
 
 while True:
-    led.on()
-    sleep(10)
-    led.off()
-    sleep(1)
+    # take pump on or pump off input
+    command = input("Enter pump on or pump off: ")
+    if command == 'on':
+        command = 'pumpon/255'
+    else:
+        command = 'pumpoff/0'
+    # send command to arduino
+    arduino.write(str.encode(command))
