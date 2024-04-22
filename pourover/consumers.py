@@ -296,7 +296,7 @@ class MyConsumer(WebsocketConsumer):
     
     def doPour(self, water_weight, flowRate):
         # Send signal to arduino
-        # print(f'Pouring {water_weight}g at {flowRate}g/s, value: {self.map_value(flowRate)}')
+        print(f'Pouring {water_weight}g at {flowRate}g/s, value: {self.map_value(flowRate)}')
         message = f'pumpon/{self.map_value(flowRate)}\n'
         self.arduino.write(message.encode())
         time.sleep(water_weight/flowRate)
@@ -308,7 +308,7 @@ class MyConsumer(WebsocketConsumer):
         # Ensure the input is within the allowable range
         if not 0 <= x <= 8:
             raise ValueError("Input must be within the range 0 to 8")
-        return int(10.625 * x + 170)
+        return int(5.625 * x + 210)
 
 
 
