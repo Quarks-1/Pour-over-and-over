@@ -182,7 +182,7 @@ class MyConsumer(WebsocketConsumer):
         decoded_str = data.decode('utf-8')
         parts = decoded_str.strip().split('/')
         if decoded_str == '' or len(parts) != 2 or len(parts[0]) < 3 or len(parts[1]) < 2:
-            self.broadcast_data(previous_data)
+            self.broadcast_data(self.previous_data)
             return        
         current_data = (parts[0], parts[1])
 
@@ -191,7 +191,7 @@ class MyConsumer(WebsocketConsumer):
             'weight': result[0],
             'temp': result[1],
         }
-        previous_data = data_dict
+        self.previous_data = data_dict
         self.broadcast_data(data_dict)
         return result
     
