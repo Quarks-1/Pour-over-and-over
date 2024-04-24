@@ -75,3 +75,40 @@ span {
     display: table;
     margin: 0 auto;
 }
+
+.button_controls td {
+    text-align: center;
+}
+
+.name_th {
+    text-align: left;
+}
+.name_th td {
+    text-align: left;
+}
+
+.step_td {
+    padding: 10px;
+    border-top: 3px dashed black;
+    border-bottom: 3px dashed black;
+    /* border: 3px solid black; */
+    font-size: 18px;
+}
+
+.step_th {
+    padding: 5px;
+    border: 3px solid black;
+    font-size: 20px;
+    align-items: center;
+}
+
+.gif {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+.brew_profile {
+    font-size: 20px;
+}

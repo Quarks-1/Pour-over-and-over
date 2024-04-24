@@ -52,7 +52,24 @@
                     <td>{{profile.brew_method}}</td>
                 </tr>
             </table>
-            
+            <span class="box_span">Brew steps</span>
+            <table class="button_controls">
+                <tr>
+                    <th class='step_th'>Action</th>
+                    <th class='step_th'>Water weight (g)</th>
+                    <th class='step_th'>Flow rate (g/s)</th>
+                    <th class='step_th'>Agitation level</th>
+                </tr>
+                {% for step in steps %}
+                <tr>
+                    <td class="step_td">{{step.action}}</td>
+                    <td class='step_td'>{{step.water_weight}}</td>
+                    <td class='step_td'>{{step.flow_rate}}</td>
+                    <td class='step_td'>{{step.agitation}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
         </div>
         <div class="box">
             <span class="box_span">Brew controls</span>
@@ -96,6 +113,7 @@
                     </td>
                 </tr>
             </table>
+            <img class='gif' src="{% static 'img/giphy.gif' %}" alt="My gif">
         </div>
     </div>
     <script>

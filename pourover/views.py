@@ -7,6 +7,12 @@ homed = True
 
 # Create your views here.
 
+class Step:
+    def __init__(self, action, water_weight, flow_rate, agitation):
+        self.action = action
+        self.water_weight = water_weight
+        self.flow_rate = flow_rate
+        self.agitation = agitation
 
 def home_page(request):
     global homed
@@ -28,7 +34,9 @@ def home_page_sorted(request, sort_order, order):
 
 def brew_page(request, id):
     profile = get_object_or_404(BrewProfile, id=id)
-    return render(request, 'pourover/brew_page.html', {'profile': profile, 'id': id})
+    # Format steps for display
+    steps = parseSteps(profile.steps)
+    return render(request, 'pourover/brew_page.html', {'profile': profile, 'id': id, 'steps': steps})
 
 def create_profile(request):
     if request.method == 'GET':
@@ -54,3 +62,21 @@ def create_profile(request):
     print(brew_profile)
     brew_profile.save()
     return redirect('home_page')
+
+
+def parseSteps(steps):
+    parsed = []
+    for step in steps.strip('][').split(','):
+        temp = step.strip("'").split('/')
+        if ' ' in temp[0]:
+            temp[0] = temp[0][2:]
+        temp[1] = int(temp[1])
+        temp[2] = int(temp[2])
+        if temp[0] == 'pre_wet':
+            temp[0] = 'Pre-Wet'
+        elif temp[0] == 'delay':
+            temp[0] = 'Draw down delay'
+            temp[3] = 'N/A'
+        final = Step(temp[0], temp[1], temp[2], temp[3])
+        parsed.append(final)
+    return parsed
