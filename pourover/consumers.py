@@ -137,7 +137,8 @@ class MyConsumer(WebsocketConsumer):
             return
         
         if action == 'updateData':
-            self.get_arduino_feed()
+            thread = Thread(target=self.get_arduino_feed)
+            thread.start()
             return
 
         if action == 'bypassTemp':
