@@ -37,7 +37,7 @@ class MyConsumer(WebsocketConsumer):
             printError('WARNING: ARDUINO NOT CONNECTED')
             self.broadcast_message('Arduino not connected. Please connect Arduino and reload page.')
             return
-        self.arduino.write(b'pumpon/0')
+        self.arduino.write(b'pumpon/0\n')
         self.arduino.write(b'heatoff\n')
         
         # Connect to printer
@@ -61,7 +61,7 @@ class MyConsumer(WebsocketConsumer):
             printError('WARNING: PRINTER NOT CONNECTED')
             return
         # turn off heater
-        self.arduino.write(b'pumpon/0')
+        self.arduino.write(b'pumpon/0\n')
         self.arduino.write(b'heatoff\n')
         
 
@@ -116,7 +116,7 @@ class MyConsumer(WebsocketConsumer):
             print('Stopping brew...')
             for timer in self.queue:
                 timer.cancel()
-            self.arduino.write(b'pumpon/0')
+            self.arduino.write(b'pumpon/0\n')
             self.arduino.write(b'heatoff\n')
             self.queue = []
             return
@@ -305,7 +305,7 @@ class MyConsumer(WebsocketConsumer):
         self.arduino.write(message.encode())
         time.sleep(water_weight/flowRate)
         # print(f'Pouring for {water_weight/flowRate} seconds')
-        self.arduino.write(b'pumpon/0')
+        self.arduino.write(b'pumpon/0\n')
         return
     
     def map_value(self, x):
