@@ -177,7 +177,7 @@ class MyConsumer(WebsocketConsumer):
     def get_arduino_feed(self):
         threshold = 10
         self.arduino.reset_input_buffer()
-        time.sleep(0.05)
+        time.sleep(0.1)
         data = self.arduino.readline() 
 
         # Decode byte string to a normal string
