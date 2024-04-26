@@ -112,3 +112,7 @@ span {
 .brew_profile {
     font-size: 20px;
 }
+
+img {
+    padding-top: 10px;
+}

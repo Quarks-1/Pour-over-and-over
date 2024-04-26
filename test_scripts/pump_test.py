@@ -16,8 +16,8 @@ while True:
         command = f'pumpon/{command}'
     # send command to arduino
     try:
-        arduino.write(str.encode(command))
-        print('wrote well!')
+        written = arduino.write(str.encode(command))
+        print('wrote: ', written)
     except serial.SerialException:
         print('WARNING: ARDUINO NOT CONNECTED')
         break
