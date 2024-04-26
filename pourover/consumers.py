@@ -101,7 +101,7 @@ class MyConsumer(WebsocketConsumer):
             return
 
         if action == 'startBrew':
-            if not self.heated and self.profile.water_temp <= self.water_temp:
+            if not self.heated and self.profile.water_temp > self.water_temp:
                 self.broadcast_message('Water not yet heated. Please wait...')
                 printError('Water not heated')
                 return
