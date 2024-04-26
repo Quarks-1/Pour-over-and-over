@@ -11,7 +11,7 @@ while True:
     if command == 'on':
         command = 'pumpon/255'
     elif command == 'off':
-        command = 'pumpoff'
+        command = 'pumpon/0'
     else:
         command = f'pumpon/{command}'
     # send command to arduino

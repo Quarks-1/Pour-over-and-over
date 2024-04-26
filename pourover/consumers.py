@@ -61,8 +61,9 @@ class MyConsumer(WebsocketConsumer):
             printError('WARNING: PRINTER NOT CONNECTED')
             return
         # turn off heater
-        self.arduino.write(b'heatoff\n')
         self.arduino.write(b'pumpon/0')
+        self.arduino.write(b'heatoff\n')
+        
 
     def receive(self, **kwargs):
         if 'text_data' not in kwargs:
