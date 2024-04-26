@@ -302,7 +302,8 @@ class MyConsumer(WebsocketConsumer):
         time.sleep(1)
         # Send signal to arduino
         print(f'Pouring {water_weight}g at {flowRate}g/s, value: {self.map_value(flowRate)}')
-        message = f'pumpon/{self.map_value(flowRate)}\n'
+        # message = f'pumpon/{self.map_value(flowRate)}\n'
+        message = f'pumpon/{200}\n'
         self.arduino.write(message.encode())
         time.sleep(water_weight/flowRate)
         # print(f'Pouring for {water_weight/flowRate} seconds')
@@ -325,6 +326,8 @@ class printer:
         self.ser.write("G28 X Y\r\n".encode())
         # TODO: Change Z to proper value
         self.ser.write("G0 X117 Y110 Z220 F3600\r\n".encode()) # move to center
+        self.ser.write("M106 S255\r\n".encode())
+        self.ser.write("M106 P1 S255\r\n".encode())
         time.sleep(10)
     
     def goto(self, x, y, z):
