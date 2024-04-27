@@ -40,6 +40,10 @@ function connectToServer() {
                 socket.send(JSON.stringify({"command": "updateData"}));
             }, 500);
             }
+            else if (response['message'].includes('curr step')) {
+                let step = response['message'].split(':')[1]
+                highlightStep(step)
+            }
             else {
                 displayMessage(response['message'])
                 if (response['message'].includes("not connected")) {
@@ -65,6 +69,18 @@ function connectToServer() {
         else {
             displayMessage(response)
                 
+        }
+    }
+}
+
+function highlightStep(step) {
+    let steps = document.getElementById("id_step_table").getElementsByTagName("tr");
+    for (let i = 0; i < steps.length; i++) {
+        if (i == step) {
+            steps[i].style.backgroundColor = "lightgreen"
+        }
+        else {
+            steps[i].style.backgroundColor = "transparent";
         }
     }
 }

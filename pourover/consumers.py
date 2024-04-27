@@ -24,6 +24,7 @@ class MyConsumer(WebsocketConsumer):
     heated = False
     heater = None
     water_temp = 0
+    curr_step = 1
 
     def connect(self):
         async_to_sync(self.channel_layer.group_add)(
@@ -129,6 +130,7 @@ class MyConsumer(WebsocketConsumer):
                 timer.cancel()
             self.queue = []
             self.schedulePours(self.steps)
+            self.curr_step = 1
             return
         
         if action == 'tareScale':
@@ -176,7 +178,6 @@ class MyConsumer(WebsocketConsumer):
     
     previous_data = None
     def get_arduino_feed(self):
-        threshold = 10
         self.arduino.reset_input_buffer()
         time.sleep(0.1)
         data = self.arduino.readline() 
@@ -251,7 +252,11 @@ class MyConsumer(WebsocketConsumer):
                 finalStep = ([gCode['pre_wet']], [20, 2])
                 stepTime = timedelta(seconds=5)
             elif 'delay' in step:
+                draw_down_message = 'Draw down'
                 stepTime = timedelta(seconds=step[1])
+                timer = Timer((totalTime - startTime).total_seconds(), self.broadcast_message, args=([draw_down_message]))
+                self.queue.append(timer)
+                timer.start() 
             else:
                 pourTime = step[1] / step[2] + 1  # water weight / flow rate
                 numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
@@ -275,6 +280,10 @@ class MyConsumer(WebsocketConsumer):
         # print(self.queue)    
          
     def doStep(self, gcode, water):
+        # highlight step on web page
+        self.broadcast_message(f'curr step:{self.curr_step}')
+        self.curr_step += 1
+        
         gcode = str2list(gcode)
         water = str2list(water)
         water[0] = float(water[0])
