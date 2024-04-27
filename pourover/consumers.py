@@ -124,6 +124,7 @@ class MyConsumer(WebsocketConsumer):
         
         if action == "restartBrew":
             self.broadcast_message('Brew restarted.')
+            self.broadcast_message('enable all buttons')
             # parse steps again
             self.steps = parseSteps(self.profile.steps)
             for timer in self.queue:
@@ -135,7 +136,7 @@ class MyConsumer(WebsocketConsumer):
         
         if action == 'tareScale':
             self.arduino.write(b'tare\n')
-            print('taring')
+            self.broadcast_message('Scale tared.')
             return
         
         if action == 'updateData':
@@ -145,6 +146,7 @@ class MyConsumer(WebsocketConsumer):
 
         if action == 'bypassTemp':
             self.broadcast_message('Bypassing temperature check...')
+            self.broadcast_message('disable bypass button')
             self.arduino.write(b'heatoff\n')
             self.heated = True
             return
@@ -152,6 +154,7 @@ class MyConsumer(WebsocketConsumer):
         if action == 'startHeater':
             self.broadcast_message('Heating water. Please wait...')
             self.heater.start()
+            self.broadcast_message('disable heater button')
             return
 
         printError(f'Invalid action property: "{action}"')

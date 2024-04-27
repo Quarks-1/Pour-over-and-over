@@ -3,7 +3,7 @@
 let socket = null
 let startTime = Date.now()
 let started = false
-
+let buttonIDs = ["id_start_brew_button", "id_stop_brew_button", "id_restart_brew_button", "id_tare_button", "id_bypass_heater", "id_start_heater"]
 
 function connectToServer() {
     // Use wss: protocol if site using https:, otherwise use ws: protocol
@@ -43,6 +43,20 @@ function connectToServer() {
             else if (response['message'].includes('curr step')) {
                 let step = response['message'].split(':')[1]
                 highlightStep(step)
+            }
+            else if (response['message'].includes('disable heater button')) {
+                disableButton("id_start_heater")
+            }
+            else if (response['message'].includes('disable bypass button')) {
+                disableButton("id_bypass_heater")
+            }
+            else if (response['message'].includes('enable buttons')) {
+                disableButton("id_bypass_heater")
+            }
+            else if (response['message'].includes('enable all buttons')) {
+                for (let i = 0; i < buttonIDs.length; i++) {
+                    enableButton(buttonIDs[i])
+                }
             }
             else {
                 displayMessage(response['message'])
@@ -104,53 +118,49 @@ function updateParams(data) {
 }
 
 
+function enableButton(button) {
+    let button = document.getElementById(button)
+    button.disabled = false
+}
+
+function disableButton(button) {
+    let button = document.getElementById(button)
+    button.disabled = true
+}
+
 function startBrew() {
-    let stopBrewButton = document.getElementById("id_stop_brew_button")
-    stopBrewButton.disabled = false
-    let brewButton = document.getElementById("id_start_brew_button")
-    brewButton.disabled = true
+    enableButton("id_stop_brew_button")
+    disableButton("id_start_brew_button")
     startTime = Date.now() // Reset the start time
     socket.send(JSON.stringify({"command": "startBrew"}))
 }
 
 function stopBrew() {
-    let stopBrewButton = document.getElementById("id_stop_brew_button")
-    stopBrewButton.disabled = true
-    let brewButton = document.getElementById("id_start_brew_button")
-    brewButton.disabled = false
+    disableButton("id_stop_brew_button")
+    enableButton("id_start_brew_button")
     socket.send(JSON.stringify({"command": "stopBrew"}))
 }
 
 function restartBrew() {
-    let stopBrewButton = document.getElementById("id_stop_brew_button")
-    stopBrewButton.disabled = false
-    let brewButton = document.getElementById("id_start_brew_button")
-    brewButton.disabled = true
+    enableButton("id_stop_brew_button")
+    disableButton("id_start_brew_button")
     startTime = Date.now() // Reset the start time
     socket.send(JSON.stringify({"command": "restartBrew"}))
 }
 
 function disableButtons() {
-    let stopBrewButton = document.getElementById("id_stop_brew_button")
-    stopBrewButton.disabled = true
-    let brewButton = document.getElementById("id_start_brew_button")
-    brewButton.disabled = true
-    let restartBrewButton = document.getElementById("id_restart_brew_button")
-    restartBrewButton.disabled = true
+    disableButton("id_stop_brew_button")
+    disableButton("id_start_brew_button")
+    disableButton("id_restart_brew_button")
 }
 
 function getCurrentTimeDifference() {
-    let now = new Date(); // Current time
-    let difference = now - startTime; // Difference in milliseconds
-
-    // Convert milliseconds into minutes and seconds
-    let minutes = Math.floor(difference / 60000); // 60,000 milliseconds in a minute
-    let seconds = Math.floor((difference % 60000) / 1000); // Remaining milliseconds converted to seconds
-
-    // Formatting minutes and seconds to ensure two digits
+    let now = new Date(); 
+    let difference = now - startTime; 
+    let minutes = Math.floor(difference / 60000); 
+    let seconds = Math.floor((difference % 60000) / 1000);
     minutes = minutes < 10 ? '0' + minutes : minutes;
     seconds = seconds < 10 ? '0' + seconds : seconds;
-
     return minutes + ':' + seconds;
 }
 
