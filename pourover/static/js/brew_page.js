@@ -118,13 +118,13 @@ function updateParams(data) {
 }
 
 
-function enableButton(button) {
-    let button = document.getElementById(button)
+function enableButton(id) {
+    let button = document.getElementById(id)
     button.disabled = false
 }
 
-function disableButton(button) {
-    let button = document.getElementById(button)
+function disableButton(id) {
+    let button = document.getElementById(id)
     button.disabled = true
 }
 
