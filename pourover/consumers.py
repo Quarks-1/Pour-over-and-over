@@ -94,7 +94,7 @@ class MyConsumer(WebsocketConsumer):
                 return
             # Start PID heating
             # PID heater values
-            pid = PID(0.045, 0.005, 0, setpoint=self.profile.water_temp)  # P=1.0, I=0.1, D=0.05, desired temperature=25°C
+            pid = PID(0.045, 0, 0, setpoint=self.profile.water_temp)  # P=1.0, I=0.1, D=0.05, desired temperature=25°C
             pid.sample_time = 0.5  # Update every 1 second
             pid.output_limits = (0, 1)  # Output value will be between 0 and 1 (off/on)
             self.pid = pid
