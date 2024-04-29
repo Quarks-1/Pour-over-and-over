@@ -181,7 +181,7 @@ class MyConsumer(WebsocketConsumer):
     
     previous_data = None
     def get_arduino_feed(self):
-        self.arduino.reset_input_buffer()
+        # self.arduino.reset_input_buffer()
         time.sleep(0.1)
         data = self.arduino.readline() 
 
