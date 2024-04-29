@@ -9,7 +9,7 @@ while True:
     except KeyboardInterrupt:
         break
     if command == 'on':
-        command = 'pumpon/255'
+        command = f'pumpon/255'
     elif command == 'off':
         command = 'pumpon/0'
     else:
