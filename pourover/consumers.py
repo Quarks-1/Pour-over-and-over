@@ -214,7 +214,8 @@ class MyConsumer(WebsocketConsumer):
                     current_temp = float(data[1])
                     # print(f"Current Temperature: {current_temp}°F")
                     control = self.pid(current_temp)
-                    heating_on = control >= 0.5  
+                    heating_on = control >= 0.5 
+                    print(f'PID control: {control}, heating on: {heating_on}')
                     self.arduino.write(b'heaton\n' if heating_on else b'heatoff\n')
                     if current_temp >= self.profile.water_temp:
                         self.broadcast_message('Water heated. Click to start brew...')
