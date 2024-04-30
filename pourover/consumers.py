@@ -348,7 +348,7 @@ class printer:
         # home printer
         self.ser.write("G28 X Y\r\n".encode())
         # TODO: Change Z to proper value
-        self.ser.write("G0 X117 Y110 Z220 F3600\r\n".encode()) # move to center
+        self.ser.write("G0 X117 Y110 Z240 F3600\r\n".encode()) # move to center
         self.ser.write("M106 S255\r\n".encode())
         self.ser.write("M106 P1 S255\r\n".encode())
         time.sleep(10)
