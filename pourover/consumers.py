@@ -309,7 +309,6 @@ class MyConsumer(WebsocketConsumer):
         pour = Thread(target=self.doPour, args=(water))
         pour.name = f'Pouring {water[0]}g at {water[1]}g/s'
         pour.start()
-        # time.sleep(1.66)
         # Send gcode to printer
         for command in gcode:
             # Check if command is circle
@@ -322,9 +321,6 @@ class MyConsumer(WebsocketConsumer):
         
     
     def doPour(self, water_weight, flowRate):
-        # # Prime
-        # self.arduino.write(b'pumpon/255\n')
-        # time.sleep(10)
         # Send signal to arduino
         print(f'Pouring {water_weight}g at {flowRate}g/s, value: {self.map_value(flowRate)}')
         # message = f'pumpon/{self.map_value(flowRate)}\n'

@@ -132,6 +132,7 @@ function startBrew() {
     enableButton("id_stop_brew_button")
     disableButton("id_start_brew_button")
     startTime = Date.now() // Reset the start time
+    started = true
     socket.send(JSON.stringify({"command": "startBrew"}))
 }
 
