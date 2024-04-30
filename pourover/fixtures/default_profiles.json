@@ -31,7 +31,7 @@
             "water_temp": 200,
             "brew_method": "Immersion",
             "brew_device": "AeroPress",
-            "steps": ["Center/270/12/Low"],
+            "steps": ["Center/270/8/Low"],
             "rating": 10
         }
     },
