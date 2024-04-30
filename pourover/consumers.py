@@ -195,6 +195,7 @@ class MyConsumer(WebsocketConsumer):
         current_data = (parts[0], parts[1])
 
         result = (float(current_data[0]), float(current_data[1]))
+        print(result)
         self.water_temp = result[1]
         data_dict = {
             'weight': result[0],
