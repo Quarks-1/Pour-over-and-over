@@ -24,7 +24,7 @@ class MyConsumer(WebsocketConsumer):
     heated = False
     heater = None
     water_temp = 0
-    curr_step = 1
+    curr_step = 0
 
     def connect(self):
         async_to_sync(self.channel_layer.group_add)(
@@ -132,7 +132,7 @@ class MyConsumer(WebsocketConsumer):
                 timer.cancel()
             self.queue = []
             self.schedulePours(self.steps)
-            self.curr_step = 1
+            self.curr_step = 0
             return
         
         if action == 'tareScale':
