@@ -259,8 +259,9 @@ class MyConsumer(WebsocketConsumer):
         # print(steps)
         for step in steps:
             if 'pre_wet' in step:
-                finalStep = ([gCode['pre_wet']], [20, 2])
-                stepTime = timedelta(seconds=5)
+                pair = [20, 2]
+                finalStep = ([gCode['pre_wet']], pair)
+                stepTime = timedelta(seconds=pair[0]/pair[1])
             elif 'delay' in step:
                 draw_down_message = 'Draw down'
                 stepTime = timedelta(seconds=step[1])
