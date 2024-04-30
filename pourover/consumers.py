@@ -317,19 +317,21 @@ class MyConsumer(WebsocketConsumer):
         time.sleep(10)
         # Send signal to arduino
         print(f'Pouring {water_weight}g at {flowRate}g/s, value: {self.map_value(flowRate)}')
-        # message = f'pumpon/{self.map_value(flowRate)}\n'
-        message = f'pumpon/{255}\n'
+        message = f'pumpon/{self.map_value(flowRate)}\n'
+        # message = f'pumpon/{255}\n'
         self.arduino.write(message.encode())
         time.sleep(water_weight/flowRate)
         # print(f'Pouring for {water_weight/flowRate} seconds')
         self.arduino.write(b'pumpon/0\n')
         return
     
-    def map_value(self, x):
-        # Ensure the input is within the allowable range
-        if not 0 <= x <= 8:
-            raise ValueError("Input must be within the range 0 to 8")
-        return int(5.625 * x + 210)
+    def map_value(x):
+        if x == 0:
+            return 255
+        elif 1 <= x <= 8:
+            return -10 * x + 80
+        else:
+            raise ValueError("Input should be between 0 and 8")
 
 
 
