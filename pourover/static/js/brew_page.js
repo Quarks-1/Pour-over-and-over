@@ -90,7 +90,7 @@ function connectToServer() {
 function highlightStep(step) {
     let steps = document.getElementById("id_step_table").getElementsByTagName("tr");
     for (let i = 0; i < steps.length; i++) {
-        if (i == step+1) {
+        if (i == step) {
             steps[i].style.backgroundColor = "lightgreen"
         }
         else {

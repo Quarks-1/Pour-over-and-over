@@ -267,6 +267,9 @@ class MyConsumer(WebsocketConsumer):
                 timer = Timer((totalTime - startTime).total_seconds(), self.broadcast_message, args=([draw_down_message]))
                 self.queue.append(timer)
                 timer.start() 
+                timer = Timer((totalTime - startTime).total_seconds(), self.addStep)
+                self.queue.append(timer)
+                timer.start()
             else:
                 pourTime = step[1] / step[2]  # water weight / flow rate
                 numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
@@ -287,7 +290,11 @@ class MyConsumer(WebsocketConsumer):
         timer = Timer((totalTime - startTime).total_seconds(), self.broadcast_message, args=([finished_message]))
         self.queue.append(timer)
         timer.start()   
-        # print(self.queue)    
+        # print(self.queue)   
+    
+    def addStep(self):
+        self.curr_step += 1
+        return 
          
     def doStep(self, gcode, water):
         # highlight step on web page
