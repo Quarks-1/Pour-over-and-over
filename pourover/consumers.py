@@ -329,7 +329,7 @@ class MyConsumer(WebsocketConsumer):
         self.arduino.write(b'pumpon/255\n')
         return
     
-    def map_value(x):
+    def map_value(self, x):
         if x == 0:
             return 255
         elif 1 <= x <= 8:
