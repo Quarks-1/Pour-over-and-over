@@ -293,12 +293,12 @@ class MyConsumer(WebsocketConsumer):
         # print(self.queue)   
     
     def addStep(self):
+        self.broadcast_message(f'curr step:{self.curr_step}')
         self.curr_step += 1
         return 
          
     def doStep(self, gcode, water):
         # highlight step on web page
-        self.broadcast_message(f'curr step:{self.curr_step}')
         
         gcode = str2list(gcode)
         water = str2list(water)
