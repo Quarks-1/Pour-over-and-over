@@ -9,7 +9,7 @@
             "description": "The base 4:6 method for the Hario V60",
             "grind_size": 18,
             "grind_weight": 18,
-            "total_water_weight": 300,
+            "total_water_weight": 250,
             "water_temp": 200,
             "brew_method": "Pour over",
             "brew_device": "V60",
