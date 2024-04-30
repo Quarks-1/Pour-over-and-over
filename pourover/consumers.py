@@ -303,7 +303,7 @@ class MyConsumer(WebsocketConsumer):
         pour = Thread(target=self.doPour, args=(water))
         pour.name = f'Pouring {water[0]}g at {water[1]}g/s'
         pour.start()
-        time.sleep(1.66)
+        # time.sleep(1.66)
         # Send gcode to printer
         for command in gcode:
             # Check if command is circle
