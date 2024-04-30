@@ -180,7 +180,10 @@ class MyConsumer(WebsocketConsumer):
     def broadcast_event(self, event):
         self.send(text_data=event['message'])
     
-    previous_data = None
+    previous_data = {
+        'weight': 0,
+        'temp': 0,
+    }
     def get_arduino_feed(self):
         # self.arduino.reset_input_buffer()
         time.sleep(0.1)
