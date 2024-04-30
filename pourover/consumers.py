@@ -268,7 +268,7 @@ class MyConsumer(WebsocketConsumer):
                 self.queue.append(timer)
                 timer.start() 
             else:
-                pourTime = step[1] / step[2] + 1  # water weight / flow rate
+                pourTime = step[1] / step[2]  # water weight / flow rate
                 numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
                 # print(f'number of instructions: {numInstruct}')
                 finalStep = ([gCode[step[0]]] * numInstruct, [step[1], step[2]])
@@ -321,8 +321,8 @@ class MyConsumer(WebsocketConsumer):
         # time.sleep(10)
         # Send signal to arduino
         print(f'Pouring {water_weight}g at {flowRate}g/s, value: {self.map_value(flowRate)}')
-        message = f'pumpon/{self.map_value(flowRate)}\n'
-        # message = f'pumpon/{255}\n'
+        # message = f'pumpon/{self.map_value(flowRate)}\n'
+        message = f'pumpon/{0}\n'
         self.arduino.write(message.encode())
         time.sleep(water_weight/flowRate)
         # print(f'Pouring for {water_weight/flowRate} seconds')
