@@ -339,6 +339,8 @@ class MyConsumer(WebsocketConsumer):
             80: 3.5
         }
         offset = offset_dict[self.map_value(flowRate)]
+        if water_weight/flowRate - offset < 0:
+            offset = water_weight/flowRate*0.1
         time.sleep(water_weight/flowRate - offset)
         # print(f'Pouring for {water_weight/flowRate} seconds')
         self.arduino.write(b'pumpon/255\n')
