@@ -248,7 +248,7 @@ class MyConsumer(WebsocketConsumer):
             'Edge': 13, 
         }
         gCode = {
-            'pre_wet': 'G2 X127 Y115 Z220 I25 J25 F2500', 
+            'pre_wet': 'G2 X127 Y115 Z220 I25 J25 F2000', 
             'Center': 'G2 X127 Y115 F3600',
             'Inner circle': 'G2 X127 Y115 I10 J10 F1500',
             'Outer circle': 'G2 X127 Y115 I25 J25 F1500',
