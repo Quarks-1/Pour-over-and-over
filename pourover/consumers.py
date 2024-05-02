@@ -248,7 +248,7 @@ class MyConsumer(WebsocketConsumer):
             'Edge': 13, 
         }
         gCode = {
-            'pre_wet': 'G2 X127 Y115 Z220 I25 J25 F3600', 
+            'pre_wet': 'G2 X127 Y115 Z220 I25 J25 F2500', 
             'Center': 'G2 X127 Y115 F3600',
             'Inner circle': 'G2 X127 Y115 I10 J10 F1500',
             'Outer circle': 'G2 X127 Y115 I25 J25 F1500',
@@ -264,7 +264,6 @@ class MyConsumer(WebsocketConsumer):
                 finalStep = ([gCode['pre_wet']], pair)
                 stepTime = timedelta(seconds=pair[0]/pair[1])
             elif 'delay' in step:
-                
                 stepTime = timedelta(seconds=step[1])
                 if 'pre_wet' in prev:
                     draw_down_message = 'Empty water and add coffee grounds!'
