@@ -257,17 +257,25 @@ class MyConsumer(WebsocketConsumer):
         startTime = datetime.now()
         totalTime = datetime.now() + timedelta(seconds=2)
         # print(steps)
+        prev = None
         for step in steps:
             if 'pre_wet' in step:
                 pair = [20, 2]
                 finalStep = ([gCode['pre_wet']], pair)
                 stepTime = timedelta(seconds=pair[0]/pair[1])
             elif 'delay' in step:
-                draw_down_message = 'Draw down'
+                
                 stepTime = timedelta(seconds=step[1])
-                timer = Timer((totalTime - startTime).total_seconds(), self.broadcast_message, args=([draw_down_message]))
-                self.queue.append(timer)
-                timer.start() 
+                if 'pre_wet' in prev:
+                    draw_down_message = 'Empty water and add coffee grounds!'
+                    timer = Timer((totalTime - startTime).total_seconds(), self.broadcast_message, args=([draw_down_message]))
+                    self.queue.append(timer)
+                    timer.start()
+                else:
+                    draw_down_message = 'Draw down'
+                    timer = Timer((totalTime - startTime).total_seconds(), self.broadcast_message, args=([draw_down_message]))
+                    self.queue.append(timer)
+                    timer.start() 
             else:
                 pourTime = step[1] / step[2]  # water weight / flow rate
                 numInstruct = math.ceil(pourTime / times_dict[step[0]]) # total time / time per instruction
@@ -286,6 +294,7 @@ class MyConsumer(WebsocketConsumer):
             self.queue.append(timer)
             timer.start()
             totalTime += stepTime
+            prev = step
         finished_message = 'Finished brewing, Enjoy!'
         # Send finished message
         timer = Timer((totalTime - startTime).total_seconds(), self.broadcast_message, args=([finished_message]))
