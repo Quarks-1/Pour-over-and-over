@@ -221,7 +221,7 @@ class MyConsumer(WebsocketConsumer):
                     # print(f"Current Temperature: {current_temp}°F")
                     control = self.pid(current_temp)
                     heating_on = control >= 0.4 
-                    print(f'PID control: {control}, heating on: {heating_on}, current temp: {current_temp}°F')
+                    # print(f'PID control: {control}, heating on: {heating_on}, current temp: {current_temp}°F')
                     self.arduino.write(b'heaton\n' if heating_on else b'heatoff\n')
                     if current_temp >= self.profile.water_temp:
                         self.broadcast_message('Water heated. Click to start brew...')
@@ -314,8 +314,8 @@ class MyConsumer(WebsocketConsumer):
         for command in gcode:
             # Check if command is circle
             if 'I' in command:
-                [i, j, x, y] = [int(command.split('I')[1].split(' ')[0]), int(command.split('J')[1].split(' ')[0]), int(command.split('X')[1].split(' ')[0]), int(command.split('Y')[1].split(' ')[0])]
-                self.printer.arcFromCurr(i, j, x, y)
+                [i, j, x, y, f] = [int(command.split('I')[1].split(' ')[0]), int(command.split('J')[1].split(' ')[0]), int(command.split('X')[1].split(' ')[0]), int(command.split('Y')[1].split(' ')[0]), int(command.split('F')[1].split(' ')[0])]
+                self.printer.arcFromCurr(i, j, x, y, f)
             else:
                 self.printer.write(command)
             time.sleep(0.05)
@@ -376,14 +376,14 @@ class printer:
     def write(self, command):
         self.ser.write(str.encode(command + "\r\n"))
     
-    def arcFromCurr(self, i, j, x, y):
+    def arcFromCurr(self, i, j, x, y, F):
         # Offset from center
         # print(f'Current position: {x}, {y}, i: {i}, j: {j}')
         command = f"G0 X{x-i} Y{y-j} F3600\r\n"
         self.ser.write(command.encode())
         time.sleep(0.1)
         # Draw circle
-        command = f"G2 X{x-i} Y{y-j} I{i} J{j} F1500\r\n"
+        command = f"G2 X{x-i} Y{y-j} I{i} J{j} F{F}\r\n"
         self.ser.write(command.encode())
         time.sleep(0.1)
         
