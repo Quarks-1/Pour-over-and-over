@@ -25,6 +25,7 @@ class MyConsumer(WebsocketConsumer):
     heater = None
     water_temp = 0
     curr_step = 1
+    running = False
 
     def connect(self):
         async_to_sync(self.channel_layer.group_add)(
@@ -51,6 +52,7 @@ class MyConsumer(WebsocketConsumer):
         self.startTime = datetime.now()
         self.broadcast_message('Successfully connected to Printer and Arduino.')
         self.broadcast_message('start data feed')
+        self.running = False
 
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
@@ -64,6 +66,7 @@ class MyConsumer(WebsocketConsumer):
         # turn off heater
         self.arduino.write(b'pumpon/255\n')
         self.arduino.write(b'heatoff\n')
+        self.running = False
         
 
     def receive(self, **kwargs):
@@ -111,6 +114,7 @@ class MyConsumer(WebsocketConsumer):
             print('Starting brew...')
             self.broadcast_message('Starting brew...')
             self.schedulePours(self.steps)
+            self.running = True
             return
 
         if action == "stopBrew":
@@ -153,6 +157,7 @@ class MyConsumer(WebsocketConsumer):
             return
 
         if action == 'startHeater':
+            self.running = True
             self.broadcast_message('Heating water. Please wait...')
             self.heater.start()
             self.broadcast_message('disable heater button')
@@ -212,7 +217,7 @@ class MyConsumer(WebsocketConsumer):
     # Turn on water heater
     def startHeater(self):
         self.broadcast_message('Heating water. Please wait...')
-        while not self.heated:
+        while self.running:
             try:
                 # Read temperature from serial
                 data = self.get_arduino_feed()
@@ -225,7 +230,7 @@ class MyConsumer(WebsocketConsumer):
                     self.arduino.write(b'heaton\n' if heating_on else b'heatoff\n')
                     if current_temp >= self.profile.water_temp:
                         self.broadcast_message('Water heated. Click to start brew...')
-                        break
+                        # break
                 time.sleep(0.01)
             except ValueError:
                 # In case of faulty serial data that cannot be converted to float
